@@ -2,11 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\HomeController;
-use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Admin\PageController;
-use App\Http\Controllers\Admin\ContactController;
-use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\AdminUserController;
+
+// Admin Controller
+use App\Http\Controllers\Admin\{
+    CompanyController,
+    AdminAuthController,
+    AdminUserController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +58,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
         Route::get('profile', [AdminAuthController::class, 'adminProfile'])->name('profile');
         Route::post('profile', [AdminAuthController::class, 'updateAdminProfile'])->name('update.profile');
+
+
+        // Master Route
+        // Resource Management Routes (Variation, Tax, Item, Vendor, Customer)
+        foreach (['company'] as $resource) {
+            Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
+                $controller = "App\Http\Controllers\Admin\\" . ucfirst($resource) . "Controller";
+                Route::get('/', [$controller, 'index'])->name('index');
+                Route::get('all', [$controller, 'getall'])->name('getall');
+                Route::post('store', [$controller, 'store'])->name('store');
+                Route::post('status', [$controller, 'status'])->name('status');
+                Route::delete('delete/{id}', [$controller, 'destroy'])->name('destroy');
+                Route::get('get/{id}', [$controller, 'get'])->name('get');
+                Route::post('update', [$controller, 'update'])->name('update');
+            });
+        }
 
     });
 
