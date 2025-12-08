@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\HomeController;
 // Admin Controller
 use App\Http\Controllers\Admin\{
     CompanyController,
+    UserController,
     AdminAuthController,
     AdminUserController
 };
@@ -62,7 +63,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Master Route
         // Resource Management Routes (Variation, Tax, Item, Vendor, Customer)
-        foreach (['company'] as $resource) {
+        foreach (['company','user'] as $resource) {
             Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
                 $controller = "App\Http\Controllers\Admin\\" . ucfirst($resource) . "Controller";
                 Route::get('/', [$controller, 'index'])->name('index');

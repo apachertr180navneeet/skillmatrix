@@ -21,6 +21,16 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
 
+    protected $fillable = [
+        'department_id',
+        'company_id',
+        'full_name',
+        'email',
+        'phone',
+        'password',
+        'role',
+        'status',
+    ];
     protected $appends = ['avatar_full_path'];
 
     /**
@@ -63,6 +73,22 @@ class User extends Authenticatable implements JWTSubject
         }else{
             return "";
         }
+    }
+
+    /**
+     * User belongs to a department.
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    /**
+     * User belongs to a company.
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
 }
