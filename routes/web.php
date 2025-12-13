@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\HomeController;
 
 // Admin Controller
-use App\Http\Controllers\Admin\{
+use App\Http\Controllers\Super_Admin\{
     CompanyController,
     UserController,
     AdminAuthController,
