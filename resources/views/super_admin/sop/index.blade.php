@@ -94,7 +94,7 @@ $(document).ready(function () {
                            View
                         </a>
 
-                        <a href="/super-admin/sop/${id}/qa"
+                        <a href="/super-admin/sopquesans/${id}/qa"
                            class="btn btn-sm btn-secondary">
                            Q&A
                         </a>
