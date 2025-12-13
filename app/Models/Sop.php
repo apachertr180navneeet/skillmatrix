@@ -17,9 +17,26 @@ class Sop extends Model
         'department_id',
         'party_id',
         'status',
+        'sop_upload',
     ];
 
     protected $casts = [
         'status' => 'string',
     ];
+
+    /**
+     * SOP belongs to a Department
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    /**
+     * SOP belongs to a Company (party)
+     */
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'party_id');
+    }
 }

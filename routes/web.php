@@ -8,7 +8,8 @@ use App\Http\Controllers\Super_Admin\{
     CompanyController,
     UserController,
     AdminAuthController,
-    AdminUserController
+    AdminUserController,
+    SopController
 };
 
 /*
@@ -63,9 +64,9 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
 
         // Master Route
         // Resource Management Routes (Variation, Tax, Item, Vendor, Customer)
-        foreach (['company','user'] as $resource) {
+        foreach (['company','user','sop'] as $resource) {
             Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
-                $controller = "App\Http\Controllers\Admin\\" . ucfirst($resource) . "Controller";
+                $controller = "App\Http\Controllers\Super_Admin\\" . ucfirst($resource) . "Controller";
                 Route::get('/', [$controller, 'index'])->name('index');
                 Route::get('all', [$controller, 'getall'])->name('getall');
                 Route::post('store', [$controller, 'store'])->name('store');
@@ -73,6 +74,10 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
                 Route::delete('delete/{id}', [$controller, 'destroy'])->name('destroy');
                 Route::get('get/{id}', [$controller, 'get'])->name('get');
                 Route::post('update', [$controller, 'update'])->name('update');
+                if($resource === 'sop'){
+                    Route::get('{id}/qa', [$controller, 'showQA'])->name('show.qa');
+                    Route::get('show/{id}', [$controller, 'show'])->name('show');
+                }
             });
         }
 
