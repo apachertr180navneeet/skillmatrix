@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('super_admin.layouts.app')
 @section('style')
 @endsection  
 

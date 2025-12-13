@@ -1,4 +1,4 @@
-@extends('admin.layouts.login_layout') 
+@extends('super_admin.layouts.login_layout') 
 @section('content')
 
 <div class="authentication-wrapper authentication-basic container-p-y">
@@ -69,7 +69,7 @@
                     {{ session('status') }}
                 </div>
                 @endif
-                <form action="{{route('admin.forget.password.post')}}" method="POST" class="mb-3">
+                <form action="{{route('super.admin.forget.password.post')}}" method="POST" class="mb-3">
                     @csrf
                     <div class="form-group mb-3">
                         <label for="email" class="form-label">E-Mail Address</label>
@@ -83,7 +83,7 @@
                     </div>
                 </form>
                 <div class="text-center">
-                    <a href="{{route('admin.login')}}" class="d-flex align-items-center justify-content-center">
+                    <a href="{{route('super.admin.login')}}" class="d-flex align-items-center justify-content-center">
                         <i class="bx bx-chevron-left scaleX-n1-rtl bx-sm"></i>
                         Back to login
                     </a>

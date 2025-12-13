@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('super_admin.layouts.app')
 
 @section('style')
 @endsection
@@ -191,7 +191,7 @@ $(document).ready(function () {
 
     const table = $('#companyTable').DataTable({
         processing: true,
-        ajax: "{{ route('admin.company.getall') }}",
+        ajax: "{{ route('super.admin.company.getall') }}",
         columns: [
             { data: 'name' },
             { data: 'email' },
@@ -245,7 +245,7 @@ $(document).ready(function () {
         formData.append('_token', "{{ csrf_token() }}");
 
         $.ajax({
-            url: "{{ route('admin.company.store') }}",
+            url: "{{ route('super.admin.company.store') }}",
             method: "POST",
             data: formData,
             processData: false,
@@ -265,7 +265,7 @@ $(document).ready(function () {
 
     // Expose functions
     window.editCompany = function (id) {
-        $.get("{{ url('admin/company/get') }}/" + id, function (data) {
+        $.get("{{ url('super-admin/company/get') }}/" + id, function (data) {
 
             $('#editid').val(data.id);
             $('#editname').val(data.name);
@@ -307,7 +307,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: "{{ route('admin.company.update') }}",
+            url: "{{ route('super.admin.company.update') }}",
             method: "POST",
             data: formData,
             processData: false,
@@ -330,7 +330,7 @@ $(document).ready(function () {
     window.deleteCompany = function (id) {
         if (confirm('Are you sure?')) {
             $.ajax({
-                url: "{{ url('admin/company/delete') }}/" + id,
+                url: "{{ url('super-admin/company/delete') }}/" + id,
                 method: "DELETE",
                 data: { _token: "{{ csrf_token() }}" },
                 success: function (res) {
@@ -349,7 +349,7 @@ $(document).ready(function () {
         let status = $(this).is(':checked') ? 'active' : 'inactive';
 
         $.ajax({
-            url: "{{ route('admin.company.status') }}",
+            url: "{{ route('super.admin.company.status') }}",
             type: "POST",
             data: {
                 _token: "{{ csrf_token() }}",

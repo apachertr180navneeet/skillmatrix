@@ -19,12 +19,12 @@ class AdminAuthController extends Controller
             if(Auth::user()) {
                 $user = Auth::user();
                 if($user->role == "admin") {
-                    return redirect()->route('admin.dashboard');
+                    return redirect()->route('super.admin.dashboard');
                 }else{
                     return back()->with("error","Opps! You do not have access this");
                 }
             }else{
-                return redirect()->route('admin.login');
+                return redirect()->route('super.admin.login');
             }
 
         }
@@ -37,12 +37,12 @@ class AdminAuthController extends Controller
 
     public function login()
     {
-        return view("admin.auth.login");
+        return view("super_admin.auth.login");
     }
 
     public function registration()
     {
-        return view("admin.auth.registration");
+        return view("super_admin.auth.registration");
     }
 
     public function postLogin(Request $request)
@@ -63,7 +63,7 @@ class AdminAuthController extends Controller
                         }
                     ]))
                 {
-                    return redirect()->route("admin.dashboard")->with("success", "Welcome to your dashboard.");
+                    return redirect()->route("super.admin.dashboard")->with("success", "Welcome to your dashboard.");
                 }
                 return back()->with("error","Invalid credentials");
             }else{
@@ -87,7 +87,7 @@ class AdminAuthController extends Controller
         $data = $request->all();
         $check = $this->create($data);
 
-        return redirect("admin.dashboard")->with("success","Great! You have Successfully loggedin");
+        return redirect("super.admin.dashboard")->with("success","Great! You have Successfully loggedin");
     }
 
     public function create(array $data)
@@ -101,7 +101,7 @@ class AdminAuthController extends Controller
 
     public function showForgetPasswordForm()
     {
-        return view("admin.auth.forgot-password");
+        return view("super_admin.auth.forgot-password");
     }
 
     public function submitForgetPasswordForm(Request $request)
@@ -119,14 +119,14 @@ class AdminAuthController extends Controller
                 "created_at" => Carbon::now(),
             ]);
 
-            $new_link_token = url("admin/reset-password/" . $token);
-            Mail::send("admin.email.forgot-password",["token" => $new_link_token, "email" => $request->email],
+            $new_link_token = url("super-admin/reset-password/" . $token);
+            Mail::send("super_admin.email.forgot-password",["token" => $new_link_token, "email" => $request->email],
                 function ($message) use ($request) {
                     $message->to($request->email);
                     $message->subject("Reset Password");
                 }
             );
-            return redirect()->route("admin.login")->with("success","We have e-mailed your password reset link!");
+            return redirect()->route("super.admin.login")->with("success","We have e-mailed your password reset link!");
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -139,7 +139,7 @@ class AdminAuthController extends Controller
         try{    
             $user = DB::table("password_resets")->where("token", $token)->first();
             $email = $user->email;
-            return view("admin.auth.reset-password", ["token" => $token,"email" => $email,]);
+            return view("super_admin.auth.reset-password", ["token" => $token,"email" => $email,]);
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -165,7 +165,7 @@ class AdminAuthController extends Controller
 
             DB::table("password_resets")->where(["email" => $request->email])->delete();
 
-            return redirect()->route("admin.login")->with("success","Your password has been changed successfully!");
+            return redirect()->route("super.admin.login")->with("success","Your password has been changed successfully!");
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -174,7 +174,7 @@ class AdminAuthController extends Controller
 
     public function changePassword()
     {
-        return view("admin.auth.change-password");
+        return view("super_admin.auth.change-password");
     }
 
     public function updatePassword(Request $request)
@@ -206,7 +206,7 @@ class AdminAuthController extends Controller
         try{
             Session::flush();
             Auth::logout();
-            return redirect()->route("admin.login")->withSuccess('Logout Successful!');
+            return redirect()->route("super.admin.login")->withSuccess('Logout Successful!');
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -217,7 +217,7 @@ class AdminAuthController extends Controller
     {
         try{
             $user = Auth::user();
-            return view("admin.auth.profile", compact("user"));
+            return view("super_admin.auth.profile", compact("user"));
 
         }
         catch(Exception $e){
@@ -269,7 +269,7 @@ class AdminAuthController extends Controller
 
     public function adminDashboard()
     {
-        return view("admin.dashboard.index");
+        return view("super_admin.dashboard.index");
     }
 
 

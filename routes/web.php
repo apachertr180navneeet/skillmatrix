@@ -34,7 +34,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 | All admin related routes are grouped here
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('super-admin')->name('super.admin.')->group(function () {
 
     // Auth Pages
     Route::get('/', [AdminAuthController::class, 'index'])->name('index');

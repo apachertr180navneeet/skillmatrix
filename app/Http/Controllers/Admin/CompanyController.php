@@ -18,7 +18,7 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
-        return view('admin.company.index');
+        return view('super_admin.company.index');
     }
 
     /**

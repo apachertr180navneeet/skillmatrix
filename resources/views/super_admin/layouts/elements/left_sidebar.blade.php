@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 	<div class="app-brand demo">
-		<a href="{{route('admin.dashboard')}}" class="app-brand-link">
+		<a href="{{route('super.admin.dashboard')}}" class="app-brand-link">
 			<span class="app-brand-text demo menu-text fw-bold ms-2 text-capitalize">Skill Matrix</span>
 		</a>
 
@@ -13,16 +13,16 @@
 	<div class="menu-inner-shadow"></div>
 
 	<ul class="menu-inner py-1">
-		<li class="menu-item {{ request()->is('admin/dashboard') ? 'active' : ''}}">
-			<a href="{{route('admin.dashboard')}}" class="menu-link">
+		<li class="menu-item {{ request()->is('super.admin/dashboard') ? 'active' : ''}}">
+			<a href="{{route('super.admin.dashboard')}}" class="menu-link">
 				<i class="menu-icon tf-icons bx bx-home-circle"></i>
 				<div data-i18n="Dashboard">Dashboard</div>
 			</a>
 		</li>
 		
 		@foreach([
-			['route' => 'admin.company.index', 'text' => 'Party Management'],
-			['route' => 'admin.user.index', 'text' => 'User Management'],
+			['route' => 'super.admin.company.index', 'text' => 'Party Management'],
+			['route' => 'super.admin.user.index', 'text' => 'User Management'],
 		] as $mastermenu)
 			<li class="menu-item {{ request()->routeIs($mastermenu['route']) ? 'active' : '' }}">
 				<a href="{{ route($mastermenu['route']) }}" class="menu-link">

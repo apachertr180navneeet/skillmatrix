@@ -36,6 +36,6 @@
         <script src="{{asset('assets/admin/js/main.js')}}"></script>
         <script async defer src="https://buttons.github.io/buttons.js"></script>
         @yield('script')
-        @include('admin.layouts.elements.sweet_alerts')
+        @include('super_admin.layouts.elements.sweet_alerts')
     </body>
 </html>

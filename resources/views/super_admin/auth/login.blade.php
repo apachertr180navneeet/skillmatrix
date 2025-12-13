@@ -1,4 +1,4 @@
-@extends('admin.layouts.login_layout') 
+@extends('super_admin.layouts.login_layout') 
 @section('content') 
 
 <div class="authentication-wrapper authentication-basic container-p-y">
@@ -15,7 +15,7 @@
                 <!-- /Logo -->
                 <h4 class="mb-2">Welcome to Skill Matrix! 👋</h4>
                 <p class="mb-4">Please sign-in to your admin account</p>
-                <form action="{{ route('admin.login.post') }}" id="" class="mb-3" method="POST">
+                <form action="{{ route('super.admin.login.post') }}" id="" class="mb-3" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label for="email" class="form-label">Email or Username</label>
@@ -24,7 +24,7 @@
                     <div class="mb-3 form-password-toggle">
                         <div class="d-flex justify-content-between">
                             <label class="form-label" for="password">Password</label>
-                            <a href="{{route('admin.forget.password.get')}}"><small>Forgot Password?</small></a>
+                            <a href="{{route('super.admin.forget.password.get')}}"><small>Forgot Password?</small></a>
                         </div>
                         <div class="input-group input-group-merge">
                             <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />

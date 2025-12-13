@@ -27,7 +27,7 @@ class UserController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.user.index', compact('departments', 'companies'));
+        return view('super_admin.user.index', compact('departments', 'companies'));
     }
 
     /**

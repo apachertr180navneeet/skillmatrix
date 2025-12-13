@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('super_admin.layouts.app')
 
 @section('style')
 @endsection
@@ -203,7 +203,7 @@ $(function(){
 
     const table = $('#userTable').DataTable({
         processing: true,
-        ajax: "{{ route('admin.user.getall') }}",
+        ajax: "{{ route('super.admin.user.getall') }}",
         columns: [
             { data: 'full_name' },
             { data: 'email' },
@@ -245,7 +245,7 @@ $(function(){
         form.append("password_confirmation",$("#password_confirmation").val());
 
         $.ajax({
-            url:"{{ route('admin.user.store') }}",
+            url:"{{ route('super.admin.user.store') }}",
             method:"POST",
             data:form,
             contentType:false,
@@ -272,7 +272,7 @@ $(function(){
     //================ GET USER ==================
     window.editUser=function(id){
         $("small.text-danger").text(""); // clear old errors
-        $.get("{{ url('admin/user/get') }}/"+id,function(d){
+        $.get("{{ url('super-admin/user/get') }}/"+id,function(d){
             $("#editid").val(d.id);
             $("#editname").val(d.full_name);
             $("#editemail").val(d.email);
@@ -301,7 +301,7 @@ $(function(){
         form.append("password_confirmation",$("#editpassword_confirmation").val());
 
         $.ajax({
-            url:"{{ route('admin.user.update') }}",
+            url:"{{ route('super.admin.user.update') }}",
             method:"POST",
             data:form,
             contentType:false,
@@ -328,7 +328,7 @@ $(function(){
     window.deleteUser=function(id){
         if(confirm("Are you sure?")){
             $.ajax({
-                url:"{{ url('admin/user/delete') }}/"+id,
+                url:"{{ url('super-admin/user/delete') }}/"+id,
                 method:"DELETE",
                 data:{_token:"{{ csrf_token() }}"},
                 success:function(r){
@@ -346,7 +346,7 @@ $(function(){
         let status=$(this).is(":checked")?"active":"inactive";
 
         $.post({
-            url:"{{ route('admin.user.status') }}",
+            url:"{{ route('super.admin.user.status') }}",
             data:{_token:"{{ csrf_token() }}",userId:id,status:status},
             success:()=>Toast.fire({icon:"success",title:"Status Updated"})
         });
