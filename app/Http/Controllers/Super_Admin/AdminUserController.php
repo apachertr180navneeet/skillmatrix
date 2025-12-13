@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Super_Admin;
 
 use App\Http\Controllers\Controller;
 
