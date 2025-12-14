@@ -92,6 +92,7 @@ class UserController extends Controller
             'name'          => 'required|string|max:191',
             'email'         => 'required|email|max:191|unique:users,email',
             'phone'         => 'nullable|numeric|digits_between:7,15|unique:users,phone',
+            'city'          => 'nullable|string|max:191',
             'department_id' => 'nullable|integer|exists:departments,id',
             'company_id'    => 'nullable|integer|exists:companies,id',
             'password'      => 'required|string|min:6|confirmed', // password + password_confirmation
@@ -110,6 +111,7 @@ class UserController extends Controller
             'full_name'          => $request->name,
             'email'         => $request->email,
             'phone'         => $request->phone,
+            'city'          => $request->city,
             'department_id' => $request->department_id ?? 0, // default 0
             'company_id'    => $request->company_id ?? 0,    // default 0
             'status'        => 'active',
@@ -154,6 +156,7 @@ class UserController extends Controller
                 'digits_between:7,15',
                 Rule::unique('users', 'phone')->ignore($request->id),
             ],
+            'city'          => 'nullable|string|max:191',
             'department_id' => 'nullable|integer|exists:departments,id',
             'company_id'    => 'nullable|integer|exists:companies,id',
             // password is optional on update
@@ -175,6 +178,7 @@ class UserController extends Controller
             'full_name'          => $request->name,
             'email'         => $request->email,
             'phone'         => $request->phone,
+            'city'          => $request->city,
             'department_id' => $request->department_id ?? 0,
             'company_id'    => $request->company_id ?? 0,
         ];

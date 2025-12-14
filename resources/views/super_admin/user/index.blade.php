@@ -73,6 +73,24 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>City</label>
+                        <input type="text" id="city" class="form-control">
+                        <small id="city_error" class="text-danger"></small>
+                    </div>
+
+                                        <div class="col-md-6 mb-3">
+                        <label>HOD Name</label>
+                        <input type="text" id="hod_name" class="form-control">
+                        <small id="hod_name_error" class="text-danger"></small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>HOD Email</label>
+                        <input type="email" id="hod_email" class="form-control">
+                        <small id="hod_email_error" class="text-danger"></small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
                         <label>Company</label>
                         <select id="company_id" class="form-control">
                             <option value="0">Select Company</option>
@@ -150,6 +168,24 @@
                         <label>Phone</label>
                         <input type="text" id="editphone" class="form-control">
                         <small id="editphone_error" class="text-danger"></small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>City</label>
+                        <input type="text" id="editcity" class="form-control">
+                        <small id="editcity_error" class="text-danger"></small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>HOD Name</label>
+                        <input type="text" id="edithod_name" class="form-control">
+                        <small id="edithod_name_error" class="text-danger"></small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>HOD Email</label>
+                        <input type="email" id="edithod_email" class="form-control">
+                        <small id="edithod_email_error" class="text-danger"></small>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -239,6 +275,7 @@ $(function(){
         form.append("name",$("#name").val());
         form.append("email",$("#email").val());
         form.append("phone",$("#phone").val());
+        form.append("city",$("#city").val());
         form.append("company_id",$("#company_id").val());
         form.append("department_id",$("#department_id").val());
         form.append("password",$("#password").val());
@@ -277,6 +314,7 @@ $(function(){
             $("#editname").val(d.full_name);
             $("#editemail").val(d.email);
             $("#editphone").val(d.phone);
+            $("#editcity").val(d.city);
             $("#editcompany").val(d.company_id);
             $("#editdepartment").val(d.department_id);
             $("#editModal").modal("show");
@@ -295,6 +333,7 @@ $(function(){
         form.append("name",$("#editname").val());
         form.append("email",$("#editemail").val());
         form.append("phone",$("#editphone").val());
+        form.append("city",$("#editcity").val());
         form.append("company_id",$("#editcompany").val());
         form.append("department_id",$("#editdepartment").val());
         form.append("password",$("#editpassword").val());

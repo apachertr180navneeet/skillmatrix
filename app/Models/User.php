@@ -30,6 +30,9 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'role',
         'status',
+        'city',
+        'hod_name',
+        'hod_email',
     ];
     protected $appends = ['avatar_full_path'];
 
