@@ -93,6 +93,8 @@ class UserController extends Controller
             'email'         => 'required|email|max:191|unique:users,email',
             'phone'         => 'nullable|numeric|digits_between:7,15|unique:users,phone',
             'city'          => 'nullable|string|max:191',
+            'hod_name'      => 'nullable|string|max:191',
+            'hod_email'     => 'nullable|email|max:191',
             'department_id' => 'nullable|integer|exists:departments,id',
             'company_id'    => 'nullable|integer|exists:companies,id',
             'password'      => 'required|string|min:6|confirmed', // password + password_confirmation
@@ -112,6 +114,8 @@ class UserController extends Controller
             'email'         => $request->email,
             'phone'         => $request->phone,
             'city'          => $request->city,
+            'hod_name'      => $request->hod_name,
+            'hod_email'     => $request->hod_email,
             'department_id' => $request->department_id ?? 0, // default 0
             'company_id'    => $request->company_id ?? 0,    // default 0
             'status'        => 'active',
@@ -157,6 +161,8 @@ class UserController extends Controller
                 Rule::unique('users', 'phone')->ignore($request->id),
             ],
             'city'          => 'nullable|string|max:191',
+            'hod_name'      => 'nullable|string|max:191',
+            'hod_email'     => 'nullable|email|max:191',
             'department_id' => 'nullable|integer|exists:departments,id',
             'company_id'    => 'nullable|integer|exists:companies,id',
             // password is optional on update
@@ -179,6 +185,8 @@ class UserController extends Controller
             'email'         => $request->email,
             'phone'         => $request->phone,
             'city'          => $request->city,
+            'hod_name'      => $request->hod_name,
+            'hod_email'     => $request->hod_email,
             'department_id' => $request->department_id ?? 0,
             'company_id'    => $request->company_id ?? 0,
         ];

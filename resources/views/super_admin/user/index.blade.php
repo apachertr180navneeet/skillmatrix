@@ -276,6 +276,8 @@ $(function(){
         form.append("email",$("#email").val());
         form.append("phone",$("#phone").val());
         form.append("city",$("#city").val());
+        form.append("hod_name",$("#hod_name").val());
+        form.append("hod_email",$("#hod_email").val());
         form.append("company_id",$("#company_id").val());
         form.append("department_id",$("#department_id").val());
         form.append("password",$("#password").val());
@@ -315,6 +317,8 @@ $(function(){
             $("#editemail").val(d.email);
             $("#editphone").val(d.phone);
             $("#editcity").val(d.city);
+            $("#edithod_name").val(d.hod_name);
+            $("#edithod_email").val(d.hod_email);
             $("#editcompany").val(d.company_id);
             $("#editdepartment").val(d.department_id);
             $("#editModal").modal("show");
@@ -334,6 +338,8 @@ $(function(){
         form.append("email",$("#editemail").val());
         form.append("phone",$("#editphone").val());
         form.append("city",$("#editcity").val());
+        form.append("hod_name",$("#edithod_name").val());
+        form.append("hod_email",$("#edithod_email").val());
         form.append("company_id",$("#editcompany").val());
         form.append("department_id",$("#editdepartment").val());
         form.append("password",$("#editpassword").val());
