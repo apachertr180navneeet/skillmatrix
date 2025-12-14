@@ -10,7 +10,8 @@ use App\Http\Controllers\Super_Admin\{
     AdminAuthController,
     AdminUserController,
     SopController,
-    SopquesansController
+    SopquesansController,
+    ChecklistController
 };
 
 /*
@@ -43,6 +44,7 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
     Route::get('login', [AdminAuthController::class, 'login'])->name('login');
     Route::post('login', [AdminAuthController::class, 'postLogin'])->name('login.post');
 
+
     // Forgot & Reset Password
     Route::get('forget-password', [AdminAuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
     Route::post('forget-password', [AdminAuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post');
@@ -65,7 +67,7 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
 
         // Master Route
         // Resource Management Routes (Variation, Tax, Item, Vendor, Customer)
-        foreach (['company','user','sop','sopquesans'] as $resource) {
+        foreach (['company','user','sop','sopquesans','checklist'] as $resource) {
             Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
                 $controller = "App\Http\Controllers\Super_Admin\\" . ucfirst($resource) . "Controller";
                 Route::get('/', [$controller, 'index'])->name('index');
@@ -75,7 +77,7 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
                 Route::delete('delete/{id}', [$controller, 'destroy'])->name('destroy');
                 Route::get('get/{id}', [$controller, 'get'])->name('get');
                 Route::post('update', [$controller, 'update'])->name('update');
-                if($resource === 'sop'){
+                if($resource === 'sop' || $resource === 'checklist'){
                     Route::get('show/{id}', [$controller, 'show'])->name('show');
                 }
 
