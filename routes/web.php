@@ -12,7 +12,8 @@ use App\Http\Controllers\Super_Admin\{
     SopController,
     SopquesansController,
     ChecklistController,
-    VideoController
+    VideoController,
+    PaymentController
 };
 
 /*
@@ -68,7 +69,7 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
 
         // Master Route
         // Resource Management Routes (Variation, Tax, Item, Vendor, Customer)
-        foreach (['company','user','sop','sopquesans','checklist','video'] as $resource) {
+        foreach (['company','user','sop','sopquesans','checklist','video','payment'] as $resource) {
             Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
                 $controller = "App\Http\Controllers\Super_Admin\\" . ucfirst($resource) . "Controller";
                 Route::get('/', [$controller, 'index'])->name('index');

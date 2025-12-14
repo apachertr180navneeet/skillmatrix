@@ -26,6 +26,7 @@
 			['route' => 'super.admin.sop.index', 'text' => 'SOP Management'],
 			['route' => 'super.admin.checklist.index', 'text' => 'Checklist Management'],
 			['route' => 'super.admin.video.index', 'text' => 'Video Management'],
+			['route' => 'super.admin.payment.index', 'text' => 'Payment Management'],
 		] as $mastermenu)
 			<li class="menu-item {{ request()->routeIs($mastermenu['route']) ? 'active' : '' }}">
 				<a href="{{ route($mastermenu['route']) }}" class="menu-link">
