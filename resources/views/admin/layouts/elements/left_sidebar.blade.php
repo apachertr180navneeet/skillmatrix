@@ -20,7 +20,7 @@
 			</a>
 		</li>
 		
-		{{--  @foreach([
+		@foreach([
 			['route' => 'super.admin.company.index', 'text' => 'Party Management'],
 			['route' => 'super.admin.user.index', 'text' => 'User Management'],
 			['route' => 'super.admin.sop.index', 'text' => 'SOP Management'],
@@ -37,6 +37,6 @@
 					<div data-i18n="{{ $mastermenu['text'] }}">{{ $mastermenu['text'] }}</div>
 				</a>
 			</li>
-		@endforeach  --}}
+		@endforeach
 	</ul>
 </aside>

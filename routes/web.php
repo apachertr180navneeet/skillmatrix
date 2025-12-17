@@ -3,12 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\HomeController;
 
-// Admin Controller
+// Super Admin Controller
 use App\Http\Controllers\Super_Admin\{
     CompanyController,
     UserController,
-    AdminAuthController,
-    AdminUserController,
+    SuperAdminAuthController,
     SopController,
     SopquesansController,
     ChecklistController,
@@ -17,6 +16,11 @@ use App\Http\Controllers\Super_Admin\{
     SubscriptionPlanController,
     CmsController,
     SettingController,
+};
+
+// Admin Controller
+use App\Http\Controllers\Admin\{
+    AdminAuthController,
 };
 
 /*
@@ -45,29 +49,29 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::prefix('super-admin')->name('super.admin.')->group(function () {
 
     // Auth Pages
-    Route::get('/', [AdminAuthController::class, 'index'])->name('index');
-    Route::get('login', [AdminAuthController::class, 'login'])->name('login');
-    Route::post('login', [AdminAuthController::class, 'postLogin'])->name('login.post');
+    Route::get('/', [SuperAdminAuthController::class, 'index'])->name('index');
+    Route::get('login', [SuperAdminAuthController::class, 'login'])->name('login');
+    Route::post('login', [SuperAdminAuthController::class, 'postLogin'])->name('login.post');
 
 
     // Forgot & Reset Password
-    Route::get('forget-password', [AdminAuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
-    Route::post('forget-password', [AdminAuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post');
-    Route::get('reset-password/{token}', [AdminAuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
-    Route::post('reset-password', [AdminAuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
+    Route::get('forget-password', [SuperAdminAuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+    Route::post('forget-password', [SuperAdminAuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post');
+    Route::get('reset-password/{token}', [SuperAdminAuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
+    Route::post('reset-password', [SuperAdminAuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 
     /*
     |--------------------------------------------------------------------------
-    | Protected Admin Routes
+    | Protected Super Admin Routes
     |--------------------------------------------------------------------------
     */
     Route::middleware(['super_admin'])->group(function () {
-        Route::get('dashboard', [AdminAuthController::class, 'adminDashboard'])->name('dashboard');
-        Route::get('change-password', [AdminAuthController::class, 'changePassword'])->name('change.password');
-        Route::post('update-password', [AdminAuthController::class, 'updatePassword'])->name('update.password');
-        Route::get('logout', [AdminAuthController::class, 'logout'])->name('logout');
-        Route::get('profile', [AdminAuthController::class, 'adminProfile'])->name('profile');
-        Route::post('profile', [AdminAuthController::class, 'updateAdminProfile'])->name('update.profile');
+        Route::get('dashboard', [SuperAdminAuthController::class, 'adminDashboard'])->name('dashboard');
+        Route::get('change-password', [SuperAdminAuthController::class, 'changePassword'])->name('change.password');
+        Route::post('update-password', [SuperAdminAuthController::class, 'updatePassword'])->name('update.password');
+        Route::get('logout', [SuperAdminAuthController::class, 'logout'])->name('logout');
+        Route::get('profile', [SuperAdminAuthController::class, 'adminProfile'])->name('profile');
+        Route::post('profile', [SuperAdminAuthController::class, 'updateAdminProfile'])->name('update.profile');
 
 
         // Master Route
@@ -96,6 +100,14 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
 
 });
 
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+| All admin related routes are grouped here
+|--------------------------------------------------------------------------
+*/
 Route::prefix('admin')->name('admin.')->group(function () {
 
     // Auth Pages

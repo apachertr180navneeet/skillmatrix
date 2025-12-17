@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
 
-class AdminAuthController extends Controller
+class SuperAdminAuthController extends Controller
 {
     
     public function index()
