@@ -2,29 +2,46 @@
 
 @section('style')
 <style>
-    .dashboard-card {
-        border: 2px solid #333;
-        border-radius: 14px;
-        padding: 22px 15px;
-        text-align: center;
-        height: 100%;
-        background: #fff;
-    }
-
-    .dashboard-card h6 {
+    .overview-title {
+        font-size: 18px;
         font-weight: 600;
-        margin-bottom: 6px;
+        margin-bottom: 15px;
     }
 
-    .dashboard-card p {
+    .stat-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        height: 100%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: #1e78d6;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .stat-content h6 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .stat-content p {
         margin: 0;
-        font-size: 14px;
-        font-weight: 500;
-    }
-
-    .dashboard-card .status {
         font-size: 13px;
-        margin-top: 4px;
+        color: #555;
     }
 </style>
 @endsection
@@ -33,72 +50,94 @@
 
 <div class="container-fluid flex-grow-1 container-p-y">
 
+    <!-- Welcome -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold">Welcome {{ Auth::user()->full_name }}!</h5>
+
+        <div class="d-flex gap-2">
+            <input type="text" class="form-control" placeholder="Search here...">
+            <button class="btn btn-primary px-4">Search</button>
+        </div>
+    </div>
+
+    <div class="overview-title">Overview</div>
+
     <div class="row g-4">
 
-        <!-- Row 1 -->
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total Admin Management</h6>
-                <p>Total: 50</p>
+        <!-- User -->
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bx bx-user"></i></div>
+                <div class="stat-content">
+                    <h6>User</h6>
+                    <p>18 users</p>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total User Management</h6>
-                <p>Total: 10</p>
+        <!-- Department -->
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bx bx-buildings"></i></div>
+                <div class="stat-content">
+                    <h6>Department</h6>
+                    <p>18 departments</p>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total Department Management</h6>
-                <p class="status">Active: 60</p>
-                <p class="status">In-Active: 40</p>
+        <!-- SOP -->
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bx bx-file"></i></div>
+                <div class="stat-content">
+                    <h6>SOP</h6>
+                    <p>18 sops</p>
+                </div>
             </div>
         </div>
 
-        <!-- Row 2 -->
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total SOP’s Management</h6>
-                <p>Total: 50</p>
+        <!-- Checklist -->
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bx bx-list-check"></i></div>
+                <div class="stat-content">
+                    <h6>Checklist</h6>
+                    <p>18 checklists</p>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total Check List Management</h6>
-                <p>Total: 50</p>
+        <!-- Video -->
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bx bx-video"></i></div>
+                <div class="stat-content">
+                    <h6>Video</h6>
+                    <p>18 videos</p>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total Videos Management</h6>
-                <p>Total: 50</p>
+        <!-- Q&A -->
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bx bx-help-circle"></i></div>
+                <div class="stat-content">
+                    <h6>Q &amp; A</h6>
+                    <p>18 Q&amp;A</p>
+                </div>
             </div>
         </div>
 
-        <!-- Row 3 -->
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total Q&A Management</h6>
-                <p>Total: 50</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total Result Management</h6>
-                <p>Total: 50</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="dashboard-card">
-                <h6>Total Subscription Plans</h6>
-                <p>Total: 50</p>
+        <!-- Result -->
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bx bx-bar-chart"></i></div>
+                <div class="stat-content">
+                    <h6>Result</h6>
+                    <p>18 results</p>
+                </div>
             </div>
         </div>
 
@@ -106,7 +145,4 @@
 
 </div>
 
-@endsection
-
-@section('script')
 @endsection

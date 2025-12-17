@@ -21,6 +21,7 @@ use App\Http\Controllers\Super_Admin\{
 // Admin Controller
 use App\Http\Controllers\Admin\{
     AdminAuthController,
+    SubscriptionController,
 };
 
 /*
@@ -134,6 +135,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('logout', [AdminAuthController::class, 'logout'])->name('logout');
         Route::get('profile', [AdminAuthController::class, 'adminProfile'])->name('profile');
         Route::post('profile', [AdminAuthController::class, 'updateAdminProfile'])->name('update.profile');
+        Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])->name('subscription');
 
     });
 
