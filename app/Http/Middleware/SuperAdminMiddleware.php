@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Auth;
 
-class AdminMiddleware
+class SuperAdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,7 @@ class AdminMiddleware
     {
         if(Auth::user()) {
             $user = Auth::user();
-            if($user->role == "admin") {
+            if($user->role == "super_admin") {
                 return $next($request);
             }else{
                 return redirect()->back();

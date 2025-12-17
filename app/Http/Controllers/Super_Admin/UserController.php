@@ -36,7 +36,7 @@ class UserController extends Controller
     public function getall(Request $request)
     {
         // Load department + company
-        $users = User::where('role', 'user')->with(['department', 'company'])->latest()->get();
+        $users = User::where('role', 'admin')->with(['department', 'company'])->latest()->get();
 
         return response()->json([
             'data' => $users,
@@ -114,9 +114,7 @@ class UserController extends Controller
             'email'         => $request->email,
             'phone'         => $request->phone,
             'city'          => $request->city,
-            'hod_name'      => $request->hod_name,
-            'hod_email'     => $request->hod_email,
-            'department_id' => $request->department_id ?? 0, // default 0
+            'role'          => 'admin',
             'company_id'    => $request->company_id ?? 0,    // default 0
             'status'        => 'active',
             'password'      => Hash::make($request->password),
@@ -185,10 +183,8 @@ class UserController extends Controller
             'email'         => $request->email,
             'phone'         => $request->phone,
             'city'          => $request->city,
-            'hod_name'      => $request->hod_name,
-            'hod_email'     => $request->hod_email,
-            'department_id' => $request->department_id ?? 0,
             'company_id'    => $request->company_id ?? 0,
+            'role'          => 'admin',
         ];
 
         // Only update password if given
