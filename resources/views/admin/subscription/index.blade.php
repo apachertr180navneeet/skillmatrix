@@ -56,9 +56,9 @@
         @foreach ($subcriptions as $subscription)
             <div class="col-lg-4 col-md-6">
                 <div class="plan-card text-center">
-                    <h4 class="plan-title">Basic Plan</h4>
+                    <h4 class="plan-title">{{ $subscription->plan_name }}</h4>
                     <p class="text-muted mb-1">Start at</p>
-                    <h2 class="plan-price">Rs.50</h2>
+                    <h2 class="plan-price">Rs.{{ $subscription->amount }}</h2>
                     <p class="text-muted">/ Month</p>
                 <button class="btn btn-dark w-100 mb-3">Buy Now</button>
             </div>

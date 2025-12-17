@@ -22,6 +22,7 @@ use App\Http\Controllers\Super_Admin\{
 use App\Http\Controllers\Admin\{
     AdminAuthController,
     SubscriptionController,
+    DepartmentController,
 };
 
 /*
@@ -136,6 +137,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('profile', [AdminAuthController::class, 'adminProfile'])->name('profile');
         Route::post('profile', [AdminAuthController::class, 'updateAdminProfile'])->name('update.profile');
         Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])->name('subscription');
+        Route::get('departments', [DepartmentController::class, 'index'])->name('departments.index');
+        Route::get('departments/getall', [DepartmentController::class, 'getall'])->name('departments.getall');
+        Route::post('departments/store', [DepartmentController::class, 'store'])->name('departments.store');
+        Route::get('departments/get/{id}', [DepartmentController::class, 'get'])->name('departments.get');
+        Route::post('departments/update', [DepartmentController::class, 'update'])->name('departments.update');
+        Route::post('departments/status', [DepartmentController::class, 'status'])->name('departments.status');
+        Route::delete('departments/delete/{id}', [DepartmentController::class, 'destroy'])->name('departments.delete');
+        Route::post('departments/bulk-delete', [DepartmentController::class, 'bulkDelete'])->name('departments.bulkDelete');
+        Route::post('departments/bulk-status', [DepartmentController::class, 'bulkStatus'])->name('departments.bulkStatus');
+
 
     });
 

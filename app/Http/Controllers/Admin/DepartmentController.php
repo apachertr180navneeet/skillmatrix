@@ -1,0 +1,181 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Department;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Exception;
+
+class DepartmentController extends Controller
+{
+    /**
+     * Department listing page
+     */
+    public function index()
+    {
+        return view('admin.department.index');
+    }
+
+    /**
+     * Get all departments (Company-wise)
+     */
+    public function getall()
+    {
+        $companyId = auth()->user()->company_id;
+
+        $departments = Department::where('company_id', $companyId)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'data' => $departments
+        ]);
+    }
+
+    /**
+     * Store new department
+     */
+    public function store(Request $request)
+    {
+        $rules = [
+            'department_name' => 'required|string|max:255|unique:departments,department_name,NULL,id,company_id,' . auth()->user()->company_id,
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        Department::create([
+            'company_id'      => auth()->user()->company_id,
+            'department_name' => $request->department_name,
+            'status'          => 1,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Department added successfully!'
+        ]);
+    }
+
+    /**
+     * Fetch single department (Company-wise)
+     */
+    public function get($id)
+    {
+        $department = Department::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
+
+        return response()->json($department);
+    }
+
+    /**
+     * Update department
+     */
+    public function update(Request $request)
+    {
+        $rules = [
+            'id'              => 'required|exists:departments,id',
+            'department_name' => 'required|string|max:255|unique:departments,department_name,' .
+                $request->id . ',id,company_id,' . auth()->user()->company_id,
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        $department = Department::where('id', $request->id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
+
+        $department->update([
+            'department_name' => $request->department_name,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Department updated successfully!'
+        ]);
+    }
+
+    /**
+     * Update status
+     */
+    public function status(Request $request)
+    {
+        try {
+            $department = Department::where('id', $request->departmentId)
+                ->where('company_id', auth()->user()->company_id)
+                ->firstOrFail();
+
+            $department->status = $request->status;
+            $department->save();
+
+            return response()->json(['success' => true]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Delete department
+     */
+    public function destroy($id)
+    {
+        try {
+            Department::where('id', $id)
+                ->where('company_id', auth()->user()->company_id)
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Department deleted successfully!'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function bulkStatus(Request $request)
+    {
+        Department::whereIn('id', $request->ids)
+            ->where('company_id', auth()->user()->company_id)
+            ->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status updated successfully!'
+        ]);
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        Department::whereIn('id', $request->ids)
+            ->where('company_id', auth()->user()->company_id)
+            ->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Selected departments deleted successfully!'
+        ]);
+    }
+
+}
