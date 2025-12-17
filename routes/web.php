@@ -65,7 +65,7 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
         Route::get('dashboard', [AdminAuthController::class, 'adminDashboard'])->name('dashboard');
         Route::get('change-password', [AdminAuthController::class, 'changePassword'])->name('change.password');
         Route::post('update-password', [AdminAuthController::class, 'updatePassword'])->name('update.password');
-        Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
+        Route::get('logout', [AdminAuthController::class, 'logout'])->name('logout');
         Route::get('profile', [AdminAuthController::class, 'adminProfile'])->name('profile');
         Route::post('profile', [AdminAuthController::class, 'updateAdminProfile'])->name('update.profile');
 

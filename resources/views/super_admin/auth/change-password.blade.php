@@ -1,4 +1,4 @@
-@extends('admin.layouts.app') 
+@extends('super_admin.layouts.app') 
 @section('content')
 <div class="container-fluid flex-grow-1 container-p-y">
     <h5 class="py-2 mb-2">
@@ -9,7 +9,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.update.password') }}" method="POST">
+                    <form action="{{ route('super.admin.update.password') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="mb-3">
