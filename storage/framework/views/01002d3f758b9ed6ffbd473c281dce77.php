@@ -1,6 +1,6 @@
-@extends('admin.layouts.app')
 
-@section('style')
+
+<?php $__env->startSection('style'); ?>
 <style>
     .top-actions button { margin-left: 6px; }
 
@@ -33,9 +33,9 @@
         margin-top: 8px;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid flex-grow-1 container-p-y">
 
     <!-- ================= TOP ACTION BUTTONS ================= -->
@@ -50,14 +50,14 @@
     <!-- ================= SUGGESTED SOP ================= -->
     <h5 class="mb-3">Suggestions SOP</h5>
     <div class="row g-3 mb-5">
-        @for ($i = 1; $i <= 4; $i++)
+        <?php for($i = 1; $i <= 4; $i++): ?>
             <div class="col-md-3">
                 <div class="sop-card">
                     <div class="sop-box"></div>
-                    <div class="sop-title">SOP {{ $i }}</div>
+                    <div class="sop-title">SOP <?php echo e($i); ?></div>
                 </div>
             </div>
-        @endfor
+        <?php endfor; ?>
     </div>
 
     <!-- ================= CREATED SOP ================= -->
@@ -71,7 +71,7 @@
     <div class="row g-3" id="sopContainer"></div>
 </div>
 
-{{-- ================= CREATE SOP MODAL ================= --}}
+
 <div class="modal fade" id="createModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -108,7 +108,7 @@
     </div>
 </div>
 
-{{-- ================= EDIT SOP MODAL ================= --}}
+
 <div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -146,15 +146,15 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
 <script>
 $(document).ready(function () {
 
     /* ================= LOAD DEPARTMENTS ================= */
     function loadDepartments() {
-        $.get("{{ route('admin.departments.getall') }}", function (res) {
+        $.get("<?php echo e(route('admin.departments.getall')); ?>", function (res) {
 
             let options = `<option value="">Select Department</option>`;
             res.data.forEach(dep => {
@@ -170,7 +170,7 @@ $(document).ready(function () {
 
     /* ================= LOAD SOP CARDS ================= */
     function loadSops(department_id = '') {
-        $.get("{{ route('admin.sop.getall') }}", function (res) {
+        $.get("<?php echo e(route('admin.sop.getall')); ?>", function (res) {
 
             let html = '';
 
@@ -210,8 +210,8 @@ $(document).ready(function () {
 
     /* ================= CREATE SOP ================= */
     $('#saveSop').click(function () {
-        $.post("{{ route('admin.sop.store') }}", {
-            _token: "{{ csrf_token() }}",
+        $.post("<?php echo e(route('admin.sop.store')); ?>", {
+            _token: "<?php echo e(csrf_token()); ?>",
             department_id: $('#department_id').val(),
             title: $('#title').val(),
             description: $('#description').val()
@@ -224,7 +224,7 @@ $(document).ready(function () {
 
     /* ================= EDIT SOP ================= */
     window.editSop = function (id) {
-        $.get("{{ url('admin/sop/get') }}/" + id, function (res) {
+        $.get("<?php echo e(url('admin/sop/get')); ?>/" + id, function (res) {
             $('#edit_id').val(res.id);
             $('#edit_department_id').val(res.department_id);
             $('#edit_title').val(res.title);
@@ -235,8 +235,8 @@ $(document).ready(function () {
 
     /* ================= UPDATE SOP ================= */
     $('#updateSop').click(function () {
-        $.post("{{ route('admin.sop.update') }}", {
-            _token: "{{ csrf_token() }}",
+        $.post("<?php echo e(route('admin.sop.update')); ?>", {
+            _token: "<?php echo e(csrf_token()); ?>",
             id: $('#edit_id').val(),
             department_id: $('#edit_department_id').val(),
             title: $('#edit_title').val(),
@@ -250,9 +250,11 @@ $(document).ready(function () {
 
     /* ================= ADD Q&A ================= */
     window.addQA = function (id) {
-        window.location.href = "{{ url('admin/sop') }}/" + id + "/questions";
+        window.location.href = "<?php echo e(url('admin/sop')); ?>/" + id + "/questions";
     };
 
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/admin/layouts/elements/left_sidebar.blade.php ENDPATH**/ ?>

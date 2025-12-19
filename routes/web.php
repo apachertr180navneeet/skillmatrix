@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\{
     SubscriptionController,
     DepartmentController,
     UserController as AdminUserController,
+    SopController as AdminSopController,
 };
 
 /*
@@ -166,11 +167,23 @@ Route::prefix('admin')
                 Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
                 Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
             });
+
+            /* Sops */
+            Route::prefix('sops')->name('sop.')->controller(AdminSopController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('getall', 'getall')->name('getall');
+                Route::post('store', 'store')->name('store');
+                Route::get('get/{id}', 'get')->name('get');
+                Route::post('update', 'update')->name('update');
+                Route::post('status', 'status')->name('status');
+                Route::delete('delete/{id}', 'destroy')->name('delete');
+                Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
+                Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
+            });
         });
     });
 
 /*
-|--------------------------------------------------------------------------
 | Authenticated Frontend Users
 |--------------------------------------------------------------------------
 */
