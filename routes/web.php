@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\{
     AdminAuthController,
     SubscriptionController,
     DepartmentController,
+    UserController as AdminUserController,
 };
 
 /*
@@ -107,58 +108,72 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
 |--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
-| All admin related routes are grouped here
-|--------------------------------------------------------------------------
 */
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')
+    ->name('admin.')
+    ->controller(AdminAuthController::class)
+    ->group(function () {
 
-    // Auth Pages
-    Route::get('/', [AdminAuthController::class, 'index'])->name('index');
-    Route::get('login', [AdminAuthController::class, 'login'])->name('login');
-    Route::post('login', [AdminAuthController::class, 'postLogin'])->name('login.post');
+        /* Auth */
+        Route::get('/', 'index')->name('index');
+        Route::get('login', 'login')->name('login');
+        Route::post('login', 'postLogin')->name('login.post');
 
+        /* Password */
+        Route::get('forget-password', 'showForgetPasswordForm')->name('forget.password.get');
+        Route::post('forget-password', 'submitForgetPasswordForm')->name('forget.password.post');
+        Route::get('reset-password/{token}', 'showResetPasswordForm')->name('reset.password.get');
+        Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
 
-    // Forgot & Reset Password
-    Route::get('forget-password', [AdminAuthController::class, 'showForgetPasswordForm'])->name('forget.password.get');
-    Route::post('forget-password', [AdminAuthController::class, 'submitForgetPasswordForm'])->name('forget.password.post');
-    Route::get('reset-password/{token}', [AdminAuthController::class, 'showResetPasswordForm'])->name('reset.password.get');
-    Route::post('reset-password', [AdminAuthController::class, 'submitResetPasswordForm'])->name('reset.password.post');
+        /*
+        |--------------------------------------------------------------------------
+        | Protected Admin
+        |--------------------------------------------------------------------------
+        */
+        Route::middleware('admin')->group(function () {
 
-    /*
-    |--------------------------------------------------------------------------
-    | Protected Admin Routes
-    |--------------------------------------------------------------------------
-    */
-    Route::middleware(['admin'])->group(function () {
-        Route::get('dashboard', [AdminAuthController::class, 'adminDashboard'])->name('dashboard');
-        Route::get('change-password', [AdminAuthController::class, 'changePassword'])->name('change.password');
-        Route::post('update-password', [AdminAuthController::class, 'updatePassword'])->name('update.password');
-        Route::get('logout', [AdminAuthController::class, 'logout'])->name('logout');
-        Route::get('profile', [AdminAuthController::class, 'adminProfile'])->name('profile');
-        Route::post('profile', [AdminAuthController::class, 'updateAdminProfile'])->name('update.profile');
-        Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])->name('subscription');
-        Route::get('departments', [DepartmentController::class, 'index'])->name('departments.index');
-        Route::get('departments/getall', [DepartmentController::class, 'getall'])->name('departments.getall');
-        Route::post('departments/store', [DepartmentController::class, 'store'])->name('departments.store');
-        Route::get('departments/get/{id}', [DepartmentController::class, 'get'])->name('departments.get');
-        Route::post('departments/update', [DepartmentController::class, 'update'])->name('departments.update');
-        Route::post('departments/status', [DepartmentController::class, 'status'])->name('departments.status');
-        Route::delete('departments/delete/{id}', [DepartmentController::class, 'destroy'])->name('departments.delete');
-        Route::post('departments/bulk-delete', [DepartmentController::class, 'bulkDelete'])->name('departments.bulkDelete');
-        Route::post('departments/bulk-status', [DepartmentController::class, 'bulkStatus'])->name('departments.bulkStatus');
+            Route::get('dashboard', 'adminDashboard')->name('dashboard');
+            Route::get('change-password', 'changePassword')->name('change.password');
+            Route::post('update-password', 'updatePassword')->name('update.password');
+            Route::get('logout', 'logout')->name('logout');
+            Route::get('profile', 'adminProfile')->name('profile');
+            Route::post('profile', 'updateAdminProfile')->name('update.profile');
 
+            Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])->name('subscription');
 
+            /* Departments */
+            Route::prefix('departments')->name('departments.')->controller(DepartmentController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('getall', 'getall')->name('getall');
+                Route::post('store', 'store')->name('store');
+                Route::get('get/{id}', 'get')->name('get');
+                Route::post('update', 'update')->name('update');
+                Route::post('status', 'status')->name('status');
+                Route::delete('delete/{id}', 'destroy')->name('delete');
+                Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
+                Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
+            });
+
+            /* Users */
+            Route::prefix('users')->name('user.')->controller(AdminUserController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('getall', 'getall')->name('getall');
+                Route::post('store', 'store')->name('store');
+                Route::get('get/{id}', 'get')->name('get');
+                Route::post('update', 'update')->name('update');
+                Route::post('status', 'status')->name('status');
+                Route::delete('delete/{id}', 'destroy')->name('delete');
+                Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
+                Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
+            });
+        });
     });
-
-});
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated User Routes (Frontend Users)
+| Authenticated Frontend Users
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
-
-    // Add user-protected routes here
-
+Route::middleware('auth')->group(function () {
+    // frontend protected routes
 });
