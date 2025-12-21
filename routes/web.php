@@ -171,14 +171,15 @@ Route::prefix('admin')
             /* Sops */
             Route::prefix('sops')->name('sop.')->controller(AdminSopController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('getall', 'getall')->name('getall');
+                Route::get('create', 'create')->name('create');
                 Route::post('store', 'store')->name('store');
-                Route::get('get/{id}', 'get')->name('get');
-                Route::post('update', 'update')->name('update');
-                Route::post('status', 'status')->name('status');
-                Route::delete('delete/{id}', 'destroy')->name('delete');
-                Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
-                Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
+
+                Route::get('/{id}/edit','edit')->name('edit');
+                Route::put('/{id}', 'update')->name('update');
+                Route::delete('/{id}', 'destroy')->name('destroy');
+                /* ================= SOP Q&A ================= */
+                Route::get('/{id}/qa/create','create')->name('qa.create');
+                Route::post('/{id}/qa/store', 'store')->name('qa.store');
             });
         });
     });

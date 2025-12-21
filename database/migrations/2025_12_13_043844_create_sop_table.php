@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('party_id');
             $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('is_suggestion', ['0', '1'])->default('0');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -18,6 +18,8 @@ class Sop extends Model
         'party_id',
         'status',
         'sop_upload',
+        'is_suggestion',
+        'description',
     ];
 
     protected $casts = [
