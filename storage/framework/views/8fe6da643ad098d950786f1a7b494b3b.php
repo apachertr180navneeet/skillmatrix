@@ -1,9 +1,9 @@
-@extends('super_admin.layouts.app')
 
-@section('style')
-@endsection
 
-@section('content')
+<?php $__env->startSection('style'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid flex-grow-1 container-p-y">
 
     <!-- Page Header -->
@@ -14,9 +14,7 @@
             </h5>
         </div>
         <div class="col-md-6 text-end">
-            {{--  <a href="" class="btn btn-primary">
-                Add SOP
-            </a>  --}}
+            
         </div>
     </div>
 
@@ -42,16 +40,16 @@
     </div>
 
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
 <script>
 $(document).ready(function () {
 
     $('#sopTable').DataTable({
         processing: true,
         serverSide: false,
-        ajax: "{{ route('super.admin.sop.getall') }}",
+        ajax: "<?php echo e(route('super.admin.sop.getall')); ?>",
         columns: [
 
             // SOP Title
@@ -118,4 +116,6 @@ $(document).ready(function () {
 
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('super_admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/super_admin/sop/index.blade.php ENDPATH**/ ?>

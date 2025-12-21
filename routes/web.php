@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\{
     DepartmentController,
     UserController as AdminUserController,
     SopController as AdminSopController,
+    SopQuesAnsController as AdminSopQuesAnsController,
 };
 
 /*
@@ -180,6 +181,13 @@ Route::prefix('admin')
                 /* ================= SOP Q&A ================= */
                 Route::get('/{id}/qa/create','create')->name('qa.create');
                 Route::post('/{id}/qa/store', 'store')->name('qa.store');
+            });
+
+
+            Route::prefix('sops')->name('sop.')->controller(AdminSopQuesAnsController::class)->group(function () {
+                /* ================= SOP Q&A ================= */
+                Route::get('/{id}/qa/create','create')->name('qa.create');
+                Route::post('/qa/store', 'store')->name('qa.store');
             });
         });
     });
