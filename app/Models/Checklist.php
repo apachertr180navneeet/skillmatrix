@@ -17,6 +17,7 @@ class Checklist extends Model
         'title',
         'description',
         'file',
+        'is_suggestion'
     ];
 
     protected $dates = [

@@ -1,7 +1,7 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 	<div class="app-brand demo">
 		<a href="{{route('super.admin.dashboard')}}" class="app-brand-link">
-			<span class="app-brand-text demo menu-text fw-bold ms-2 text-capitalize">Super Admin</span>
+			<span class="app-brand-text demo menu-text fw-bold ms-2 text-capitalize">Admin</span>
 		</a>
 
 		<a href="javascript:void(0);"
@@ -25,6 +25,8 @@
 			['route' => 'admin.departments.index', 'text' => 'Departments'],
 			['route' => 'admin.user.index', 'text' => 'User Management'],
 			['route' => 'admin.sop.index', 'text' => 'SOP Management'],
+			['route' => 'admin.checklist.index', 'text' => 'Checklist Management'],
+			['route' => 'admin.video.index', 'text' => 'Video Management'],
 		] as $mastermenu)
 			<li class="menu-item {{ request()->routeIs($mastermenu['route']) ? 'active' : '' }}">
 				<a href="{{ route($mastermenu['route']) }}" class="menu-link">

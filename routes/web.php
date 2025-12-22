@@ -1,7 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\{
+    HomeController,
+    AuthController,
+    SopController as WebSopController,
+    ChecklistController as WebChecklistController,
+    VideoController as WebVideoController,
+};
 
 // Super Admin Controller
 use App\Http\Controllers\Super_Admin\{
@@ -26,6 +32,9 @@ use App\Http\Controllers\Admin\{
     UserController as AdminUserController,
     SopController as AdminSopController,
     SopQuesAnsController as AdminSopQuesAnsController,
+    ChecklistController as AdminChecklistController,
+    VideoController as AdminVideoController,
+    VideoQuesAnsController as AdminVideoQuesAnsController,
 };
 
 /*
@@ -178,14 +187,39 @@ Route::prefix('admin')
                 Route::get('/{id}/edit','edit')->name('edit');
                 Route::put('/{id}', 'update')->name('update');
                 Route::delete('/{id}', 'destroy')->name('destroy');
-                /* ================= SOP Q&A ================= */
-                Route::get('/{id}/qa/create','create')->name('qa.create');
-                Route::post('/{id}/qa/store', 'store')->name('qa.store');
             });
 
 
             Route::prefix('sops')->name('sop.')->controller(AdminSopQuesAnsController::class)->group(function () {
                 /* ================= SOP Q&A ================= */
+                Route::get('/{id}/qa/create','create')->name('qa.create');
+                Route::post('/qa/store', 'store')->name('qa.store');
+            });
+
+            /* Checklists */
+            Route::prefix('checklists')->name('checklist.')->controller(AdminChecklistController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('create', 'create')->name('create');
+                Route::post('store', 'store')->name('store');
+
+                Route::get('/{id}/edit','edit')->name('edit');
+                Route::put('/{id}', 'update')->name('update');
+                Route::delete('/{id}', 'destroy')->name('destroy');
+            });
+
+            /* Videos */
+            Route::prefix('videos')->name('video.')->controller(AdminVideoController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('create', 'create')->name('create');
+                Route::post('store', 'store')->name('store');
+
+                Route::get('/{id}/edit','edit')->name('edit');
+                Route::put('/{id}', 'update')->name('update');
+                Route::delete('/{id}', 'destroy')->name('destroy');
+            });
+
+            Route::prefix('videos')->name('video.')->controller(AdminVideoQuesAnsController::class)->group(function () {
+                /* ================= Video Q&A ================= */
                 Route::get('/{id}/qa/create','create')->name('qa.create');
                 Route::post('/qa/store', 'store')->name('qa.store');
             });
@@ -196,6 +230,51 @@ Route::prefix('admin')
 | Authenticated Frontend Users
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
-    // frontend protected routes
-});
+
+/*
+|--------------------------------------------------------------------------
+| Frontend User Routes
+|--------------------------------------------------------------------------
+| URL Prefix: /user
+| Route Name Prefix: user.
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('user')
+    ->name('user.')
+    ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Guest Routes (Not Logged In)
+        |--------------------------------------------------------------------------
+        */
+        Route::middleware('guest')->group(function () {
+            Route::get('/login', [AuthController::class, 'login'])->name('login');
+            Route::post('/login', [AuthController::class, 'postLogin'])->name('login.post');
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Authenticated User Routes
+        |--------------------------------------------------------------------------
+        */
+        Route::middleware('auth')->group(function () {
+
+            Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+            Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+            Route::get('change-password', [AuthController::class, 'changePassword'])->name('change.password');
+            Route::post('update-password', [AuthController::class, 'updatePassword'])->name('update.password');
+            Route::get('profile', [AuthController::class, 'adminProfile'])->name('profile');
+            Route::post('profile', [AuthController::class, 'updateAdminProfile'])->name('update.profile');
+            Route::get('sop', [WebSopController::class, 'sop'])->name('sop');
+            Route::get('/sop/{id}/qa', [WebSopController::class, 'qa'])->name('sop.qa');
+            Route::post('/sop/qa', [WebSopController::class, 'qaSubmit'])->name('sop.qa.submit');
+            Route::get('checklist', [WebChecklistController::class, 'index'])->name('checklist');
+            Route::get('/video', [WebVideoController::class, 'video'])->name('video');
+            Route::get('/video/{id}/qa', [WebVideoController::class, 'qa'])->name('video.qa');
+            Route::post('/video/qa', [WebVideoController::class, 'qaSubmit'])->name('video.qa.submit');
+        });
+    });
+
+

@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('title');
             $table->unsignedBigInteger('department_id');
             $table->unsignedBigInteger('party_id');
+            $table->text('description')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->enum('is_suggestion', ['0', '1'])->default('0');
             $table->timestamps();
