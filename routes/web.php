@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\{
     VideoController as AdminVideoController,
     VideoQuesAnsController as AdminVideoQuesAnsController,
     SopResultController as AdminSopResultController,
+    VideoResultController as AdminVideoResultController,
 };
 
 /*
@@ -228,6 +229,12 @@ Route::prefix('admin')
 
             Route::prefix('sop-results')->name('sop.result.')->controller(AdminSopResultController::class)->group(function () {
                 /* ================= SOP Results ================= */
+                Route::get('/','index')->name('index');
+                Route::get('/{id}/view','view')->name('view');
+            });
+
+            Route::prefix('video-results')->name('video.result.')->controller(AdminVideoResultController::class)->group(function () {
+                /* ================= Video Results ================= */
                 Route::get('/','index')->name('index');
                 Route::get('/{id}/view','view')->name('view');
             });
