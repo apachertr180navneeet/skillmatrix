@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\{
     ChecklistController as AdminChecklistController,
     VideoController as AdminVideoController,
     VideoQuesAnsController as AdminVideoQuesAnsController,
+    SopResultController as AdminSopResultController,
 };
 
 /*
@@ -222,6 +223,13 @@ Route::prefix('admin')
                 /* ================= Video Q&A ================= */
                 Route::get('/{id}/qa/create','create')->name('qa.create');
                 Route::post('/qa/store', 'store')->name('qa.store');
+            });
+
+
+            Route::prefix('sop-results')->name('sop.result.')->controller(AdminSopResultController::class)->group(function () {
+                /* ================= SOP Results ================= */
+                Route::get('/','index')->name('index');
+                Route::get('/{id}/view','view')->name('view');
             });
         });
     });
