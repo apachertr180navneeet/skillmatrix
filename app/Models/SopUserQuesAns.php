@@ -17,6 +17,7 @@ class SopUserQuesAns extends Model
         'user_id',
         'ques_id',
         'answere',
+        'company_id',
     ];
 
     protected $dates = ['deleted_at'];

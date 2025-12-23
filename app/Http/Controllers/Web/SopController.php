@@ -45,20 +45,22 @@ class SopController extends Controller
     public function qaSubmit(Request $request)
     {
         $userId = auth()->user()->id;
+        $companyId = auth()->user()->company_id;
         $sopId  = $request->sop_id;
 
         // ---------------- SAVE USER ANSWERS ----------------
         foreach ($request->ques_id as $quesId) {
             $answer = $request->answers[$quesId] ?? null;
 
-            SopUserQuesAns::updateOrCreate(
+            SopUserQuesAns::Create(
                 [
                     'sop_id'  => $sopId,
                     'user_id' => $userId,
                     'ques_id' => $quesId,
-                ],
-                [
+                    'company_id' => $companyId,
                     'answere' => $answer,
+                    'sop_id'  => $sopId,
+                    'user_id' => $userId,
                 ]
             );
         }
@@ -94,17 +96,16 @@ class SopController extends Controller
         $resultStatus = $percentage >= 60 ? 'pass' : 'fail';
 
         // ---------------- STORE FINAL RESULT ----------------
-        SopUserResult::updateOrCreate(
+        SopUserResult::Create(
             [
-                'sop_id'  => $sopId,
-                'user_id' => $userId,
-            ],
-            [
+                'sop_id'         => $sopId,
+                'user_id'        => $userId,
                 'total_questions' => $totalQuestions,
                 'correct_answers' => $correctCount,
                 'wrong_answers'   => $wrongCount,
                 'result'          => $percentage,
                 'result_status'   => $resultStatus,
+                'company_id' => $companyId,
             ]
         );
 

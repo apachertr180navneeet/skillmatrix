@@ -51,14 +51,13 @@ class VideoController extends Controller
 
             $answer = $request->answers[$quesId] ?? null;
 
-            VideoUserQuesAns::updateOrCreate(
+            VideoUserQuesAns::Create(
                 [
                     'vedio_id' => $videoId,
                     'user_id'  => $userId,
                     'ques_id'  => $quesId,
-                ],
-                [
                     'answere' => $answer,
+                    'company_id' => auth()->user()->company_id,
                 ]
             );
         }
@@ -94,12 +93,11 @@ class VideoController extends Controller
         $resultStatus = $percentage >= 60 ? 'pass' : 'fail';
 
         // ---------------- STORE FINAL RESULT ----------------
-        VideoUserResult::updateOrCreate(
+        VideoUserResult::Create(
             [
                 'vedio_id' => $videoId,
                 'user_id'  => $userId,
-            ],
-            [
+                'company_id' => auth()->user()->company_id,
                 'total_questions' => $totalQuestions,
                 'correct_answers' => $correctCount,
                 'wrong_answers'   => $wrongCount,

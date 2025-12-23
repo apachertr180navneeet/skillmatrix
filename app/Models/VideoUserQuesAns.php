@@ -17,6 +17,7 @@ class VideoUserQuesAns extends Model
         'user_id',
         'ques_id',
         'answere',
+        'company_id'
     ];
 
     /* ================= RELATIONSHIPS ================= */

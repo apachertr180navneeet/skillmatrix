@@ -20,6 +20,7 @@ class VideoUserResult extends Model
         'total_questions',
         'correct_answers',
         'wrong_answers',
+        'company_id'
     ];
 
     /* ================= RELATIONSHIPS ================= */
