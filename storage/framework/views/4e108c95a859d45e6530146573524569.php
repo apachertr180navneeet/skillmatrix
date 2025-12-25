@@ -1,7 +1,7 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 	<div class="app-brand demo">
 		<a href="<?php echo e(route('super.admin.dashboard')); ?>" class="app-brand-link">
-			<span class="app-brand-text demo menu-text fw-bold ms-2 text-capitalize">Admin</span>
+			<span class="app-brand-text demo menu-text fw-bold ms-2 text-capitalize">User Panel</span>
 		</a>
 
 		<a href="javascript:void(0);"
@@ -24,6 +24,8 @@
 			['route' => 'user.sop', 'text' => 'SOP'],
 			['route' => 'user.checklist', 'text' => 'Checklist'],
 			['route' => 'user.video', 'text' => 'Video'],
+			['route' => 'user.sop.results', 'text' => 'SOP Results'],
+			['route' => 'user.video.results', 'text' => 'Video Results'],
 		]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mastermenu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 			<li class="menu-item <?php echo e(request()->routeIs($mastermenu['route']) ? 'active' : ''); ?>">
 				<a href="<?php echo e(route($mastermenu['route'])); ?>" class="menu-link">

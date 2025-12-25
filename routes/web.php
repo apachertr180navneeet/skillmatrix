@@ -7,6 +7,8 @@ use App\Http\Controllers\Web\{
     SopController as WebSopController,
     ChecklistController as WebChecklistController,
     VideoController as WebVideoController,
+    VideoResultController as WebVideoResultController,
+    SopResultController as WebSopResultController,
 };
 
 // Super Admin Controller
@@ -289,7 +291,22 @@ Route::prefix('user')
             Route::get('/video', [WebVideoController::class, 'video'])->name('video');
             Route::get('/video/{id}/qa', [WebVideoController::class, 'qa'])->name('video.qa');
             Route::post('/video/qa', [WebVideoController::class, 'qaSubmit'])->name('video.qa.submit');
+            Route::get('/sop-results', [WebSopResultController::class, 'sopResults'])->name('sop.results');
+            Route::get('/sop-results/{id}/view', [WebSopResultController::class, 'view'])->name('sop.result.view');
+            Route::get('/video-results', [WebVideoResultController::class, 'videoResults'])->name('video.results');
+            Route::get('/video-results/{id}/view', [WebVideoResultController::class, 'view'])->name('video.result.view');
         });
     });
 
 
+    Route::prefix('sop-results')->name('sop.result.')->controller(AdminSopResultController::class)->group(function () {
+                /* ================= SOP Results ================= */
+                Route::get('/','index')->name('index');
+                Route::get('/{id}/view','view')->name('view');
+            });
+
+            Route::prefix('video-results')->name('video.result.')->controller(AdminVideoResultController::class)->group(function () {
+                /* ================= Video Results ================= */
+                Route::get('/','index')->name('index');
+                Route::get('/{id}/view','view')->name('view');
+            });
