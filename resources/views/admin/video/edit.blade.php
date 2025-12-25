@@ -18,6 +18,7 @@
     }
     .is-invalid { border-color: #dc3545 !important; }
     .invalid-feedback { font-size: 12px; color: #dc3545; }
+    .radio-group { display: flex; gap: 20px; margin-top: 6px; }
 </style>
 @endsection
 
@@ -28,7 +29,6 @@
         <form action="{{ route('admin.video.update', $video->id) }}"
               method="POST"
               enctype="multipart/form-data">
-
             @csrf
             @method('PUT')
 
@@ -58,17 +58,45 @@
                 @error('department_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
-            <!-- VIDEO FILE -->
+            <!-- VIDEO SOURCE -->
             <div class="mb-4">
-                <label class="form-label">Video Upload</label>
+                <label class="form-label">Video Source</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="is_link" value="yes"
+                            {{ old('is_link', $video->is_link) === 'yes' ? 'checked' : '' }}>
+                        Video Link
+                    </label>
+
+                    <label>
+                        <input type="radio" name="is_link" value="no"
+                            {{ old('is_link', $video->is_link) === 'no' ? 'checked' : '' }}>
+                        Upload Video
+                    </label>
+                </div>
+            </div>
+
+            <!-- VIDEO LINK -->
+            <div class="mb-4 d-none" id="videoLinkBox">
+                <label class="form-label">Video Link</label>
+                <input type="text"
+                       name="video_link"
+                       value="{{ old('video_link', $video->video_link) }}"
+                       class="form-control @error('video_link') is-invalid @enderror">
+                @error('video_link') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            </div>
+
+            <!-- VIDEO UPLOAD -->
+            <div class="mb-4" id="videoUploadBox">
+                <label class="form-label">Upload Video</label>
                 <input type="file"
                        name="video_upload"
                        class="form-control @error('video_upload') is-invalid @enderror">
 
-                @if($video->video_upload)
+                @if($video->is_link === 'no' && $video->video_file)
                     <div class="mt-2">
                         Current Video:
-                        <a href="{{ asset($video->video_file) }}" target="_blank">View</a>
+                        <a href="{{ $video->video_file }}" target="_blank">View</a>
                     </div>
                 @endif
 
@@ -78,25 +106,26 @@
             <!-- DESCRIPTION -->
             <div class="mb-4">
                 <label class="form-label">Description</label>
-                <textarea name="description"
-                          rows="4"
+                <textarea name="description" rows="4"
                           class="form-control">{{ old('description', $video->description) }}</textarea>
             </div>
 
             <!-- IS SUGGESTION -->
             <div class="mb-4">
-                <label class="form-label">Is Suggestion</label><br>
-                <label>
-                    <input type="radio" name="is_suggestion" value="1"
-                        {{ old('is_suggestion', $video->is_suggestion) == 1 ? 'checked' : '' }}>
-                    Yes
-                </label>
-                &nbsp;&nbsp;
-                <label>
-                    <input type="radio" name="is_suggestion" value="0"
-                        {{ old('is_suggestion', $video->is_suggestion) == 0 ? 'checked' : '' }}>
-                    No
-                </label>
+                <label class="form-label">Is Suggestion</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="is_suggestion" value="1"
+                            {{ old('is_suggestion', $video->is_suggestion) == 1 ? 'checked' : '' }}>
+                        Yes
+                    </label>
+
+                    <label>
+                        <input type="radio" name="is_suggestion" value="0"
+                            {{ old('is_suggestion', $video->is_suggestion) == 0 ? 'checked' : '' }}>
+                        No
+                    </label>
+                </div>
             </div>
 
             <!-- SUBMIT -->
@@ -107,4 +136,35 @@
         </form>
     </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const radios = document.querySelectorAll('input[name="is_link"]');
+    const linkBox = document.getElementById('videoLinkBox');
+    const uploadBox = document.getElementById('videoUploadBox');
+
+    function toggleFields(value) {
+        if (value === 'yes') {
+            linkBox.classList.remove('d-none');
+            uploadBox.classList.add('d-none');
+        } else {
+            uploadBox.classList.remove('d-none');
+            linkBox.classList.add('d-none');
+        }
+    }
+
+    // On page load
+    const checked = document.querySelector('input[name="is_link"]:checked');
+    if (checked) toggleFields(checked.value);
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            toggleFields(this.value);
+        });
+    });
+});
+</script>
 @endsection

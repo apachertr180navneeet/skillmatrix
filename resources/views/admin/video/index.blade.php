@@ -84,8 +84,11 @@
         @forelse ($videosuggestions as $videosuggestion)
             <div class="col-md-3">
                 <div class="sop-card">
-                    <a href="{{ $videosuggestion->video_file }}" target="_blank"
-                       style="text-decoration:none;color:inherit;">
+                    <a href="{{ $videosuggestion->is_link === 'yes'
+                                ? $videosuggestion->video_link
+                                : $videosuggestion->video_file }}"
+                        target="_blank"
+                        style="text-decoration:none;color:inherit;">
                         <div class="sop-box"></div>
                         <div class="sop-title">{{ $videosuggestion->title }}</div>
 
@@ -138,8 +141,11 @@
             <div class="col-md-3">
                 <div class="sop-card">
 
-                    <a href="{{ $video->video_file }}" target="_blank"
-                       style="text-decoration:none;color:inherit;">
+                    <a href="{{ $video->is_link === 'yes'
+                            ? $video->video_link
+                            : $video->video_file }}"
+                    target="_blank"
+                    style="text-decoration:none;color:inherit;">
                         <div class="sop-box"></div>
                         <div class="sop-title">{{ $video->title }}</div>
                     </a>

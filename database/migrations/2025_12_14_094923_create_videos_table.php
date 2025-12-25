@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('title');
             $table->unsignedBigInteger('party_id');
             $table->unsignedBigInteger('department_id');
-            $table->string('video_file');
+            $table->string('video_file')->nullable();
             $table->text('description')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->enum('is_suggestion', ['0', '1'])->default('0');

@@ -53,40 +53,38 @@ class VideoController extends Controller
      */
     public function store(Request $request)
     {
-        $companyId = auth()->user()->company_id;
 
-        // ---------------- VALIDATION ----------------
-        $validator = Validator::make($request->all(), [
-            'title'         => 'required|string|max:255',
-            'department_id' => 'nullable|exists:departments,id',
-            'video_upload'    => 'required|file',
-            'description'   => 'nullable|string',
-            'is_suggestion' => 'required|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
+        
         try {
+            
+            $companyId = auth()->user()->company_id;
+            // ---------------- VALIDATION ----------------
+            $request->validate([
+                'title'         => 'required|string|max:255',
+                'department_id' => 'nullable|exists:departments,id',
+                'is_link'       => 'required|in:yes,no',
+                'video_link'    => 'required_if:is_link,yes|nullable|url',
+                'video_upload'  => 'required_if:is_link,no|nullable|file',
+                'description'   => 'nullable|string',
+                'is_suggestion' => 'required|boolean',
+            ]);
 
-            // ---------------- FILE UPLOAD ----------------
-            $fileUrl = null;
+            $videoFileUrl = null;
+            $videoLinkUrl = null;
 
-            if ($request->hasFile('video_upload')) {
+            // ---------------- IF UPLOAD ----------------
+            if ($request->is_link === 'no' && $request->hasFile('video_upload')) {
 
                 $file = $request->file('video_upload');
-
-                // Example: video_1700000000.mp4
                 $fileName = 'video_' . time() . '.' . $file->getClientOriginalExtension();
-
-                // Store in storage/app/public/video
                 $filePath = $file->storeAs('video', $fileName, 'public');
 
-                // Generate FULL public URL
-                $fileUrl = asset('storage/' . $filePath);
+                $videoFileUrl = asset('storage/' . $filePath);
+            }
+
+            // ---------------- IF LINK ----------------
+            if ($request->is_link === 'yes') {
+                $videoLinkUrl = $request->video_link;
             }
 
             // ---------------- CREATE VIDEO ----------------
@@ -94,7 +92,9 @@ class VideoController extends Controller
                 'title'         => $request->title,
                 'department_id' => $request->department_id ?? 0,
                 'description'   => $request->description,
-                'video_file'  => $fileUrl,      // full URL
+                'video_file'    => $videoFileUrl,
+                'video_link'    => $videoLinkUrl,
+                'is_link'       => $request->is_link,
                 'is_suggestion' => $request->is_suggestion,
                 'party_id'      => $companyId,
             ]);
@@ -103,10 +103,8 @@ class VideoController extends Controller
                 ->with('success', 'Video created successfully.');
 
         } catch (\Exception $e) {
-
-            return redirect()->back()
-                ->with('error', 'Something went wrong: ' . $e->getMessage())
-                ->withInput();
+            dd($e);
+            return back()->with('error', $e->getMessage())->withInput();
         }
     }
 
@@ -137,7 +135,11 @@ class VideoController extends Controller
         $validated = $request->validate([
             'title'         => 'required|string|max:255',
             'department_id' => 'nullable|exists:departments,id',
-            'video_upload'  => 'nullable|file', // 50MB
+
+            'is_link'       => 'required|in:yes,no',
+            'video_link'    => 'required_if:is_link,yes|nullable|url',
+            'video_upload'  => 'required_if:is_link,no|nullable|file|mimes:mp4,mov,avi',
+
             'description'   => 'nullable|string',
             'is_suggestion' => 'required|boolean',
         ]);
@@ -151,25 +153,48 @@ class VideoController extends Controller
                 ->where('party_id', $companyId)
                 ->firstOrFail();
 
-            /* -------------------------------------------------
-            VIDEO FILE UPLOAD
-            ------------------------------------------------- */
-            if ($request->hasFile('video_upload')) {
+            $videoFileUrl = $video->video_file; // keep old
+            $videoLinkUrl = $video->video_link; // keep old
 
-                // Delete old video if exists
-                if ($video->video_upload) {
-                    $oldPath = str_replace(asset('storage/'), '', $video->video_upload);
+            /* -------------------------------------------------
+            HANDLE VIDEO SOURCE
+            ------------------------------------------------- */
+
+            // ---------- UPLOAD VIDEO ----------
+            if ($validated['is_link'] === 'no') {
+
+                // If new file uploaded
+                if ($request->hasFile('video_upload')) {
+
+                    // Delete old file if exists
+                    if ($video->video_file) {
+                        $oldPath = str_replace(asset('storage/'), '', $video->video_file);
+                        Storage::disk('public')->delete($oldPath);
+                    }
+
+                    $file = $request->file('video_upload');
+                    $fileName = 'video_' . time() . '.' . $file->getClientOriginalExtension();
+                    $filePath = $file->storeAs('videos', $fileName, 'public');
+
+                    $videoFileUrl = asset('storage/' . $filePath);
+                }
+
+                // Clear link
+                $videoLinkUrl = null;
+            }
+
+            // ---------- VIDEO LINK ----------
+            if ($validated['is_link'] === 'yes') {
+
+                $videoLinkUrl = $validated['video_link'];
+
+                // Delete old uploaded file if exists
+                if ($video->video_file) {
+                    $oldPath = str_replace(asset('storage/'), '', $video->video_file);
                     Storage::disk('public')->delete($oldPath);
                 }
 
-                $file = $request->file('video_upload');
-                $fileName = 'video_' . time() . '.' . $file->getClientOriginalExtension();
-
-                // Store in storage/app/public/videos
-                $filePath = $file->storeAs('videos', $fileName, 'public');
-
-                // Save public URL
-                $video->video_file = asset('storage/' . $filePath);
+                $videoFileUrl = null;
             }
 
             /* -------------------------------------------------
@@ -179,6 +204,11 @@ class VideoController extends Controller
                 'title'         => $validated['title'],
                 'department_id' => $validated['department_id'] ?? null,
                 'description'   => $validated['description'] ?? null,
+
+                'is_link'       => $validated['is_link'],
+                'video_file'    => $videoFileUrl,
+                'video_link'    => $videoLinkUrl,
+
                 'is_suggestion' => $validated['is_suggestion'],
             ]);
 

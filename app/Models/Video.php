@@ -17,6 +17,8 @@ class Video extends Model
         'party_id',
         'department_id',
         'video_file',
+        'video_link',
+        'is_link',
         'description',
         'is_suggestion',
         'status',

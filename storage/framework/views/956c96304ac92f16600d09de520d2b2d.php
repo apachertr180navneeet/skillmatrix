@@ -84,8 +84,11 @@
         <?php $__empty_1 = true; $__currentLoopData = $videosuggestions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $videosuggestion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <div class="col-md-3">
                 <div class="sop-card">
-                    <a href="<?php echo e($videosuggestion->video_file); ?>" target="_blank"
-                       style="text-decoration:none;color:inherit;">
+                    <a href="<?php echo e($videosuggestion->is_link === 'yes'
+                                ? $videosuggestion->video_link
+                                : $videosuggestion->video_file); ?>"
+                        target="_blank"
+                        style="text-decoration:none;color:inherit;">
                         <div class="sop-box"></div>
                         <div class="sop-title"><?php echo e($videosuggestion->title); ?></div>
 
@@ -139,8 +142,11 @@
             <div class="col-md-3">
                 <div class="sop-card">
 
-                    <a href="<?php echo e($video->video_file); ?>" target="_blank"
-                       style="text-decoration:none;color:inherit;">
+                    <a href="<?php echo e($video->is_link === 'yes'
+                            ? $video->video_link
+                            : $video->video_file); ?>"
+                    target="_blank"
+                    style="text-decoration:none;color:inherit;">
                         <div class="sop-box"></div>
                         <div class="sop-title"><?php echo e($video->title); ?></div>
                     </a>
