@@ -39,22 +39,22 @@
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total Admin Management</h6>
-                <p>Total: 50</p>
+                <p>Total: {{ $adminCount }}</p>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total User Management</h6>
-                <p>Total: 10</p>
+                <p>Total: {{ $userCount }}</p>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total Department Management</h6>
-                <p class="status">Active: 60</p>
-                <p class="status">In-Active: 40</p>
+                <p class="status">Active: {{ $departmentStats->active }}</p>
+                <p class="status">In-Active: {{ $departmentStats->inactive }}</p>
             </div>
         </div>
 
@@ -62,21 +62,21 @@
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total SOP’s Management</h6>
-                <p>Total: 50</p>
+                <p>Total: {{ $sopcount }}</p>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total Check List Management</h6>
-                <p>Total: 50</p>
+                <p>Total: {{ $checklistCount }}</p>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total Videos Management</h6>
-                <p>Total: 50</p>
+                <p>Total: {{ $videoCount }}</p>
             </div>
         </div>
 
@@ -84,14 +84,14 @@
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total Q&A Management</h6>
-                <p>Total: 50</p>
+                <p>Total: {{ $totalquesans }}</p>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total Result Management</h6>
-                <p>Total: 50</p>
+                <p>Total: {{ $totalresult }}</p>
             </div>
         </div>
 

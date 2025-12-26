@@ -5,7 +5,17 @@ namespace App\Http\Controllers\Super_Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\{
+    User,
+    Department,
+    Sop,
+    Checklist,
+    Video,
+    SopQuesAns,
+    VedioQuesans,
+    SopUserResult,
+    VideoUserResult
+};
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
@@ -269,7 +279,41 @@ class SuperAdminAuthController extends Controller
 
     public function adminDashboard()
     {
-        return view("super_admin.dashboard.index");
+        $adminCount = User::where('role', 'admin')
+            ->where('status', 'active')
+            ->count();
+
+        $userCount = User::where('role', 'user')
+            ->where('status', 'active')
+            ->count();
+
+        $departmentStats = Department::selectRaw("
+            COUNT(*) as total,
+            SUM(status = 'active') as active,
+            SUM(status = 'inactive') as inactive
+        ")->first();
+
+
+        $sopcount = Sop::where('status', 'active')->count();
+
+        $checklistCount = Checklist::where('status', 'active')->count();
+
+        $videoCount = Video::where('status', 'active')->count();
+
+        $sopquesansCount = SopQuesAns::count();
+
+        $videoquesansCount = VedioQuesans::count();
+        
+        $totalquesans = $sopquesansCount + $videoquesansCount;
+
+
+        $sopresult = SopUserResult::count();
+        $vidresult = VideoUserResult::count();
+
+        $totalresult = $sopresult + $vidresult;
+
+
+        return view("super_admin.dashboard.index", compact('adminCount', 'userCount', 'departmentStats', 'sopcount', 'checklistCount', 'videoCount', 'totalquesans', 'totalresult'));
     }
 
 
