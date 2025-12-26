@@ -24,6 +24,7 @@ use App\Http\Controllers\Super_Admin\{
     SubscriptionPlanController,
     CmsController,
     SettingController,
+    DepartmentController as SuperAdminDepartmentController,
 };
 
 // Admin Controller
@@ -113,6 +114,12 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
                 }
             });
         }
+
+        /* Departments */
+            Route::prefix('departments')->name('departments.')->controller(SuperAdminDepartmentController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('getall', 'getall')->name('getall');
+            });
 
     });
 
@@ -267,6 +274,7 @@ Route::prefix('user')
         |--------------------------------------------------------------------------
         */
         Route::middleware('guest')->group(function () {
+            Route::get('/', [AuthController::class, 'login'])->name('login');
             Route::get('/login', [AuthController::class, 'login'])->name('login');
             Route::post('/login', [AuthController::class, 'postLogin'])->name('login.post');
         });

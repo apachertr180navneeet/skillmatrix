@@ -23,6 +23,7 @@
 		<?php $__currentLoopData = [
 			['route' => 'super.admin.company.index', 'text' => 'Party Management'],
 			['route' => 'super.admin.user.index', 'text' => 'User Management'],
+			['route' => 'super.admin.departments.index', 'text' => 'Department Management'],
 			['route' => 'super.admin.sop.index', 'text' => 'SOP Management'],
 			['route' => 'super.admin.checklist.index', 'text' => 'Checklist Management'],
 			['route' => 'super.admin.video.index', 'text' => 'Video Management'],
