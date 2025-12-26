@@ -6,24 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('subscription_plan', function (Blueprint $table) {
-            $table->integer('duration')
-                  ->comment('Duration in days')
-                  ->after('amount');
-
-            $table->integer('user')
-                  ->comment('Number of users allowed')
-                  ->after('duration');
+            $table->text('description')->nullable()->after('user');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('subscription_plan', function (Blueprint $table) {
-            $table->dropColumn(['duration', 'user']);
+            $table->dropColumn('description');
         });
     }
 };
-

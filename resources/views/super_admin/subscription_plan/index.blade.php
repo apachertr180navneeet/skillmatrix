@@ -25,6 +25,9 @@
                         <tr>
                             <th>Plan Name</th>
                             <th>Amount</th>
+                            <th>Duration (Days)</th>
+                            <th>Users</th>
+                            <th>Description</th>
                             <th>Status</th>
                             <th width="150">Action</th>
                         </tr>
@@ -51,13 +54,28 @@
                 <div class="row">
 
                     <div class="col-md-12 mb-3">
-                        <label class="form-label">Plan Name</label>
+                        <label>Plan Name</label>
                         <input type="text" id="plan_name" class="form-control">
                     </div>
 
                     <div class="col-md-12 mb-3">
-                        <label class="form-label">Amount</label>
+                        <label>Amount</label>
                         <input type="number" id="amount" class="form-control">
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Duration (Days)</label>
+                        <input type="number" id="duration" class="form-control">
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Users Allowed</label>
+                        <input type="number" id="user" class="form-control">
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Description</label>
+                        <textarea id="description" class="form-control"></textarea>
                     </div>
 
                 </div>
@@ -96,6 +114,21 @@
                         <input type="number" id="edit_amount" class="form-control">
                     </div>
 
+                    <div class="col-md-12 mb-3">
+                        <label>Duration (Days)</label>
+                        <input type="number" id="edit_duration" class="form-control">
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Users Allowed</label>
+                        <input type="number" id="edit_user" class="form-control">
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Description</label>
+                        <textarea id="edit_description" class="form-control"></textarea>
+                    </div>
+
                 </div>
             </div>
 
@@ -119,6 +152,9 @@ $(document).ready(function () {
         columns: [
             { data: 'plan_name' },
             { data: 'amount' },
+            { data: 'duration' },
+            { data: 'user' },
+            { data: 'description' },
             {
                 data: 'status',
                 render: function (data, type, row) {
@@ -126,9 +162,9 @@ $(document).ready(function () {
                     return `
                         <div class="form-check form-switch">
                             <input class="form-check-input changeStatus"
-                                   type="checkbox"
-                                   data-id="${row.id}"
-                                   ${checked}>
+                                type="checkbox"
+                                data-id="${row.id}"
+                                ${checked}>
                         </div>
                     `;
                 }
@@ -145,44 +181,45 @@ $(document).ready(function () {
         ]
     });
 
-    // Add Plan
     $('#AddPlan').click(function () {
-
         $.post("{{ route('super.admin.subscriptionPlan.store') }}", {
             _token: "{{ csrf_token() }}",
             plan_name: $('#plan_name').val(),
             amount: $('#amount').val(),
-            status: $('#status').val()
+            duration: $('#duration').val(),
+            user: $('#user').val(),
+            description: $('#description').val()
         }, function (res) {
             if (res.success) {
                 $('#addModal').modal('hide');
-                $('#addModal').find('input,select').val('');
+                $('#addModal').find('input,textarea').val('');
                 table.ajax.reload();
                 Toast.fire({ icon: 'success', title: res.message });
             }
         });
     });
 
-    // Edit Plan
     window.editPlan = function (id) {
         $.get("{{ url('super-admin/subscriptionPlan/get') }}/" + id, function (data) {
             $('#editid').val(data.id);
             $('#edit_plan_name').val(data.plan_name);
             $('#edit_amount').val(data.amount);
-            $('#edit_status').val(data.status);
+            $('#edit_duration').val(data.duration);
+            $('#edit_user').val(data.user);
+            $('#edit_description').val(data.description);
             $('#editModal').modal('show');
         });
     };
 
-    // Update Plan
     $('#EditPlan').click(function () {
-
         $.post("{{ route('super.admin.subscriptionPlan.update') }}", {
             _token: "{{ csrf_token() }}",
             id: $('#editid').val(),
             plan_name: $('#edit_plan_name').val(),
             amount: $('#edit_amount').val(),
-            status: $('#edit_status').val()
+            duration: $('#edit_duration').val(),
+            user: $('#edit_user').val(),
+            description: $('#edit_description').val()
         }, function (res) {
             if (res.success) {
                 $('#editModal').modal('hide');
@@ -192,7 +229,6 @@ $(document).ready(function () {
         });
     });
 
-    // Delete Plan
     window.deletePlan = function (id) {
         if (confirm('Are you sure?')) {
             $.ajax({
@@ -209,17 +245,11 @@ $(document).ready(function () {
         }
     };
 
-    // Status change
     $(document).on('change', '.changeStatus', function () {
-
         $.post("{{ route('super.admin.subscriptionPlan.status') }}", {
             _token: "{{ csrf_token() }}",
             planId: $(this).data('id'),
             status: $(this).is(':checked') ? 'active' : 'inactive'
-        }, function (res) {
-            if (res.success) {
-                Toast.fire({ icon: 'success', title: 'Status updated!' });
-            }
         });
     });
 

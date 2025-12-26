@@ -31,7 +31,7 @@ class SubscriptionPlanController extends Controller
     }
 
     /**
-     * Update status (active / inactive) from table switch.
+     * Update status (active / inactive).
      */
     public function status(Request $request)
     {
@@ -70,13 +70,16 @@ class SubscriptionPlanController extends Controller
     }
 
     /**
-     * Store new subscription plan (Add modal).
+     * Store new subscription plan.
      */
     public function store(Request $request)
     {
         $rules = [
-            'plan_name' => 'required|string|max:191',
-            'amount'    => 'required|numeric|min:0',
+            'plan_name'   => 'required|string|max:191',
+            'amount'      => 'required|numeric|min:0',
+            'duration'    => 'required|integer|min:1',
+            'user'        => 'required|integer|min:1',
+            'description' => 'nullable|string',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -89,8 +92,12 @@ class SubscriptionPlanController extends Controller
         }
 
         SubscriptionPlan::create([
-            'plan_name' => $request->plan_name,
-            'amount'    => $request->amount,
+            'plan_name'   => $request->plan_name,
+            'amount'      => $request->amount,
+            'duration'    => $request->duration,
+            'user'        => $request->user,
+            'description' => $request->description,
+            'status'      => 'active',
         ]);
 
         return response()->json([
@@ -105,19 +112,21 @@ class SubscriptionPlanController extends Controller
     public function get($id)
     {
         $plan = SubscriptionPlan::findOrFail($id);
-
         return response()->json($plan);
     }
 
     /**
-     * Update subscription plan (Edit modal).
+     * Update subscription plan.
      */
     public function update(Request $request)
     {
         $rules = [
-            'id'        => 'required|integer|exists:subscription_plan,id',
-            'plan_name' => 'required|string|max:191',
-            'amount'    => 'required|numeric|min:0',
+            'id'          => 'required|integer|exists:subscription_plan,id',
+            'plan_name'   => 'required|string|max:191',
+            'amount'      => 'required|numeric|min:0',
+            'duration'    => 'required|integer|min:1',
+            'user'        => 'required|integer|min:1',
+            'description' => 'nullable|string',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -132,8 +141,11 @@ class SubscriptionPlanController extends Controller
         $plan = SubscriptionPlan::findOrFail($request->id);
 
         $plan->update([
-            'plan_name' => $request->plan_name,
-            'amount'    => $request->amount,
+            'plan_name'   => $request->plan_name,
+            'amount'      => $request->amount,
+            'duration'    => $request->duration,
+            'user'        => $request->user,
+            'description' => $request->description,
         ]);
 
         return response()->json([
