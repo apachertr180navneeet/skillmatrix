@@ -110,7 +110,10 @@
                 <div class="video-card">
 
                     <!-- VIDEO PREVIEW -->
-                    <a href="{{ $video->video_file }}" target="_blank">
+                    <a href="{{ $video->is_link === 'yes'
+                                ? $video->video_link
+                                : $video->video_file }}"
+                        target="_blank">
                         <div class="video-preview">
                             ▶ Play Video
                         </div>
