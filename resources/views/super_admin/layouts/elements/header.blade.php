@@ -58,13 +58,13 @@
 						<div class="dropdown-divider"></div>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{{route('admin.profile')}}">
+						<a class="dropdown-item" href="{{route('super.admin.profile')}}">
 							<i class="bx bx-user me-2"></i>
 							<span class="align-middle">My Profile</span>
 						</a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{{route('admin.change.password')}}">
+						<a class="dropdown-item" href="{{route('super.admin.change.password')}}">
 							<i class="bx bx-key me-2"></i>
 							<span class="align-middle">Change Password</span>
 						</a>
@@ -73,7 +73,7 @@
 						<div class="dropdown-divider"></div>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{{route('admin.logout')}}">
+						<a class="dropdown-item" href="{{route('super.admin.logout')}}">
 							<i class="bx bx-power-off me-2"></i>
 							<span class="align-middle">Log Out</span>
 						</a>
