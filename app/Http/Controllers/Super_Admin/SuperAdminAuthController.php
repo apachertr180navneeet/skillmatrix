@@ -14,7 +14,8 @@ use App\Models\{
     SopQuesAns,
     VedioQuesans,
     SopUserResult,
-    VideoUserResult
+    VideoUserResult,
+    SubscriptionPlan
 };
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -312,8 +313,10 @@ class SuperAdminAuthController extends Controller
 
         $totalresult = $sopresult + $vidresult;
 
+        $subcriptionPlans = SubscriptionPlan::where('status', 'active')->count();
 
-        return view("super_admin.dashboard.index", compact('adminCount', 'userCount', 'departmentStats', 'sopcount', 'checklistCount', 'videoCount', 'totalquesans', 'totalresult'));
+
+        return view("super_admin.dashboard.index", compact('adminCount', 'userCount', 'departmentStats', 'sopcount', 'checklistCount', 'videoCount', 'totalquesans', 'totalresult','subcriptionPlans'));
     }
 
 

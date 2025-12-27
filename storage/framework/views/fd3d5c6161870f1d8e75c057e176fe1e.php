@@ -98,7 +98,7 @@
         <div class="col-md-4">
             <div class="dashboard-card">
                 <h6>Total Subscription Plans</h6>
-                <p>Total: 50</p>
+                <p>Total: <?php echo e($subcriptionPlans); ?></p>
             </div>
         </div>
 

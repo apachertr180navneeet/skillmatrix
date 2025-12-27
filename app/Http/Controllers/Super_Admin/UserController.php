@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{Company, User, Department};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Exception;
 
@@ -97,7 +98,7 @@ class UserController extends Controller
             'hod_email'     => 'nullable|email|max:191',
             'department_id' => 'nullable|integer|exists:departments,id',
             'company_id'    => 'nullable|integer|exists:companies,id',
-            'password'      => 'required|string|min:6|confirmed', // password + password_confirmation
+            'password'      => 'required|string|min:6|confirmed',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -109,24 +110,56 @@ class UserController extends Controller
             ], 422);
         }
 
-        $data = [
-            'full_name'          => $request->name,
-            'email'         => $request->email,
-            'phone'         => $request->phone,
-            'city'          => $request->city,
-            'role'          => 'admin',
-            'company_id'    => $request->company_id ?? 0,    // default 0
-            'status'        => 'active',
-            'password'      => Hash::make($request->password),
-        ];
+        // Store plain password for email
+        $plainPassword = $request->password;
 
-        User::create($data);
+        // Create user
+        $user = User::create([
+            'full_name'  => $request->name,
+            'email'      => $request->email,
+            'phone'      => $request->phone,
+            'city'       => $request->city,
+            'role'       => 'admin',
+            'company_id' => $request->company_id ?? 0,
+            'status'     => 'active',
+            'password'   => Hash::make($plainPassword),
+        ]);
+
+        // Admin login link (route based)
+        $loginUrl = route('admin.login');
+
+        // ✅ SEND EMAIL (FIXED)
+        Mail::send([], [], function ($message) use ($user, $plainPassword, $loginUrl) {
+            $message->to($user->email)
+                ->subject('Your Admin Login Details')
+                ->html("
+                    <h2>Welcome to Admin Panel</h2>
+                    <p>Your admin account has been created successfully.</p>
+
+                    <p><strong>Email:</strong> {$user->email}</p>
+                    <p><strong>Password:</strong> {$plainPassword}</p>
+
+                    <p>
+                        <a href='{$loginUrl}'
+                        style='background:#1e78d6;color:#ffffff;
+                        padding:10px 16px;text-decoration:none;
+                        border-radius:5px;display:inline-block;'>
+                            Admin Login
+                        </a>
+                    </p>
+
+                    <p><strong>Login URL:</strong><br>{$loginUrl}</p>
+
+                    <p>Please change your password after first login.</p>
+                ");
+        });
 
         return response()->json([
             'success' => true,
-            'message' => 'User created successfully!',
+            'message' => 'User created and login email sent successfully!',
         ]);
     }
+
 
     /**
      * Fetch single user for edit modal.
