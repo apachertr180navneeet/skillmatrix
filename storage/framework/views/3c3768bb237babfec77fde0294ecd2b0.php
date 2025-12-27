@@ -108,9 +108,35 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('script'); ?>
+
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
 <script>
 $(document).ready(function () {
 
+    let addEditor, editEditor;
+
+    // ================= CKEDITOR INIT =================
+    ClassicEditor
+        .create(document.querySelector('#description'))
+        .then(editor => {
+            addEditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.querySelector('#edit_description'))
+        .then(editor => {
+            editEditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    // ================= DATATABLE =================
     const table = $('#cmsTable').DataTable({
         processing: true,
         ajax: "<?php echo e(route('super.admin.cms.getall')); ?>",
@@ -142,40 +168,41 @@ $(document).ready(function () {
         ]
     });
 
-    // Add CMS
+    // ================= ADD CMS =================
     $('#addCms').click(function () {
         $.post("<?php echo e(route('super.admin.cms.store')); ?>", {
             _token: "<?php echo e(csrf_token()); ?>",
             title: $('#title').val(),
-            description: $('#description').val(),
+            description: addEditor.getData(),
             status: 'active'
         }, function (res) {
             if (res.success) {
                 $('#addModal').modal('hide');
-                $('#addModal').find('input, textarea').val('');
+                $('#title').val('');
+                addEditor.setData('');
                 table.ajax.reload();
                 Toast.fire({ icon: 'success', title: res.message });
             }
         });
     });
 
-    // Edit CMS
+    // ================= EDIT CMS =================
     window.editCms = function (id) {
         $.get("<?php echo e(url('super-admin/cms/get')); ?>/" + id, function (data) {
             $('#edit_id').val(data.id);
             $('#edit_title').val(data.title);
-            $('#edit_description').val(data.description);
+            editEditor.setData(data.description ?? '');
             $('#editModal').modal('show');
         });
     };
 
-    // Update CMS
+    // ================= UPDATE CMS =================
     $('#updateCms').click(function () {
         $.post("<?php echo e(route('super.admin.cms.update')); ?>", {
             _token: "<?php echo e(csrf_token()); ?>",
             id: $('#edit_id').val(),
             title: $('#edit_title').val(),
-            description: $('#edit_description').val(),
+            description: editEditor.getData(),
             status: 'active'
         }, function (res) {
             if (res.success) {
@@ -186,7 +213,7 @@ $(document).ready(function () {
         });
     });
 
-    // Delete CMS
+    // ================= DELETE CMS =================
     window.deleteCms = function (id) {
         if (confirm('Are you sure?')) {
             $.ajax({
@@ -203,7 +230,7 @@ $(document).ready(function () {
         }
     };
 
-    // Status toggle
+    // ================= STATUS TOGGLE =================
     $(document).on('change', '.changeStatus', function () {
         $.post("<?php echo e(route('super.admin.cms.status')); ?>", {
             _token: "<?php echo e(csrf_token()); ?>",
