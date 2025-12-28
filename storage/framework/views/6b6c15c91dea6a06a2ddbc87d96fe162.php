@@ -70,7 +70,7 @@
                 <div class="stat-icon"><i class="bx bx-user"></i></div>
                 <div class="stat-content">
                     <h6>User</h6>
-                    <p>18 users</p>
+                    <p><?php echo e($userCount); ?> users</p>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@
                 <div class="stat-icon"><i class="bx bx-buildings"></i></div>
                 <div class="stat-content">
                     <h6>Department</h6>
-                    <p>18 departments</p>
+                    <p><?php echo e($departmentCount); ?> departments</p>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
                 <div class="stat-icon"><i class="bx bx-file"></i></div>
                 <div class="stat-content">
                     <h6>SOP</h6>
-                    <p>18 sops</p>
+                    <p><?php echo e($sopCount); ?> sops</p>
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@
                 <div class="stat-icon"><i class="bx bx-list-check"></i></div>
                 <div class="stat-content">
                     <h6>Checklist</h6>
-                    <p>18 checklists</p>
+                    <p><?php echo e($checklistCount); ?> checklists</p>
                 </div>
             </div>
         </div>
@@ -114,7 +114,7 @@
                 <div class="stat-icon"><i class="bx bx-video"></i></div>
                 <div class="stat-content">
                     <h6>Video</h6>
-                    <p>18 videos</p>
+                    <p><?php echo e($videoCount); ?> videos</p>
                 </div>
             </div>
         </div>
@@ -125,7 +125,7 @@
                 <div class="stat-icon"><i class="bx bx-help-circle"></i></div>
                 <div class="stat-content">
                     <h6>Q &amp; A</h6>
-                    <p>18 Q&amp;A</p>
+                    <p><?php echo e($sopQuestionCount + $videoQuestionCount); ?> Q&amp;A</p>
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
                 <div class="stat-icon"><i class="bx bx-bar-chart"></i></div>
                 <div class="stat-content">
                     <h6>Result</h6>
-                    <p>18 results</p>
+                    <p><?php echo e($sopResultTotal + $videoResultTotal); ?> results</p>
                 </div>
             </div>
         </div>

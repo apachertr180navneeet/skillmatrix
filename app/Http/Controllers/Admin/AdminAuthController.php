@@ -5,7 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\{
+    User,
+    Department,
+    Sop,
+    Video,
+    Checklist,
+    SopQuesAns,
+    VedioQuesans,
+    SopUserResult,
+    VideoUserResult
+};
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
@@ -250,7 +260,58 @@ class AdminAuthController extends Controller
 
     public function adminDashboard()
     {
-        return view("admin.dashboard.index");
+        $companyid = Auth::user()->company_id;
+
+        $userCount = User::where('role','user')->where('status', 'active')->where('company_id', $companyid)->count();
+
+        $departmentCount = Department::where('company_id', $companyid)->where('status', 'active')->count();
+
+        $sopCount = Sop::where('party_id', $companyid)->where('status', 'active')->count();
+
+        $checklistCount = Checklist::where('party_id', $companyid)->where('status', 'active')->count();
+
+        $videoCount = Video::where('party_id', $companyid)->where('status', 'active')->count();
+
+        // ✅ SOP Question Count
+        $sopQuestionCount = SopQuesAns::whereIn(
+            'sop_id',
+            Sop::where('party_id', $companyid)
+                ->where('status', 'active')
+                ->pluck('id')
+        )->count();
+
+        // ✅ Video Question Count
+        $videoQuestionCount = VedioQuesans::whereIn(
+            'video_id',
+            Video::where('party_id', $companyid)
+                ->where('status', 'active')
+                ->pluck('id')
+        )->count();
+
+
+        // ---------------- SOP RESULT COUNTS ----------------
+            $sopResultTotal = SopUserResult::where('company_id', $companyid)->count();
+
+            $sopResultPass = SopUserResult::where('company_id', $companyid)
+                ->where('result_status', 'pass')
+                ->count();
+
+            $sopResultFail = SopUserResult::where('company_id', $companyid)
+                ->where('result_status', 'fail')
+                ->count();
+
+            // ---------------- VIDEO RESULT COUNTS ----------------
+            $videoResultTotal = VideoUserResult::where('company_id', $companyid)->count();
+
+            $videoResultPass = VideoUserResult::where('company_id', $companyid)
+                ->where('result_status', 'pass')
+                ->count();
+
+            $videoResultFail = VideoUserResult::where('company_id', $companyid)
+                ->where('result_status', 'fail')
+                ->count();
+
+        return view("admin.dashboard.index", compact("userCount", "departmentCount", "sopCount", "checklistCount", "videoCount", "sopQuestionCount", "videoQuestionCount", "sopResultTotal", "sopResultPass", "sopResultFail", "videoResultTotal", "videoResultPass", "videoResultFail"));
     }
 
 
