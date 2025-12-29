@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\{
+    User,
+    SubscriptionPlan,
+    UserSubscription,
+};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -11,42 +15,87 @@ use Exception;
 
 class UserController extends Controller
 {
-    /**
-     * User listing page
-     */
     public function index()
     {
         return view('admin.user.index');
     }
 
-    /**
-     * Get all users (Company-wise)
-     */
     public function getall()
     {
         $companyId = auth()->user()->company_id;
 
-        $users = User::with('department')->where('company_id', $companyId)
+        $users = User::with('department')
+            ->where('company_id', $companyId)
             ->where('role', 'user')
             ->latest()
             ->get();
 
-        return response()->json([
-            'data' => $users
-        ]);
+        return response()->json(['data' => $users]);
     }
 
-    /**
-     * Store new user
-     */
     public function store(Request $request)
     {
+        $companyId = auth()->user()->company_id;
+
+        /* =====================================================
+        STEP 1: GET ACTIVE SUBSCRIPTION
+        ===================================================== */
+        $userSubscription = UserSubscription::where('company_id', $companyId)
+            ->where('status', 'active')
+            ->first();
+
+        if (!$userSubscription) {
+            return response()->json([
+                'success' => false,
+                'errors' => [
+                    'plan' => ['No active subscription found. Please subscribe to a plan.']
+                ]
+            ], 422);
+        }
+
+        /* =====================================================
+        STEP 2: GET PLAN & USER LIMIT
+        ===================================================== */
+        $plan = SubscriptionPlan::where('id', $userSubscription->subscription_plan_id)->first();
+
+        if (!$plan || !$plan->user) {
+            return response()->json([
+                'success' => false,
+                'errors' => [
+                    'plan' => ['Subscription plan configuration error.']
+                ]
+            ], 422);
+        }
+
+        $allowedUsers = (int) $plan->user;
+
+        /* =====================================================
+        STEP 3: COUNT EXISTING USERS
+        ===================================================== */
+        $currentUserCount = User::where('company_id', $companyId)
+            ->where('role', 'user')
+            ->count();
+
+        if ($currentUserCount == $allowedUsers) {
+            return response()->json([
+                'success' => false,
+                'errors' => [
+                    'plan' => [
+                        "User limit reached. Your plan allows only {$allowedUsers} users."
+                    ]
+                ]
+            ], 422);
+        }
+
+        /* =====================================================
+        STEP 4: VALIDATION
+        ===================================================== */
         $rules = [
             'name'          => 'required|string|max:255',
             'department_id' => 'required|exists:departments,id',
             'hod_name'      => 'required|string|max:255',
             'hod_email'     => 'required|email|max:255',
-            'phone'         => 'required|digits_between:10,15',
+            'phone'         => 'required|numeric|digits_between:10,11|unique:users,phone',
             'password'      => 'required|min:6',
         ];
 
@@ -59,14 +108,19 @@ class UserController extends Controller
             ], 422);
         }
 
+        /* =====================================================
+        STEP 5: CREATE USER
+        ===================================================== */
         User::create([
-            'company_id'    => auth()->user()->company_id,
-            'full_name'          => $request->name,
+            'company_id'    => $companyId,
+            'role'          => 'user',
+            'full_name'     => $request->name,
             'department_id' => $request->department_id,
             'hod_name'      => $request->hod_name,
             'hod_email'     => $request->hod_email,
             'phone'         => $request->phone,
             'password'      => Hash::make($request->password),
+            'status'        => 'active',
         ]);
 
         return response()->json([
@@ -75,21 +129,15 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Fetch single user
-     */
+    /* ================= GET SINGLE ================= */
     public function get($id)
     {
-        $user = User::where('id', $id)
+        return User::where('id', $id)
             ->where('company_id', auth()->user()->company_id)
             ->firstOrFail();
-
-        return response()->json($user);
     }
 
-    /**
-     * Update user
-     */
+    /* ================= UPDATE ================= */
     public function update(Request $request)
     {
         $rules = [
@@ -98,7 +146,7 @@ class UserController extends Controller
             'department_id' => 'required|exists:departments,id',
             'hod_name'      => 'required|string|max:255',
             'hod_email'     => 'required|email|max:255',
-            'phone'         => 'required|digits_between:10,15',
+            'phone'         => 'required|numeric|digits_between:10,11|unique:users,phone,' . $request->id,
         ];
 
         if ($request->filled('password')) {
@@ -110,7 +158,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors'  => $validator->errors(),
+                'errors'  => $validator->errors()
             ], 422);
         }
 
@@ -119,7 +167,7 @@ class UserController extends Controller
             ->firstOrFail();
 
         $data = [
-            'full_name'          => $request->name,
+            'full_name'     => $request->name,
             'department_id' => $request->department_id,
             'hod_name'      => $request->hod_name,
             'hod_email'     => $request->hod_email,
@@ -138,48 +186,27 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Update status
-     */
+    /* ================= STATUS ================= */
     public function status(Request $request)
     {
-        try {
-            $user = User::where('id', $request->userId)
-                ->where('company_id', auth()->user()->company_id)
-                ->firstOrFail();
+        User::where('id', $request->userId)
+            ->where('company_id', auth()->user()->company_id)
+            ->update(['status' => $request->status]);
 
-            $user->status = $request->status;
-            $user->save();
-
-            return response()->json(['success' => true]);
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
+        return response()->json(['success' => true]);
     }
 
-    /**
-     * Delete department
-     */
+    /* ================= DELETE ================= */
     public function destroy($id)
     {
-        try {
-            User::where('id', $id)
-                ->where('company_id', auth()->user()->company_id)
-                ->delete();
+        User::where('id', $id)
+            ->where('company_id', auth()->user()->company_id)
+            ->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'User deleted successfully!'
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully!'
+        ]);
     }
 
     public function bulkStatus(Request $request)
@@ -202,7 +229,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Selected departments deleted successfully!'
+            'message' => 'Selected users deleted successfully!'
         ]);
     }
 }
