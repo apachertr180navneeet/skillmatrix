@@ -79,7 +79,7 @@ class SopController extends Controller
                 $fileName = 'sop_' . time() . '.' . $file->getClientOriginalExtension();
 
                 // ✅ PRIVATE STORAGE
-                $filePath = $file->storeAs('sop', $fileName);
+                $filePath = $file->storeAs('sop', $fileName, 'local');
             }
 
             Sop::create([
@@ -226,15 +226,11 @@ class SopController extends Controller
             ->where('party_id', auth()->user()->company_id)
             ->firstOrFail();
 
-        $filePath = public_path('storage/' . $sop->sop_upload);
 
-            
-        if (!file_exists($filePath)) {
-            abort(404, 'File not found');
-        }
 
-        return response()->file($filePath, [
-            'Content-Type' => 'application/pdf',
-        ]);
+        return response()->file(
+            storage_path('app/' . $sop->sop_upload),
+            ['Content-Type' => 'application/pdf']
+        );
     }
 }
