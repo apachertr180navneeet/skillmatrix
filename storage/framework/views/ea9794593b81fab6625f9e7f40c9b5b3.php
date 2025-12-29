@@ -2,46 +2,62 @@
 
 <?php $__env->startSection('style'); ?>
 <style>
-    .overview-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
-
-    .stat-card {
-        background: #fff;
-        border-radius: 14px;
-        padding: 18px 20px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
+    .plan-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 30px 25px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+        transition: all .2s ease;
         height: 100%;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        position: relative;
     }
 
-    .stat-icon {
-        width: 50px;
-        height: 50px;
-        background: #1e78d6;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 22px;
-        flex-shrink: 0;
+    .plan-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 22px rgba(0,0,0,0.08);
     }
 
-    .stat-content h6 {
-        font-size: 15px;
+    .plan-card.active {
+        border: 2px solid #198754;
+        box-shadow: 0 0 0 3px rgba(25,135,84,.15);
+    }
+
+    .plan-title {
+        font-size: 20px;
         font-weight: 600;
-        margin-bottom: 4px;
+        margin-bottom: 12px;
     }
 
-    .stat-content p {
-        margin: 0;
-        font-size: 13px;
-        color: #555;
+    .plan-price {
+        font-size: 36px;
+        font-weight: 700;
+        color: #4a5d73;
+        margin: 6px 0;
+    }
+
+    .plan-period {
+        color: #8b97a6;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .btn-buy {
+        background: #233447;
+        color: #fff;
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 500;
+    }
+
+    .btn-buy:hover {
+        background: #1b2938;
+        color: #fff;
+    }
+
+    .current-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
     }
 </style>
 <?php $__env->stopSection(); ?>
@@ -50,25 +66,59 @@
 
 <div class="container-fluid flex-grow-1 container-p-y">
     <h5 class="fw-bold mb-4">Subscription Plan</h5>
-    <div class="row g-4">
 
-        <!-- BASIC PLAN -->
+    <div class="row g-4 justify-content-center">
         <?php $__currentLoopData = $subcriptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subscription): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php
+                $isCurrent = ($subscription->id == $currentPlanId);
+            ?>
+
             <div class="col-lg-4 col-md-6">
-                <div class="plan-card text-center">
-                    <h4 class="plan-title"><?php echo e($subscription->plan_name); ?></h4>
-                    <p class="text-muted mb-1">Start at</p>
-                    <h2 class="plan-price">Rs.<?php echo e($subscription->amount); ?></h2>
-                    <p class="text-muted">/ Month</p>
-                <button class="btn btn-dark w-100 mb-3">Buy Now</button>
+                <div class="plan-card text-center <?php echo e($isCurrent ? 'active' : ''); ?>">
+
+                    <?php if($isCurrent): ?>
+                        <span class="badge bg-success current-badge">
+                            Current Plan
+                        </span>
+                    <?php endif; ?>
+
+                    <h4 class="plan-title">
+                        <?php echo e($subscription->plan_name); ?>
+
+                    </h4>
+                    <?php if($isCurrent): ?>
+                        <p class="plan-period">
+                            (Valid till <?php echo e(\Carbon\Carbon::parse($currentPlanEndDate)->format('d M, Y')); ?>)
+                        </p>
+                    <?php else: ?>
+                        <p class="plan-period">
+                            (Duration: <?php echo e($subscription->duration); ?> days)
+                        </p>
+                    <?php endif; ?>
+
+                    <h2 class="plan-price">
+                        Rs.<?php echo e(number_format($subscription->amount, 2)); ?>
+
+                    </h2>
+
+                    <?php if($isCurrent): ?>
+                        <button class="btn btn-secondary w-100" disabled>
+                            Current Plan
+                        </button>
+                    <?php else: ?>
+                        <form method="POST" action="<?php echo e(route('admin.subscription.buy', $subscription->id)); ?>">
+                            <?php echo csrf_field(); ?>
+                            <button type="submit" class="btn btn-buy w-100">
+                                Buy Now
+                            </button>
+                        </form>
+                    <?php endif; ?>
+
+                </div>
             </div>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
     </div>
 </div>
-
-</div>
-
 
 <?php $__env->stopSection(); ?>
 
