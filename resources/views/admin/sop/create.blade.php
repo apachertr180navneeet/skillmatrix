@@ -78,6 +78,12 @@
         border-radius: 8px;
         color: #fff;
     }
+
+    /* ================= CKEDITOR ================= */
+    .ck-editor__editable {
+        min-height: 180px;
+        background: #fff !important;
+    }
 </style>
 @endsection
 
@@ -95,7 +101,7 @@
                        name="title"
                        value="{{ old('title') }}"
                        class="form-control @error('title') is-invalid @enderror"
-                       placeholder="Sop title">
+                       placeholder="SOP title">
                 @error('title')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -130,13 +136,14 @@
                 @enderror
             </div>
 
-            <!-- DESCRIPTION -->
+            <!-- DESCRIPTION (CKEDITOR) -->
             <div class="mb-4">
                 <label class="form-label">Description</label>
                 <textarea name="description"
+                          id="description"
                           rows="5"
                           class="form-control @error('description') is-invalid @enderror"
-                          placeholder="description">{{ old('description') }}</textarea>
+                          placeholder="Enter SOP description">{{ old('description') }}</textarea>
                 @error('description')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -150,7 +157,7 @@
                         <input type="radio"
                                name="is_suggestion"
                                value="1"
-                        >
+                               {{ old('is_suggestion') == '1' ? 'checked' : '' }}>
                         Yes
                     </label>
 
@@ -158,7 +165,7 @@
                         <input type="radio"
                                name="is_suggestion"
                                value="0"
-                               checked>
+                               {{ old('is_suggestion','0') == '0' ? 'checked' : '' }}>
                         No
                     </label>
                 </div>
@@ -181,4 +188,22 @@
 @endsection
 
 @section('script')
+<!-- CKEditor 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description'), {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'underline', '|',
+                'bulletedList', 'numberedList', '|',
+                'link', 'blockQuote', '|',
+                'undo', 'redo'
+            ],
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 @endsection

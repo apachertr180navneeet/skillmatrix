@@ -333,10 +333,12 @@ Route::prefix('admin')
                     ->group(function () {
                         Route::get('/', 'index')->name('index');
                         Route::get('create', 'create')->name('create');
+                        Route::get('filter', 'filter')->name('filter');
                         Route::post('store', 'store')->name('store');
                         Route::get('{id}/edit', 'edit')->name('edit');
                         Route::put('{id}', 'update')->name('update');
                         Route::delete('{id}', 'destroy')->name('destroy');
+                        Route::get('view/{id}', 'view')->name('view');
                     });
 
                 Route::prefix('sops')->name('sop.')

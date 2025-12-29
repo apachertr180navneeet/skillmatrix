@@ -84,6 +84,12 @@
         border-radius: 8px;
         color: #fff;
     }
+
+    /* ================= CKEDITOR ================= */
+    .ck-editor__editable {
+        min-height: 180px;
+        background: #fff !important;
+    }
 </style>
 <?php $__env->stopSection(); ?>
 
@@ -109,7 +115,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                       placeholder="Sop title">
+                       placeholder="SOP title">
                 <?php $__errorArgs = ['title'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -188,10 +194,11 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
 
-            <!-- DESCRIPTION -->
+            <!-- DESCRIPTION (CKEDITOR) -->
             <div class="mb-4">
                 <label class="form-label">Description</label>
                 <textarea name="description"
+                          id="description"
                           rows="5"
                           class="form-control <?php $__errorArgs = ['description'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -201,7 +208,7 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                          placeholder="description"><?php echo e(old('description', $sop->description)); ?></textarea>
+                          placeholder="Enter SOP description"><?php echo e(old('description', $sop->description)); ?></textarea>
                 <?php $__errorArgs = ['description'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -260,6 +267,24 @@ unset($__errorArgs, $__bag); ?>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('script'); ?>
+<!-- CKEditor 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description'), {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'underline', '|',
+                'bulletedList', 'numberedList', '|',
+                'link', 'blockQuote', '|',
+                'undo', 'redo'
+            ],
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/admin/sop/edit.blade.php ENDPATH**/ ?>

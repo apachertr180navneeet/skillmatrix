@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{
-    Sop,
-    Department,
-};
+use App\Models\Sop;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
 use Exception;
 
 class SopController extends Controller
@@ -21,13 +20,14 @@ class SopController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        $departments = Department::where('company_id', $companyId)->where('status', 'active')->get();
-        
-        $sopsuggestions = Sop::where('party_id', $companyId)
-            ->where('is_suggestion', '1')
-            ->latest()
+        $departments = Department::where('company_id', $companyId)
+            ->where('status', 'active')
             ->get();
 
+        $sopsuggestions = Sop::where('party_id', $companyId)
+            ->where('is_suggestion', 1)
+            ->latest()
+            ->get();
 
         $sops = Sop::with('department')
             ->where('party_id', $companyId)
@@ -35,142 +35,130 @@ class SopController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.sop.index' , compact('sops', 'departments', 'sopsuggestions'));
+        return view('admin.sop.index', compact('sops', 'departments', 'sopsuggestions'));
     }
 
-
     /**
-     * Show the form for creating a new SOP.
+     * Show create SOP form
      */
     public function create()
     {
         $companyId = auth()->user()->company_id;
-        $departments = Department::where('company_id', $companyId)->where('status', 'active')->get();
+
+        $departments = Department::where('company_id', $companyId)
+            ->where('status', 'active')
+            ->get();
+
         return view('admin.sop.create', compact('departments'));
     }
 
-
     /**
-     * Store a newly created SOP in storage.
+     * Store SOP (PRIVATE FILE)
      */
     public function store(Request $request)
     {
         $companyId = auth()->user()->company_id;
-        
-        // ---------------- VALIDATION ----------------
+
         $validator = Validator::make($request->all(), [
-            'title'         => 'required|string|max:255',
-            'department_id' => 'nullable|exists:departments,id',
-            'sop_upload'    => 'required|file',
-            'description'   => 'nullable|string',
-            'is_suggestion'     => 'required|boolean',
+            'title'          => 'required|string|max:255',
+            'department_id'  => 'nullable|exists:departments,id',
+            'sop_upload'     => 'required|file|mimes:pdf|max:10240',
+            'description'    => 'nullable|string',
+            'is_suggestion'  => 'required|boolean',
         ]);
+
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         try {
-
-            // ---------------- FILE UPLOAD ----------------
-            $fileUrl = null;
+            $filePath = null;
 
             if ($request->hasFile('sop_upload')) {
-
                 $file = $request->file('sop_upload');
                 $fileName = 'sop_' . time() . '.' . $file->getClientOriginalExtension();
 
-                // Store file publicly
-                $filePath = $file->storeAs('sop', $fileName, 'public');
-
-                // Public URL
-                $fileUrl = asset('storage/' . $filePath);
+                // ✅ PRIVATE STORAGE
+                $filePath = $file->storeAs('sop', $fileName);
             }
 
-
-            // ---------------- CREATE SOP ----------------
             Sop::create([
-                'title'         => $request->title,
-                'department_id' => $request->department_id ?? '0',
-                'description'   => $request->description,
-                'sop_upload'    => $fileUrl,   // FULL URL stored
-                'is_suggestion'     => $request->is_suggestion,
-                'party_id'      => $companyId,
+                'title'          => $request->title,
+                'department_id'  => $request->department_id ?? 0,
+                'description'    => $request->description,
+                'sop_upload'     => $filePath, // ONLY RELATIVE PATH
+                'is_suggestion'  => $request->is_suggestion,
+                'party_id'       => $companyId,
             ]);
 
             return redirect()->route('admin.sop.index')
                 ->with('success', 'SOP created successfully.');
 
-        } catch (\Exception $e) {
-
+        } catch (Exception $e) {
             return redirect()->back()
-                ->with('error', 'Something went wrong: ' . $e->getMessage())
+                ->with('error', 'Something went wrong.')
                 ->withInput();
         }
     }
 
-
     /**
-     * Show the form for editing a new SOP.
+     * Edit SOP
      */
     public function edit($id)
     {
         $companyId = auth()->user()->company_id;
-        $departments = Department::where('company_id', $companyId)->where('status', 'active')->get();
-        $sop = Sop::where('id', $id)->where('party_id', $companyId)->first();
-        
+
+        $departments = Department::where('company_id', $companyId)
+            ->where('status', 'active')
+            ->get();
+
+        $sop = Sop::where('id', $id)
+            ->where('party_id', $companyId)
+            ->firstOrFail();
 
         return view('admin.sop.edit', compact('departments', 'sop'));
     }
 
-
     /**
-     * update function
+     * Update SOP
      */
-
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $companyId = auth()->user()->company_id;
 
-        // ---------------- VALIDATION ----------------
         $validator = Validator::make($request->all(), [
-            'title'         => 'required|string|max:255',
-            'department_id' => 'nullable|exists:departments,id',
-            'sop_upload'    => 'nullable|file',
-            'description'   => 'nullable|string',
-            'is_suggestion'     => 'required|boolean',
+            'title'          => 'required|string|max:255',
+            'department_id'  => 'nullable|exists:departments,id',
+            'sop_upload'     => 'nullable|file|mimes:pdf|max:10240',
+            'description'    => 'nullable|string',
+            'is_suggestion'  => 'required|boolean',
         ]);
+
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         try {
-
             $sop = Sop::where('id', $id)
                 ->where('party_id', $companyId)
                 ->firstOrFail();
 
-            // ---------------- FILE UPLOAD ----------------
             if ($request->hasFile('sop_upload')) {
-
                 $file = $request->file('sop_upload');
                 $fileName = 'sop_' . time() . '.' . $file->getClientOriginalExtension();
 
-                // Store file publicly
-                $filePath = $file->storeAs('sop', $fileName, 'public');
+                // DELETE OLD FILE (OPTIONAL)
+                if ($sop->sop_upload && Storage::exists($sop->sop_upload)) {
+                    Storage::delete($sop->sop_upload);
+                }
 
-                // Public URL
-                $fileUrl = asset('storage/' . $filePath);
-
-                // Update sop_upload
-                $sop->sop_upload = $fileUrl;
+                // PRIVATE STORAGE
+                $filePath = $file->storeAs('sop', $fileName);
+                $sop->sop_upload = $filePath;
             }
 
-            // ---------------- UPDATE SOP ----------------
             $sop->title = $request->title;
-            $sop->department_id = $request->department_id ?? '0';
+            $sop->department_id = $request->department_id ?? 0;
             $sop->description = $request->description;
             $sop->is_suggestion = $request->is_suggestion;
             $sop->save();
@@ -178,33 +166,75 @@ class SopController extends Controller
             return redirect()->route('admin.sop.index')
                 ->with('success', 'SOP updated successfully.');
 
-        } catch (\Exception $e) {
-
+        } catch (Exception $e) {
             return redirect()->back()
-                ->with('error', 'Something went wrong: ' . $e->getMessage())
+                ->with('error', 'Something went wrong.')
                 ->withInput();
         }
     }
 
     /**
-     * Remove the specified SOP from storage.
-     *
-     * @param [type] $id
-     * @return void
+     * Delete SOP (Soft Delete)
      */
     public function destroy($id)
     {
         try {
-            $sop = Sop::where('id', $id)
-                ->firstOrFail();
+            $sop = Sop::where('id', $id)->firstOrFail();
+            $sop->delete();
 
-            $sop->delete(); // SOFT DELETE
-
-            return redirect()->back()
-                ->with('success', 'SOP deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Unable to delete SOP.');
+            return redirect()->back()->with('success', 'SOP deleted successfully.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Unable to delete SOP.');
         }
+    }
+
+    /**
+     * AJAX Filter (Search + Department)
+     */
+    public function filter(Request $request)
+    {
+        $companyId = auth()->user()->company_id;
+
+        $query = Sop::with('department')
+            ->where('party_id', $companyId);
+
+        if ($request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->department_id) {
+            $query->where('department_id', $request->department_id);
+        }
+
+        $sops = $query->latest()->get();
+
+        return view('admin.sop.table_rows', compact('sops'))->render();
+    }
+
+    /**
+     * 🔐 SECURE VIEW SOP PDF (ENCRYPTED)
+     */
+    public function view($encryptedId)
+    {
+        try {
+            $sopId = Crypt::decryptString($encryptedId);
+        } catch (Exception $e) {
+            abort(403, 'Invalid link');
+        }
+
+        $sop = Sop::where('id', $sopId)
+            ->where('party_id', auth()->user()->company_id)
+            ->firstOrFail();
+
+        $filePath = public_path('storage/' . $sop->sop_upload);
+
+            
+        if (!file_exists($filePath)) {
+            abort(404, 'File not found');
+        }
+
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 }

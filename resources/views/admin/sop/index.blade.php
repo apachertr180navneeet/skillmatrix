@@ -1,184 +1,155 @@
 @extends('admin.layouts.app')
-
+@php
+    use Illuminate\Support\Facades\Crypt;
+@endphp
 @section('style')
 <style>
-    /* ================= SOP CARD ================= */
-    .sop-card {
-        background: #fff;
-        border-radius: 22px;
-        padding: 16px;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-        text-align: center;
-        height: 100%;
-        transition: all .2s ease;
-    }
+/* ================= PAGE ================= */
+.container-p-y {
+    background: #f6f7fb;
+}
 
-    .sop-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
+/* ================= TOOLBAR ================= */
+.page-toolbar {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
 
-    .sop-box {
-        height: 120px;
-        background: #1e78d6;
-        border-radius: 16px;
-        margin-bottom: 10px;
-    }
+.search-box {
+    max-width: 260px;
+}
 
-    .sop-title {
-        font-weight: 600;
-        font-size: 13px;
-        margin-bottom: 8px;
-    }
+/* ================= TABLE CARD ================= */
+.table-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
 
-    /* ================= ACTION BUTTONS ================= */
-    .sop-actions {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 8px;
-    }
+/* ================= TABLE ================= */
+.table {
+    margin-bottom: 0;
+}
 
-    .sop-actions .btn {
-        font-size: 11px;
-        padding: 4px 10px;
-        border-radius: 6px;
-    }
+.table thead th {
+    background: #f9fafc;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
 
-    /* ================= TOP BAR ================= */
-    .top-actions {
-        display: flex;
-        gap: 10px;
-    }
+.table tbody td {
+    font-size: 14px;
+    color: #374151;
+    vertical-align: middle;
+    white-space: nowrap;
+}
 
-    .top-actions .btn {
-        padding: 6px 14px;
-        font-size: 13px;
-    }
+.table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* ================= BADGE ================= */
+.badge-active {
+    background: #22c55e;
+    color: #fff;
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+/* ================= BUTTONS ================= */
+.btn-soft {
+    border-radius: 8px;
+    font-size: 12px;
+    padding: 5px 12px;
+}
+
+.btn-view {
+    background: #0ea5e9;
+    color: #fff;
+}
+
+.btn-qa {
+    background: #ef4444;
+    color: #fff;
+}
+
+.btn-edit {
+    background: #f59e0b;
+    color: #fff;
+}
+
+.btn-delete {
+    background: #9ca3af;
+    color: #fff;
+}
+
+/* ================= ACTIONS ================= */
+.action-btns {
+    display: flex;
+    gap: 6px;
+}
 </style>
 @endsection
 
 @section('content')
 <div class="container-fluid flex-grow-1 container-p-y">
 
-    <!-- ================= TOP BAR ================= -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- ================= TOOLBAR ================= -->
+    <div class="page-toolbar d-flex justify-content-between align-items-center">
+
         <div class="d-flex gap-2">
-            <input type="text" class="form-control" placeholder="Search here..." style="width:220px;">
-            <button class="btn btn-primary">Search</button>
+            <input type="text"
+                   id="search"
+                   class="form-control search-box"
+                   placeholder="Search SOP title...">
         </div>
 
-        <div class="top-actions">
-            <button class="btn btn-primary">Sort</button>
-            <a href="{{ route('admin.sop.create') }}" class="btn btn-primary">
-                + Create
+        <div class="d-flex gap-2">
+            <select id="department" class="form-select">
+                <option value="">All Departments</option>
+                @foreach ($departments as $department)
+                    <option value="{{ $department->id }}">
+                        {{ $department->department_name }}
+                    </option>
+                @endforeach
+            </select>
+
+            <a href="{{ route('admin.sop.create') }}"
+               class="btn btn-primary px-4">
+                + Create SOP
             </a>
         </div>
+
     </div>
 
-    <!-- ================= SUGGESTED SOP ================= -->
-    <h5 class="mb-3">Suggestions SOP</h5>
+    <!-- ================= SOP TABLE ================= -->
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th width="60">#</th>
+                        <th>Title</th>
+                        <th>Department</th>
+                        <th width="120">Document</th>
+                        <th width="120">Status</th>
+                        <th width="220">Action</th>
+                    </tr>
+                </thead>
 
-    <div class="row g-4 mb-5">
-        @forelse ($sopsuggestions as $sopsuggestion)
-            <div class="col-md-3">
-                <div class="sop-card">
-                    <a href="{{ $sopsuggestion->sop_upload }}" target="_blank"
-                       style="text-decoration:none;color:inherit;">
-                        <div class="sop-box"></div>
-                        <div class="sop-title">{{ $sopsuggestion->title }}</div>
-
-                        <!-- ACTION BUTTONS -->
-                        <div class="sop-actions">
-                            <!-- EDIT -->
-                            <a href="{{ route('admin.sop.edit', $sopsuggestion->id) }}"
-                            class="btn btn-warning text-white">
-                                Edit
-                            </a>
-
-                            <!-- DELETE -->
-                            <form action="{{ route('admin.sop.destroy', $sopsuggestion->id) }}"
-                                method="POST"
-                                onsubmit="return confirm('Are you sure you want to delete this SOP?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-secondary">
-                                    Delete
-                                </button>
-                            </form>
-
-                        </div>
-                    </a>
-                </div>
-            </div>
-        @empty
-            <div class="col-12 text-center text-muted">
-                No SOPs found
-            </div>
-        @endforelse
-    </div>
-
-    <!-- ================= CREATED SOP ================= -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5>Created SOP</h5>
-
-        <select class="form-select w-auto">
-            <option value="">Department</option>
-            @foreach ($departments as $department)
-                <option value="{{ $department->id }}">
-                    {{ $department->department_name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-
-    <div class="row g-4">
-        @forelse ($sops as $sop)
-            <div class="col-md-3">
-                <div class="sop-card">
-
-                    <a href="{{ $sop->sop_upload }}" target="_blank"
-                       style="text-decoration:none;color:inherit;">
-                        <div class="sop-box"></div>
-                        <div class="sop-title">{{ $sop->title }}</div>
-                    </a>
-
-                    <!-- ACTION BUTTONS -->
-                    <div class="sop-actions">
-
-                        <!-- ADD Q&A -->
-                        <a href="{{ route('admin.sop.qa.create', $sop->id) }}"
-                           class="btn btn-danger">
-                            Add Q&A
-                        </a>
-
-                        <!-- EDIT -->
-                        <a href="{{ route('admin.sop.edit', $sop->id) }}"
-                           class="btn btn-warning text-white">
-                            Edit
-                        </a>
-
-                        <!-- DELETE -->
-                        <form action="{{ route('admin.sop.destroy', $sop->id) }}"
-                              method="POST"
-                              onsubmit="return confirm('Are you sure you want to delete this SOP?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-secondary">
-                                Delete
-                            </button>
-                        </form>
-
-                    </div>
-
-                </div>
-            </div>
-        @empty
-            <div class="col-12 text-center text-muted">
-                No SOPs found
-            </div>
-        @endforelse
+                <tbody id="sopTableBody">
+                    @include('admin.sop.table_rows', ['sops' => $sops])
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
@@ -186,6 +157,35 @@
 
 @section('script')
 <script>
-    // Future: search, sort, department filter, ajax delete
+$(document).ready(function () {
+
+    function fetchSops() {
+        let search = $('#search').val();
+        let department = $('#department').val();
+
+        $.ajax({
+            url: "{{ route('admin.sop.filter') }}",
+            type: "GET",
+            data: {
+                search: search,
+                department_id: department
+            },
+            success: function (response) {
+                $('#sopTableBody').html(response);
+            }
+        });
+    }
+
+    // 🔍 Live search
+    $('#search').on('keyup', function () {
+        fetchSops();
+    });
+
+    // 🏷️ Department filter
+    $('#department').on('change', function () {
+        fetchSops();
+    });
+
+});
 </script>
 @endsection
