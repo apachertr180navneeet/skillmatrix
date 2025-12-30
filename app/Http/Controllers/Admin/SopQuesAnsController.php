@@ -28,6 +28,7 @@ class SopQuesAnsController extends Controller
 
         $sopquesans = SopQuesAns::where('sop_id', $id)->get();
 
+
         return view('admin.sop_quesans.create', compact('departments', 'sopdetails', 'sopquesans'));
     }
     /**
