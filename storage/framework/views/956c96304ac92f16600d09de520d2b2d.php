@@ -21,10 +21,6 @@
                    id="searchInput"
                    placeholder="Search here..."
                    style="width:220px;">
-
-            <button class="btn btn-primary" id="searchBtn">
-                Search
-            </button>
         </div>
 
         <a href="<?php echo e(route('admin.video.create')); ?>" class="btn btn-primary">

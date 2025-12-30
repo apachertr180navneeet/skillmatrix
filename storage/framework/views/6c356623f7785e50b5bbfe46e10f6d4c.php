@@ -45,12 +45,14 @@
     <!-- ================= TOP BAR ================= -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex gap-2">
-            <input type="text" class="form-control" placeholder="Search here..." style="width:220px;">
-            <button class="btn btn-primary">Search</button>
+            <input type="text"
+                   class="form-control"
+                   id="searchInput"
+                   placeholder="Search here..."
+                   style="width:220px;">
         </div>
 
         <div class="top-actions">
-            <button class="btn btn-primary">Sort</button>
             <a href="<?php echo e(route('admin.checklist.create')); ?>" class="btn btn-primary">
                 + Create
             </a>
@@ -61,7 +63,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Checklists</h5>
 
-        <select class="form-select w-auto">
+        <select class="form-select w-auto" id="departmentFilter">
             <option value="">Department</option>
             <?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $department): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <option value="<?php echo e($department->id); ?>">
@@ -84,25 +86,27 @@
                         <th width="380">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+
+                <!-- IMPORTANT ID -->
+                <tbody id="checklistTableBody">
                     <?php $__empty_1 = true; $__currentLoopData = $checklists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $checklist): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
                             <td><?php echo e($index + 1); ?></td>
 
                             <td>
-                                <a href="<?php echo e($checklist->file); ?>" target="_blank" class="fw-semibold">
+                                <a href="<?php echo e($checklist->file); ?>"
+                                   target="_blank"
+                                   class="fw-semibold">
                                     <?php echo e($checklist->title); ?>
 
                                 </a>
                             </td>
 
-                            <!-- ================= DEPARTMENT ================= -->
                             <td>
                                 <?php echo e($checklist->department->department_name ?? '-'); ?>
 
                             </td>
 
-                            <!-- ================= ACTION ================= -->
                             <td>
                                 <div class="action-btns">
                                     <a href="<?php echo e(route('admin.checklist.edit', $checklist->id)); ?>"
@@ -135,6 +139,7 @@
                         </tr>
                     <?php endif; ?>
                 </tbody>
+
             </table>
         </div>
     </div>
@@ -142,12 +147,112 @@
 </div>
 <?php $__env->stopSection(); ?>
 
+
 <?php $__env->startSection('script'); ?>
 <script>
-    // Future:
-    // - AJAX department filter
-    // - Search
-    // - Sorting
+$(document).ready(function () {
+
+    function loadChecklists() {
+
+        let search = $('#searchInput').val();
+        let departmentId = $('#departmentFilter').val();
+
+        $.ajax({
+            url: "<?php echo e(route('admin.checklist.filter')); ?>",
+            type: "GET",
+            data: {
+                search: search,
+                department_id: departmentId
+            },
+            beforeSend: function () {
+                $('#checklistTableBody').html(`
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            Loading...
+                        </td>
+                    </tr>
+                `);
+            },
+            success: function (res) {
+
+                let rows = '';
+
+                if (res.data.length > 0) {
+
+                    $.each(res.data, function (index, checklist) {
+
+                        rows += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>
+                                    <a href="${checklist.file}"
+                                       target="_blank"
+                                       class="fw-semibold">
+                                        ${checklist.title}
+                                    </a>
+                                </td>
+                                <td>
+                                    ${checklist.department ? checklist.department.department_name : '-'}
+                                </td>
+                                <td>
+                                    <div class="action-btns">
+                                        <a href="/admin/checklist/edit/${checklist.id}"
+                                           class="btn btn-warning text-white">
+                                            Edit
+                                        </a>
+
+                                        <a href="/admin/checklist/qa/create/${checklist.id}"
+                                           class="btn btn-info text-white">
+                                            Add Ques & Ans
+                                        </a>
+
+                                        <form action="/admin/checklist/${checklist.id}"
+                                              method="POST"
+                                              onsubmit="return confirm('Are you sure you want to delete this checklist?')">
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('DELETE'); ?>
+                                            <button type="submit"
+                                                    class="btn btn-secondary">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                } else {
+
+                    rows = `
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">
+                                No Checklists found
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                $('#checklistTableBody').html(rows);
+            }
+        });
+    }
+
+    // 🔍 Search
+    $('#searchBtn').on('click', function () {
+        loadChecklists();
+    });
+
+    $('#searchInput').on('keyup', function () {
+        loadChecklists();
+    });
+
+    // 🏷️ Department Filter
+    $('#departmentFilter').on('change', function () {
+        loadChecklists();
+    });
+
+});
 </script>
 <?php $__env->stopSection(); ?>
 

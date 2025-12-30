@@ -195,4 +195,30 @@ class ChecklistController extends Controller
                 ->with('error', 'Unable to delete Checklist.');
         }
     }
+
+
+    public function filter(Request $request)
+    {
+        $companyId = auth()->user()->company_id;
+
+        $query = Checklist::with('department')
+            ->where('party_id', $companyId);
+
+        // 🔍 Search by title
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        // 🏷️ Department filter
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->department_id);
+        }
+
+        $checklists = $query->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $checklists
+        ]);
+    }
 }
