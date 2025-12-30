@@ -2,59 +2,39 @@
 
 <?php $__env->startSection('style'); ?>
 <style>
-    /* ================= SOP CARD ================= */
-    .sop-card {
-        background: #fff;
-        border-radius: 22px;
-        padding: 16px;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-        text-align: center;
-        height: 100%;
-        transition: all .2s ease;
-    }
-
-    .sop-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
-
-    .sop-box {
-        height: 120px;
-        background: #1e78d6;
-        border-radius: 16px;
-        margin-bottom: 10px;
-    }
-
-    .sop-title {
+    .table th {
         font-weight: 600;
         font-size: 13px;
-        margin-bottom: 8px;
+        background: #f8f9fa;
+    }
+
+    .table td {
+        font-size: 13px;
+        vertical-align: middle;
     }
 
     /* ================= ACTION BUTTONS ================= */
-    .sop-actions {
+    .action-btns {
         display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
         gap: 6px;
-        margin-top: 8px;
+        flex-wrap: wrap;
     }
 
-    .sop-actions .btn {
+    .action-btns .btn {
         font-size: 11px;
-        padding: 4px 10px;
+        padding: 6px 0;
         border-radius: 6px;
+        width: 120px;
+        text-align: center;
     }
 
-    /* ================= TOP BAR ================= */
+    .action-btns form {
+        margin: 0;
+    }
+
     .top-actions {
         display: flex;
         gap: 10px;
-    }
-
-    .top-actions .btn {
-        padding: 6px 14px;
-        font-size: 13px;
     }
 </style>
 <?php $__env->stopSection(); ?>
@@ -77,51 +57,9 @@
         </div>
     </div>
 
-    <!-- ================= SUGGESTED Checklists ================= -->
-    <h5 class="mb-3">SUGGESTED Checklists</h5>
-
-    <div class="row g-4 mb-5">
-        <?php $__empty_1 = true; $__currentLoopData = $checklistsuggestions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $checklistsuggestion): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-            <div class="col-md-3">
-                <div class="sop-card">
-                    <a href="<?php echo e($checklistsuggestion->file); ?>" target="_blank"
-                       style="text-decoration:none;color:inherit;">
-                        <div class="sop-box"></div>
-                        <div class="sop-title"><?php echo e($checklistsuggestion->title); ?></div>
-
-                        <!-- ACTION BUTTONS -->
-                        <div class="sop-actions">
-                            <!-- EDIT -->
-                            <a href="<?php echo e(route('admin.checklist.edit', $checklistsuggestion->id)); ?>"
-                            class="btn btn-warning text-white">
-                                Edit
-                            </a>
-
-                            <!-- DELETE -->
-                            <form action="<?php echo e(route('admin.checklist.destroy', $checklistsuggestion->id)); ?>"
-                                method="POST"
-                                onsubmit="return confirm('Are you sure you want to delete this checklist?')">
-                                <?php echo csrf_field(); ?>
-                                <?php echo method_field('DELETE'); ?>
-                                <button type="submit" class="btn btn-secondary">
-                                    Delete
-                                </button>
-                            </form>
-
-                        </div>
-                    </a>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-            <div class="col-12 text-center text-muted">
-                No Checklists found
-            </div>
-        <?php endif; ?>
-    </div>
-
-    <!-- ================= CREATED SOP ================= -->
+    <!-- ================= FILTER ================= -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5>Created Checklists</h5>
+        <h5 class="mb-0">Checklists</h5>
 
         <select class="form-select w-auto">
             <option value="">Department</option>
@@ -134,46 +72,71 @@
         </select>
     </div>
 
-    <div class="row g-4">
-        <?php $__empty_1 = true; $__currentLoopData = $checklists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $checklist): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-            <div class="col-md-3">
-                <div class="sop-card">
+    <!-- ================= TABLE ================= -->
+    <div class="card">
+        <div class="card-body table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th width="60">#</th>
+                        <th>Title</th>
+                        <th width="180">Department</th>
+                        <th width="380">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $__empty_1 = true; $__currentLoopData = $checklists; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $checklist): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr>
+                            <td><?php echo e($index + 1); ?></td>
 
-                    <a href="<?php echo e($checklist->file); ?>" target="_blank"
-                       style="text-decoration:none;color:inherit;">
-                        <div class="sop-box"></div>
-                        <div class="sop-title"><?php echo e($checklist->title); ?></div>
-                    </a>
+                            <td>
+                                <a href="<?php echo e($checklist->file); ?>" target="_blank" class="fw-semibold">
+                                    <?php echo e($checklist->title); ?>
 
-                    <!-- ACTION BUTTONS -->
-                    <div class="sop-actions">
+                                </a>
+                            </td>
 
-                        <!-- EDIT -->
-                        <a href="<?php echo e(route('admin.checklist.edit', $checklist->id)); ?>"
-                           class="btn btn-warning text-white">
-                            Edit
-                        </a>
+                            <!-- ================= DEPARTMENT ================= -->
+                            <td>
+                                <?php echo e($checklist->department->department_name ?? '-'); ?>
 
-                        <!-- DELETE -->
-                        <form action="<?php echo e(route('admin.checklist.destroy', $checklist->id)); ?>"
-                              method="POST"
-                              onsubmit="return confirm('Are you sure you want to delete this Checklist?')">
-                            <?php echo csrf_field(); ?>
-                            <?php echo method_field('DELETE'); ?>
-                            <button type="submit" class="btn btn-secondary">
-                                Delete
-                            </button>
-                        </form>
+                            </td>
 
-                    </div>
+                            <!-- ================= ACTION ================= -->
+                            <td>
+                                <div class="action-btns">
+                                    <a href="<?php echo e(route('admin.checklist.edit', $checklist->id)); ?>"
+                                       class="btn btn-warning text-white">
+                                        Edit
+                                    </a>
 
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-            <div class="col-12 text-center text-muted">
-                No Checklists found
-            </div>
-        <?php endif; ?>
+                                    <a href=""
+                                       class="btn btn-info text-white">
+                                        Add Ques & Ans
+                                    </a>
+
+                                    <form action="<?php echo e(route('admin.checklist.destroy', $checklist->id)); ?>"
+                                          method="POST"
+                                          onsubmit="return confirm('Are you sure you want to delete this checklist?')">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button type="submit" class="btn btn-secondary">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">
+                                No Checklists found
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
@@ -181,7 +144,10 @@
 
 <?php $__env->startSection('script'); ?>
 <script>
-    // Future: search, sort, department filter, ajax delete
+    // Future:
+    // - AJAX department filter
+    // - Search
+    // - Sorting
 </script>
 <?php $__env->stopSection(); ?>
 

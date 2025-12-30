@@ -10,19 +10,44 @@
         max-width: 900px;
         margin: auto;
     }
-    .form-label { font-weight: 600; font-size: 14px; }
-    .form-control, .form-select {
+
+    .form-label {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .form-control,
+    .form-select {
         background: #f5f5f5;
         border-radius: 10px;
         padding: 12px 14px;
+        font-size: 14px;
     }
-    .is-invalid { border-color: #dc3545 !important; background: #fff5f5; }
-    .invalid-feedback { font-size: 12px; color: #dc3545; }
-    .radio-group { display: flex; gap: 20px; }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+        background: #fff5f5;
+    }
+
+    .invalid-feedback {
+        display: block;
+        font-size: 12px;
+        color: #dc3545;
+        margin-top: 4px;
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 20px;
+        margin-top: 6px;
+    }
+
     .submit-btn {
         background: #1e78d6;
         border: none;
         padding: 10px 24px;
+        font-size: 14px;
         border-radius: 8px;
         color: #fff;
     }
@@ -42,10 +67,14 @@
             <!-- TITLE -->
             <div class="mb-4">
                 <label class="form-label">Checklist Title</label>
-                <input type="text" name="title"
+                <input type="text"
+                       name="title"
                        value="{{ old('title', $checklist->title) }}"
-                       class="form-control @error('title') is-invalid @enderror">
-                @error('title') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                       class="form-control @error('title') is-invalid @enderror"
+                       placeholder="Checklist title">
+                @error('title')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- DEPARTMENT -->
@@ -61,29 +90,43 @@
                         </option>
                     @endforeach
                 </select>
+                @error('department_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- FILE -->
             <div class="mb-4">
                 <label class="form-label">Checklist File</label>
-                <input type="file" name="checklist_upload"
+                <input type="file"
+                       name="checklist_upload"
                        class="form-control @error('checklist_upload') is-invalid @enderror">
+
+                @error('checklist_upload')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
 
                 @if($checklist->file)
                     <small class="d-block mt-2">
                         Current File:
-                        <a href="{{$checklist->file}}" target="_blank">
+                        <a href="{{ $checklist->file }}" target="_blank">
                             View File
                         </a>
                     </small>
                 @endif
             </div>
 
-            <!-- DESCRIPTION -->
+            <!-- DESCRIPTION (CKEDITOR 5) -->
             <div class="mb-4">
                 <label class="form-label">Description</label>
-                <textarea name="description" rows="4"
-                          class="form-control">{{ old('description', $checklist->description) }}</textarea>
+                <textarea name="description"
+                          id="description-editor"
+                          rows="5"
+                          class="form-control @error('description') is-invalid @enderror"
+                          placeholder="Description">{{ old('description', $checklist->description) }}</textarea>
+                @error('description')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- IS SUGGESTION -->
@@ -91,25 +134,54 @@
                 <label class="form-label">Is Suggestion</label>
                 <div class="radio-group">
                     <label>
-                        <input type="radio" name="is_suggestion" value="1"
-                            {{ old('is_suggestion', $checklist->is_suggestion) == 1 ? 'checked' : '' }}>
+                        <input type="radio"
+                               name="is_suggestion"
+                               value="1"
+                               {{ old('is_suggestion', $checklist->is_suggestion) == 1 ? 'checked' : '' }}>
                         Yes
                     </label>
                     <label>
-                        <input type="radio" name="is_suggestion" value="0"
-                            {{ old('is_suggestion', $checklist->is_suggestion) == 0 ? 'checked' : '' }}>
+                        <input type="radio"
+                               name="is_suggestion"
+                               value="0"
+                               {{ old('is_suggestion', $checklist->is_suggestion) == 0 ? 'checked' : '' }}>
                         No
                     </label>
                 </div>
+                @error('is_suggestion')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- SUBMIT -->
             <div class="text-end">
-                <button class="submit-btn">Update Checklist</button>
+                <button type="submit" class="submit-btn">
+                    Update Checklist
+                </button>
             </div>
 
         </form>
     </div>
 
 </div>
+@endsection
+
+@section('script')
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description-editor'), {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'link',
+                'bulletedList', 'numberedList', '|',
+                'blockQuote', 'undo', 'redo'
+            ]
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 @endsection

@@ -130,13 +130,14 @@
                 @enderror
             </div>
 
-            <!-- DESCRIPTION -->
+            <!-- DESCRIPTION (CKEDITOR 5) -->
             <div class="mb-4">
                 <label class="form-label">Description</label>
                 <textarea name="description"
+                          id="description-editor"
                           rows="5"
                           class="form-control @error('description') is-invalid @enderror"
-                          placeholder="description">{{ old('description') }}</textarea>
+                          placeholder="Description">{{ old('description') }}</textarea>
                 @error('description')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -150,7 +151,7 @@
                         <input type="radio"
                                name="is_suggestion"
                                value="1"
-                        >
+                               {{ old('is_suggestion') == '1' ? 'checked' : '' }}>
                         Yes
                     </label>
 
@@ -158,7 +159,7 @@
                         <input type="radio"
                                name="is_suggestion"
                                value="0"
-                               checked>
+                               {{ old('is_suggestion', '0') == '0' ? 'checked' : '' }}>
                         No
                     </label>
                 </div>
@@ -181,4 +182,21 @@
 @endsection
 
 @section('script')
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description-editor'), {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'link',
+                'bulletedList', 'numberedList', '|',
+                'blockQuote', 'undo', 'redo'
+            ]
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 @endsection
