@@ -107,7 +107,7 @@
                                         Edit
                                     </a>
 
-                                    <a href=""
+                                    <a href="{{ route('admin.checklist.qa.create', $checklist->id) }}"
                                        class="btn btn-info text-white">
                                         Add Ques & Ans
                                     </a>

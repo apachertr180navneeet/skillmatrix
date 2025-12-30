@@ -36,6 +36,7 @@ use App\Http\Controllers\Admin\{
     SopController as AdminSopController,
     SopQuesAnsController as AdminSopQuesAnsController,
     ChecklistController as AdminChecklistController,
+    ChecklistQuesAnsController as AdminChecklistQuesAnsController,
     VideoController as AdminVideoController,
     VideoQuesAnsController as AdminVideoQuesAnsController,
     SopResultController as AdminSopResultController,
@@ -358,6 +359,13 @@ Route::prefix('admin')
                         Route::get('{id}/edit', 'edit')->name('edit');
                         Route::put('{id}', 'update')->name('update');
                         Route::delete('{id}', 'destroy')->name('destroy');
+                    });
+
+                Route::prefix('checklists')->name('checklist.')
+                    ->controller(AdminChecklistQuesAnsController::class)
+                    ->group(function () {
+                        Route::get('{id}/qa/create', 'create')->name('qa.create');
+                        Route::post('qa/store', 'store')->name('qa.store');
                     });
 
                 /* ================= VIDEOS ================= */

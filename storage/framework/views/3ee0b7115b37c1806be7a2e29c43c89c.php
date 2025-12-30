@@ -233,5 +233,4 @@ e.target.closest('.question-card').remove();
 });
 </script>
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/admin/sop_quesans/create.blade.php ENDPATH**/ ?>
