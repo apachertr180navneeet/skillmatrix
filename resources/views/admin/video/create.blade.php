@@ -26,7 +26,9 @@
         font-size: 14px;
     }
 
-    textarea.form-control { resize: none; }
+    textarea.form-control {
+        resize: none;
+    }
 
     /* ================= ERROR ================= */
     .is-invalid {
@@ -81,10 +83,14 @@
             <!-- VIDEO TITLE -->
             <div class="mb-4">
                 <label class="form-label">Video Title</label>
-                <input type="text" name="title"
+                <input type="text"
+                       name="title"
                        class="form-control @error('title') is-invalid @enderror"
-                       value="{{ old('title') }}" placeholder="Video title">
-                @error('title') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                       value="{{ old('title') }}"
+                       placeholder="Video title">
+                @error('title')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- DEPARTMENT -->
@@ -100,10 +106,12 @@
                         </option>
                     @endforeach
                 </select>
-                @error('department_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                @error('department_id')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
-            <!-- VIDEO TYPE RADIO -->
+            <!-- VIDEO SOURCE -->
             <div class="mb-4">
                 <label class="form-label">Video Source</label>
                 <div class="radio-group">
@@ -119,37 +127,49 @@
                         Upload Video
                     </label>
                 </div>
-                @error('is_link') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                @error('is_link')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- VIDEO LINK -->
             <div class="mb-4 d-none" id="videoLinkBox">
                 <label class="form-label">Video Link</label>
-                <input type="text" name="video_link"
+                <input type="text"
+                       name="video_link"
                        class="form-control @error('video_link') is-invalid @enderror"
                        value="{{ old('video_link') }}"
                        placeholder="https://youtube.com/...">
-                @error('video_link') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                @error('video_link')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <!-- VIDEO UPLOAD -->
             <div class="mb-4" id="videoUploadBox">
                 <label class="form-label">Upload Video File</label>
-                <input type="file" name="video_upload"
+                <input type="file"
+                       name="video_upload"
                        class="form-control @error('video_upload') is-invalid @enderror">
-                @error('video_upload') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                @error('video_upload')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
-            <!-- DESCRIPTION -->
+            <!-- DESCRIPTION (CKEDITOR) -->
             <div class="mb-4">
                 <label class="form-label">Description</label>
-                <textarea name="description" rows="4"
+                <textarea name="description"
+                          id="description"
+                          rows="5"
                           class="form-control @error('description') is-invalid @enderror"
                           placeholder="Video description">{{ old('description') }}</textarea>
-                @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                @error('description')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
-            <!-- YES / NO RADIO -->
+            <!-- IS SUGGESTION -->
             <div class="mb-4">
                 <label class="form-label">Is Suggestion</label>
                 <div class="radio-group">
@@ -157,7 +177,7 @@
                         <input type="radio"
                                name="is_suggestion"
                                value="1"
-                        >
+                               {{ old('is_suggestion') == '1' ? 'checked' : '' }}>
                         Yes
                     </label>
 
@@ -165,12 +185,12 @@
                         <input type="radio"
                                name="is_suggestion"
                                value="0"
-                               checked>
+                               {{ old('is_suggestion', '0') == '0' ? 'checked' : '' }}>
                         No
                     </label>
                 </div>
                 @error('is_suggestion')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
@@ -186,9 +206,35 @@
 @endsection
 
 @section('script')
+
+<!-- CKEDITOR 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
+    /* ================= CKEDITOR ================= */
+    ClassicEditor
+        .create(document.querySelector('#description'), {
+            toolbar: [
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                'link',
+                'bulletedList',
+                'numberedList',
+                '|',
+                'blockQuote',
+                'undo',
+                'redo'
+            ]
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    /* ================= VIDEO SOURCE TOGGLE ================= */
     const radios = document.querySelectorAll('input[name="is_link"]');
     const linkBox = document.getElementById('videoLinkBox');
     const uploadBox = document.getElementById('videoUploadBox');
@@ -203,15 +249,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Initial load
     const selected = document.querySelector('input[name="is_link"]:checked');
-    toggleField(selected.value);
+    if (selected) {
+        toggleField(selected.value);
+    }
 
     radios.forEach(radio => {
         radio.addEventListener('change', function () {
             toggleField(this.value);
         });
     });
+
 });
 </script>
 @endsection

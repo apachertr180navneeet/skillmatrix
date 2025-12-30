@@ -26,7 +26,9 @@
         font-size: 14px;
     }
 
-    textarea.form-control { resize: none; }
+    textarea.form-control {
+        resize: none;
+    }
 
     /* ================= ERROR ================= */
     .is-invalid {
@@ -81,7 +83,8 @@
             <!-- VIDEO TITLE -->
             <div class="mb-4">
                 <label class="form-label">Video Title</label>
-                <input type="text" name="title"
+                <input type="text"
+                       name="title"
                        class="form-control <?php $__errorArgs = ['title'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -90,12 +93,15 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                       value="<?php echo e(old('title')); ?>" placeholder="Video title">
+                       value="<?php echo e(old('title')); ?>"
+                       placeholder="Video title">
                 <?php $__errorArgs = ['title'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
@@ -126,13 +132,15 @@ unset($__errorArgs, $__bag); ?>">
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
 
-            <!-- VIDEO TYPE RADIO -->
+            <!-- VIDEO SOURCE -->
             <div class="mb-4">
                 <label class="form-label">Video Source</label>
                 <div class="radio-group">
@@ -152,7 +160,9 @@ unset($__errorArgs, $__bag); ?>
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
@@ -161,7 +171,8 @@ unset($__errorArgs, $__bag); ?>
             <!-- VIDEO LINK -->
             <div class="mb-4 d-none" id="videoLinkBox">
                 <label class="form-label">Video Link</label>
-                <input type="text" name="video_link"
+                <input type="text"
+                       name="video_link"
                        class="form-control <?php $__errorArgs = ['video_link'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -176,7 +187,9 @@ unset($__errorArgs, $__bag); ?>"
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
@@ -185,7 +198,8 @@ unset($__errorArgs, $__bag); ?>
             <!-- VIDEO UPLOAD -->
             <div class="mb-4" id="videoUploadBox">
                 <label class="form-label">Upload Video File</label>
-                <input type="file" name="video_upload"
+                <input type="file"
+                       name="video_upload"
                        class="form-control <?php $__errorArgs = ['video_upload'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -198,16 +212,20 @@ unset($__errorArgs, $__bag); ?>">
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
 
-            <!-- DESCRIPTION -->
+            <!-- DESCRIPTION (CKEDITOR) -->
             <div class="mb-4">
                 <label class="form-label">Description</label>
-                <textarea name="description" rows="4"
+                <textarea name="description"
+                          id="description"
+                          rows="5"
                           class="form-control <?php $__errorArgs = ['description'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -221,13 +239,15 @@ unset($__errorArgs, $__bag); ?>"
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
             </div>
 
-            <!-- YES / NO RADIO -->
+            <!-- IS SUGGESTION -->
             <div class="mb-4">
                 <label class="form-label">Is Suggestion</label>
                 <div class="radio-group">
@@ -235,7 +255,7 @@ unset($__errorArgs, $__bag); ?>
                         <input type="radio"
                                name="is_suggestion"
                                value="1"
-                        >
+                               <?php echo e(old('is_suggestion') == '1' ? 'checked' : ''); ?>>
                         Yes
                     </label>
 
@@ -243,7 +263,7 @@ unset($__errorArgs, $__bag); ?>
                         <input type="radio"
                                name="is_suggestion"
                                value="0"
-                               checked>
+                               <?php echo e(old('is_suggestion', '0') == '0' ? 'checked' : ''); ?>>
                         No
                     </label>
                 </div>
@@ -252,7 +272,7 @@ $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
                 <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
@@ -271,9 +291,35 @@ unset($__errorArgs, $__bag); ?>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('script'); ?>
+
+<!-- CKEDITOR 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
+    /* ================= CKEDITOR ================= */
+    ClassicEditor
+        .create(document.querySelector('#description'), {
+            toolbar: [
+                'heading',
+                '|',
+                'bold',
+                'italic',
+                'link',
+                'bulletedList',
+                'numberedList',
+                '|',
+                'blockQuote',
+                'undo',
+                'redo'
+            ]
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    /* ================= VIDEO SOURCE TOGGLE ================= */
     const radios = document.querySelectorAll('input[name="is_link"]');
     const linkBox = document.getElementById('videoLinkBox');
     const uploadBox = document.getElementById('videoUploadBox');
@@ -288,15 +334,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Initial load
     const selected = document.querySelector('input[name="is_link"]:checked');
-    toggleField(selected.value);
+    if (selected) {
+        toggleField(selected.value);
+    }
 
     radios.forEach(radio => {
         radio.addEventListener('change', function () {
             toggleField(this.value);
         });
     });
+
 });
 </script>
 <?php $__env->stopSection(); ?>
