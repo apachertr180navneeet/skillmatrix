@@ -61,7 +61,6 @@ class ChecklistQuesAnsController extends Controller
             // ---------------- INSERT QUESTIONS ----------------
             foreach ($request->questions as $question) {
 
-                print_r($question);
 
                 ChecklistQuesAns::create([
                     'checklist_id'    => $request->checklist_id,
@@ -70,7 +69,7 @@ class ChecklistQuesAnsController extends Controller
                     'option_two'      => $question['options'][2],
                     'option_three'    => $question['options'][3],
                     'option_four'     => $question['options'][4],
-                    'answer_option'   => $question['correct'], // 1-4
+                     'answer_option'=> (int)$question['correct'], // 1-4
                 ]);
             }
 

@@ -88,7 +88,7 @@
         <input type="radio"
             name="questions[<?php echo e($qIndex); ?>][correct]"
             value="<?php echo e($i); ?>"
-            <?php echo e($qa->answer_option === $optionMap[$i] ? 'checked' : ''); ?>
+            <?php echo e($qa->answer_option == $i ? 'checked' : ''); ?>
 
             required>
 

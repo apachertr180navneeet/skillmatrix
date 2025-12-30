@@ -88,7 +88,7 @@
         <input type="radio"
             name="questions[{{ $qIndex }}][correct]"
             value="{{ $i }}"
-            {{ $qa->answer_option === $optionMap[$i] ? 'checked' : '' }}
+            {{ $qa->answer_option == $i ? 'checked' : '' }}
             required>
 
         <input type="text"
