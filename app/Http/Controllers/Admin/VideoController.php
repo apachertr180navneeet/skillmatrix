@@ -246,4 +246,29 @@ class VideoController extends Controller
                 ->with('error', 'Unable to delete Video.');
         }
     }
+
+    public function filter(Request $request)
+    {
+        $companyId = auth()->user()->company_id;
+
+        $query = Video::with('department')
+            ->where('party_id', $companyId);
+
+        // 🔍 Search by title
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        // 🏷️ Filter by department
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->department_id);
+        }
+
+        $videos = $query->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $videos
+        ]);
+    }
 }
