@@ -1,0 +1,1 @@
+<?php /**PATH C:\xampp\htdocs\laravel_project\precureskill\resources\views/admin/layouts/elements/right_sidebar.blade.php ENDPATH**/ ?>

@@ -1,1 +1,0 @@
-<?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/super_admin/layouts/elements/right_sidebar.blade.php ENDPATH**/ ?>
