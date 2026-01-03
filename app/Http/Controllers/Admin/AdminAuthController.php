@@ -282,7 +282,7 @@ class AdminAuthController extends Controller
 
         // ✅ Video Question Count
         $videoQuestionCount = VedioQuesans::whereIn(
-            'video_id',
+            'vedio_id',
             Video::where('party_id', $companyid)
                 ->where('status', 'active')
                 ->pluck('id')

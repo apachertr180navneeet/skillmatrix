@@ -78,7 +78,6 @@ class SubscriptionPlanController extends Controller
             'plan_name'   => 'required|string|max:191',
             'amount'      => 'required|numeric|min:0',
             'duration'    => 'required|integer|min:1',
-            'user'        => 'required|integer|min:1',
             'description' => 'nullable|string',
         ];
 
@@ -95,7 +94,6 @@ class SubscriptionPlanController extends Controller
             'plan_name'   => $request->plan_name,
             'amount'      => $request->amount,
             'duration'    => $request->duration,
-            'user'        => $request->user,
             'description' => $request->description,
             'status'      => 'active',
         ]);
@@ -125,7 +123,6 @@ class SubscriptionPlanController extends Controller
             'plan_name'   => 'required|string|max:191',
             'amount'      => 'required|numeric|min:0',
             'duration'    => 'required|integer|min:1',
-            'user'        => 'required|integer|min:1',
             'description' => 'nullable|string',
         ];
 
@@ -144,7 +141,6 @@ class SubscriptionPlanController extends Controller
             'plan_name'   => $request->plan_name,
             'amount'      => $request->amount,
             'duration'    => $request->duration,
-            'user'        => $request->user,
             'description' => $request->description,
         ]);
 

@@ -26,7 +26,6 @@
                             <th>Plan Name</th>
                             <th>Amount</th>
                             <th>Duration (Days)</th>
-                            <th>Users</th>
                             <th>Description</th>
                             <th>Status</th>
                             <th width="150">Action</th>
@@ -68,11 +67,8 @@
                         <input type="number" id="duration" class="form-control">
                     </div>
 
-                    <div class="col-md-12 mb-3">
-                        <label>Users Allowed</label>
-                        <input type="number" id="user" class="form-control">
-                    </div>
-
+                    <input type="hidden" id="user" value="0" class="form-control">
+                    
                     <div class="col-md-12 mb-3">
                         <label>Description</label>
                         <textarea id="description" class="form-control"></textarea>
@@ -119,10 +115,7 @@
                         <input type="number" id="edit_duration" class="form-control">
                     </div>
 
-                    <div class="col-md-12 mb-3">
-                        <label>Users Allowed</label>
-                        <input type="number" id="edit_user" class="form-control">
-                    </div>
+                    <input type="hidden" id="edit_user" value="0" class="form-control">
 
                     <div class="col-md-12 mb-3">
                         <label>Description</label>
@@ -153,7 +146,6 @@ $(document).ready(function () {
             { data: 'plan_name' },
             { data: 'amount' },
             { data: 'duration' },
-            { data: 'user' },
             { data: 'description' },
             {
                 data: 'status',

@@ -67,8 +67,8 @@ class UserController extends Controller
             ], 422);
         }
 
-        $allowedUsers = (int) $plan->user;
-
+        $allowedUsers = (int) $userSubscription->user_count;
+        
         /* =====================================================
         STEP 3: COUNT EXISTING USERS
         ===================================================== */

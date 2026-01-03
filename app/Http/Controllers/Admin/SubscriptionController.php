@@ -37,6 +37,7 @@ class SubscriptionController extends Controller
 
         public function buy(Request $request, $planId)
         {
+            
             $user = auth()->user();
             $plan = SubscriptionPlan::findOrFail($planId);
 
@@ -54,6 +55,7 @@ class SubscriptionController extends Controller
                 'subscription_plan_id' => $plan->id,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
+                'user_count' => $request->user_count,
                 'status' => 'active',
             ]);
 
