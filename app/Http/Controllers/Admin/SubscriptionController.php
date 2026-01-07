@@ -4,71 +4,109 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\{
-    SubscriptionPlan,
-    UserSubscription,
-    Transaction
-};
+use App\Models\SubscriptionPlan;
+use App\Models\UserSubscription;
+use App\Models\Transaction;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
-use Mail, DB, Hash, Validator, Session, File,Exception;
+use Auth;
 
 class SubscriptionController extends Controller
 {
-        public function adminSubscription()
-        {
-            $subcriptions = SubscriptionPlan::where('status', 'active')->get();
+    // =======================
+    // SHOW SUBSCRIPTIONS
+    // =======================
+    public function adminSubscription()
+    {
+        $companyId = auth()->user()->company_id;
 
-            $companyId = Auth::user()->company_id;
+        $subcriptions = SubscriptionPlan::where('status', 'active')->get();
 
-            // Current active subscription (FULL RECORD)
-            $currentSubscription = UserSubscription::where('company_id', $companyId)
-                ->where('status', 'active')
-                ->whereDate('end_date', '>=', now())
-                ->latest()
-                ->first();
+        $subscriptions = UserSubscription::where('company_id', $companyId)
+            ->where('status', 'active')
+            ->get();
 
-            $currentPlanId = $currentSubscription?->subscription_plan_id;
-            $currentPlanEndDate = $currentSubscription?->end_date;
-
-            return view("admin.subscription.index", compact('subcriptions','currentPlanId', 'currentPlanEndDate'));
-        }
-
-        public function buy(Request $request, $planId)
-        {
             
-            $user = auth()->user();
-            $plan = SubscriptionPlan::findOrFail($planId);
 
-            // Expire old active subscription
-            UserSubscription::where('user_id', $user->id)
-                ->where('status', 'active')
-                ->update(['status' => 'expired']);
+        $totalAllowed = $subscriptions->sum('user_count');
+        $totalUsed    = $subscriptions->sum('used_users');
+        $totalRemain  = $totalAllowed - $totalUsed;
 
-            $startDate = Carbon::today();
-            $endDate   = Carbon::today()->addDays($plan->duration);
+        $currentSubscription = $subscriptions->sortByDesc('id')->first();
 
-            UserSubscription::create([
-                'user_id' => $user->id,
-                'company_id' => $user->company_id,
-                'subscription_plan_id' => $plan->id,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'user_count' => $request->user_count,
-                'status' => 'active',
-            ]);
+        $currentPlanId = $currentSubscription?->subscription_plan_id;
+        $currentPlanEndDate = $currentSubscription?->end_date;
 
+        return view('admin.subscription.index', compact(
+            'subcriptions',
+            'subscriptions',
+            'totalAllowed',
+            'totalUsed',
+            'totalRemain',
+            'currentSubscription',
+            'currentPlanId',
+            'currentPlanEndDate'
+        ));
+    }
 
-            Transaction::create([
-                'user_id' => auth()->id(),
-                'company_id' => auth()->user()->company_id,
-                'transaction_id' => 'TXN' . time(),
-                'amount' => $plan->amount,
-                'date' => now(),
-                'status' => 'success',
-            ]);
+    // =======================
+    // BUY NEW PLAN
+    // =======================
+    public function buy(Request $request, $planId)
+    {
+        $request->validate([
+            'user_count' => 'required|integer|min:1'
+        ]);
 
-            return redirect()->back()->with('success', 'Subscription activated successfully!');
-        }
+        $plan = SubscriptionPlan::findOrFail($planId);
+        $user = auth()->user();
+
+        UserSubscription::create([
+            'user_id' => $user->id,
+            'company_id' => $user->company_id,
+            'subscription_plan_id' => $plan->id,
+            'start_date' => now(),
+            'end_date' => now()->addDays($plan->duration),
+            'user_count' => $request->user_count,
+            'used_users' => 0,
+            'status' => 'active',
+            'is_locked' => '0',
+        ]);
+
+        Transaction::create([
+            'user_id' => $user->id,
+            'company_id' => $user->company_id,
+            'transaction_id' => 'TXN'.time(),
+            'amount' => $plan->amount * $request->user_count,
+            'status' => 'success',
+            'date' => now()
+        ]);
+
+        return back()->with('success', 'Subscription added successfully');
+    }
+
+    // =======================
+    // ADD USERS TO PLAN
+    // =======================
+    public function addUsers(Request $request, $subscriptionId)
+    {
+        $request->validate([
+            'user_count' => 'required|integer|min:1'
+        ]);
+
+        $old = UserSubscription::findOrFail($subscriptionId);
+
+        UserSubscription::create([
+            'user_id' => auth()->id(),
+            'company_id' => $old->company_id,
+            'subscription_plan_id' => $old->subscription_plan_id,
+            'start_date' => now(),
+            'end_date' => $old->end_date,
+            'user_count' => $request->user_count,
+            'used_users' => 0,
+            'status' => 'active',
+            'is_locked' => '0',
+        ]);
+
+        return back()->with('success', 'Users added successfully');
+    }
 }

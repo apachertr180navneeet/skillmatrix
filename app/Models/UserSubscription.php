@@ -18,6 +18,8 @@ class UserSubscription extends Model
         'start_date',
         'end_date',
         'user_count',
+        'used_users',
+        'is_locked',
         'status',
     ];
 
@@ -37,4 +39,10 @@ class UserSubscription extends Model
     {
         return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id');
     }
+
+    public function subscriptionPlan()
+    {
+        return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id');
+    }
+
 }

@@ -285,11 +285,10 @@ Route::prefix('admin')
             Route::post('profile', 'updateAdminProfile')->name('update.profile');
 
             /* ===== SUBSCRIPTION (NO CHECK) ===== */
-            Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])
-                ->name('subscription');
+            Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])->name('subscription');
+            Route::post('subscription/buy/{plan}', [SubscriptionController::class, 'buy'])->name('subscription.buy');
+            Route::post('subscription/add-users/{subscription}', [SubscriptionController::class, 'addUsers'])->name('subscription.add.users');
 
-            Route::post('subscription/buy/{plan}', [SubscriptionController::class, 'buy'])
-                ->name('subscription.buy');
 
             /*
             |--------------------------------------------------------------------------
