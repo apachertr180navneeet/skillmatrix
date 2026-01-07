@@ -16,6 +16,9 @@
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         height: 100%;
         transition: transform 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .sop-card:hover {
@@ -30,17 +33,31 @@
     }
 
     .sop-footer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        text-align: center;
     }
 
     .sop-title {
         font-size: 13px;
         font-weight: 600;
-        margin: 0;
-        text-align: center;
+        margin-bottom: 10px;
         word-break: break-word;
+    }
+
+    .qa-btn {
+        display: inline-block;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+        background: #28a745;
+        border-radius: 20px;
+        text-decoration: none;
+        transition: background 0.2s ease;
+    }
+
+    .qa-btn:hover {
+        background: #218838;
+        color: #fff;
     }
 </style>
 @endsection
@@ -74,6 +91,12 @@
                         <p class="sop-title">
                             {{ $checklist->title ?? 'Checklist' }}
                         </p>
+
+                        <!-- ✅ Q&A BUTTON -->
+                        <a href="{{ route('user.checklist.qa', $checklist->id) }}"
+                           class="qa-btn">
+                            Q&amp;A
+                        </a>
                     </div>
 
                 </div>

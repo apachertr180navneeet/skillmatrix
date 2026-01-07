@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\{
     VideoController as WebVideoController,
     VideoResultController as WebVideoResultController,
     SopResultController as WebSopResultController,
+    ChecklistResultController as WebChecklistResultController
 };
 
 // Super Admin Controller
@@ -454,6 +455,8 @@ Route::prefix('user')
             Route::get('/sop/{id}/qa', [WebSopController::class, 'qa'])->name('sop.qa');
             Route::post('/sop/qa', [WebSopController::class, 'qaSubmit'])->name('sop.qa.submit');
             Route::get('checklist', [WebChecklistController::class, 'index'])->name('checklist');
+            Route::get('/checklist/{id}/qa', [WebChecklistController::class, 'qa'])->name('checklist.qa');
+            Route::post('/checklist/qa', [WebChecklistController::class, 'qaSubmit'])->name('checklist.qa.submit');
             Route::get('/video', [WebVideoController::class, 'video'])->name('video');
             Route::get('/video/{id}/qa', [WebVideoController::class, 'qa'])->name('video.qa');
             Route::post('/video/qa', [WebVideoController::class, 'qaSubmit'])->name('video.qa.submit');
@@ -461,6 +464,8 @@ Route::prefix('user')
             Route::get('/sop-results/{id}/view', [WebSopResultController::class, 'view'])->name('sop.result.view');
             Route::get('/video-results', [WebVideoResultController::class, 'videoResults'])->name('video.results');
             Route::get('/video-results/{id}/view', [WebVideoResultController::class, 'view'])->name('video.result.view');
+            Route::get('/checklist-results', [WebChecklistResultController::class, 'checklistResults'])->name('checklist.results');
+            Route::get('/checklist-results/{id}/view', [WebChecklistResultController::class, 'view'])->name('checklist.result.view');
         });
     });
 

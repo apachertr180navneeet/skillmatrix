@@ -28,6 +28,7 @@ class SopController extends Controller
             ->where('party_id', $companyId)
             ->where('department_id', $departmentid)
             ->where('is_suggestion', '0')
+            ->whereHas('sopQuesAns') // 🔥 sirf wahi SOP jisme ques_ans ho
             ->latest()
             ->get();
 
@@ -36,9 +37,14 @@ class SopController extends Controller
 
     public function qa($id)
     {
-        $sopdetails = Sop::find($id);
-        $sopquesans = SopQuesAns::where('sop_id', $id)->get();
-        return view("web.sop.qa", compact('sopquesans', 'sopdetails'));
+        $sopdetails = Sop::findOrFail($id);
+
+        $sopquesans = SopQuesAns::where('sop_id', $id)
+            ->inRandomOrder()
+            ->limit(10)
+            ->get();
+
+        return view('web.sop.qa', compact('sopquesans', 'sopdetails'));
     }
 
 

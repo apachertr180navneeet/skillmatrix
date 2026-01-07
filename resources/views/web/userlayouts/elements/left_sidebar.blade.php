@@ -26,6 +26,7 @@
 			['route' => 'user.video', 'text' => 'Video'],
 			['route' => 'user.sop.results', 'text' => 'SOP Results'],
 			['route' => 'user.video.results', 'text' => 'Video Results'],
+			['route' => 'user.checklist.results', 'text' => 'Checklist Results'],
 		] as $mastermenu)
 			<li class="menu-item {{ request()->routeIs($mastermenu['route']) ? 'active' : '' }}">
 				<a href="{{ route($mastermenu['route']) }}" class="menu-link">

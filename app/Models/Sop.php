@@ -41,4 +41,9 @@ class Sop extends Model
     {
         return $this->belongsTo(Company::class, 'party_id');
     }
+
+    public function sopQuesAns()
+    {
+        return $this->hasMany(SopQuesAns::class, 'sop_id', 'id');
+    }
 }

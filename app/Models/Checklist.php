@@ -45,4 +45,9 @@ class Checklist extends Model
     {
         return $this->belongsTo(Company::class, 'party_id');
     }
+
+    public function checklistQuesAns()
+    {
+        return $this->hasMany(ChecklistQuesAns::class, 'checklist_id', 'id');
+    }
 }

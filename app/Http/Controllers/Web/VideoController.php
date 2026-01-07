@@ -28,6 +28,7 @@ class VideoController extends Controller
             ->where('party_id', $companyId)
             ->where('department_id', $departmentid)
             ->where('is_suggestion', '0')
+            ->whereHas('videoQuesAns') // 🔥 sirf wahi video jisme ques_ans ho
             ->latest()
             ->get();
 
@@ -36,9 +37,14 @@ class VideoController extends Controller
 
     public function qa($id)
     {
-        $videodetails = Video::find($id);
-        $videoquesans = VedioQuesans::where('vedio_id', $id)->get();
-        return view("web.video.qa", compact('videoquesans', 'videodetails'));
+        $videodetails = Video::findOrFail($id);
+
+        $videoquesans = VedioQuesans::where('vedio_id', $id)
+            ->inRandomOrder()
+            ->take(10)
+            ->get();
+
+        return view('web.video.qa', compact('videoquesans', 'videodetails'));
     }
 
     public function qaSubmit(Request $request)
