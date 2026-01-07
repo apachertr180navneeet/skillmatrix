@@ -17,18 +17,29 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('admin.user.index');
+        $companyId = auth()->user()->company_id;
+
+        $userid = auth()->user()->id;
+
+        $userSubscriptions = UserSubscription::with('plan')
+            ->where('company_id', $companyId)
+            ->where('user_id', $userid)
+            ->where('status', 'active')
+            ->get();
+
+
+        return view('admin.user.index', compact('userSubscriptions'));
     }
 
     public function getall()
     {
         $companyId = auth()->user()->company_id;
 
-        $users = User::with('department')
-            ->where('company_id', $companyId)
-            ->where('role', 'user')
-            ->latest()
-            ->get();
+        $users = User::with('department', 'usersubscription.plan')
+        ->where('users.company_id', $companyId)
+        ->where('users.role', 'user')
+        ->latest('users.created_at')
+        ->get();
 
         return response()->json(['data' => $users]);
     }
@@ -41,11 +52,12 @@ class UserController extends Controller
         STEP 1: GET FIRST AVAILABLE SUBSCRIPTION (FIFO)
         ===================================================== */
         $userSubscription = UserSubscription::where('company_id', $companyId)
+            ->where('id', $request->user_plan_id)
             ->where('status', 'active')
-            ->where('is_locked', 0) // 0 = unlocked
+            ->where('is_locked', '0') // 0 = unlocked
             ->whereColumn('used_users', '<', 'user_count')
-            ->orderBy('id', 'asc') // FIFO
             ->first();
+
 
         if (!$userSubscription) {
             return response()->json([
@@ -66,6 +78,7 @@ class UserController extends Controller
             'hod_email'     => 'required|email|max:255',
             'phone'         => 'required|numeric|digits_between:10,11|unique:users,phone',
             'password'      => 'required|min:6',
+            'user_plan_id'  => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -90,6 +103,7 @@ class UserController extends Controller
             'phone'               => $request->phone,
             'password'            => Hash::make($request->password),
             'status'              => 'active',
+            'user_plan_id'        => $request->user_plan_id,
 
             // 🔑 subscription binding
             'user_subscription_id'=> $userSubscription->id,

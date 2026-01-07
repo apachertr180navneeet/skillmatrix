@@ -31,14 +31,11 @@
 @section('content')
 <div class="container-fluid flex-grow-1 container-p-y">
 
-    <h5 class="fw-bold mb-4">Subscription Plan</h5>
+    <h5 class="fw-bold mb-4">Subscription Plans</h5>
 
-    {{-- ================= PURCHASED SUBSCRIPTIONS TABLE ================= --}}
+    {{-- ================= PURCHASED SUBSCRIPTIONS ================= --}}
     <div class="card mb-4">
-        <div class="card-header fw-bold">
-            Purchased Subscriptions
-        </div>
-
+        <div class="card-header fw-bold">Purchased Subscriptions</div>
         <div class="card-body p-0">
             <table class="table mb-0">
                 <thead class="table-light">
@@ -49,12 +46,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($subscriptions as $sub)
+                    @forelse($currentsubscriptions as $sub)
                         <tr>
                             <td>{{ $sub->used_users }} / {{ $sub->user_count }}</td>
                             <td>{{ $sub->user_count - $sub->used_users }}</td>
                             <td>
-                                @if($sub->is_locked == 1)
+                                @if($sub->is_locked)
                                     <span class="badge bg-danger">Locked</span>
                                 @else
                                     <span class="badge bg-success">Active</span>
@@ -63,7 +60,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">
+                            <td colspan="3" class="text-center text-muted">
                                 No subscriptions purchased yet
                             </td>
                         </tr>
@@ -76,38 +73,32 @@
     {{-- ================= AVAILABLE PLANS ================= --}}
     <div class="row g-4 justify-content-center">
         @foreach ($subcriptions as $subscription)
-            @php $isCurrent = ($subscription->id == $currentPlanId); @endphp
+
+            @php
+                // ⭐ ACTIVE PLAN CHECK
+                $isActive = $currentsubscriptions->contains('subscription_plan_id', $subscription->id);
+            @endphp
 
             <div class="col-lg-4 col-md-6">
-                <div class="plan-card text-center {{ $isCurrent ? 'active' : '' }}">
+                <div class="plan-card text-center {{ $isActive ? 'active' : '' }}">
 
-                    @if($isCurrent)
-                        <span class="badge bg-success current-badge">Current Plan</span>
+                    @if($isActive)
+                        <span class="badge bg-success current-badge">Active Plan</span>
                     @endif
 
                     <h4 class="plan-title">{{ $subscription->plan_name }}</h4>
 
                     <p class="plan-period">
-                        {{ $isCurrent
-                            ? 'Valid till '.\Carbon\Carbon::parse($currentPlanEndDate)->format('d M, Y')
-                            : 'Duration: '.$subscription->duration.' days'
-                        }}
+                        Duration: {{ $subscription->duration }} days
                     </p>
 
                     <h2 class="plan-price">
                         ₹{{ number_format($subscription->amount, 2) }}
                     </h2>
 
-                    @if($isCurrent)
-                        <button
-                            class="btn btn-success w-100 openAddUserModal"
-                            data-bs-toggle="modal"
-                            data-bs-target="#buyPlanModal"
-                            data-plan-id="{{ $subscription->id }}"
-                            data-plan-name="{{ $subscription->plan_name }}"
-                            data-plan-amount="{{ $subscription->amount }}"
-                        >
-                            ➕ Add More Users
+                    @if($isActive)
+                        <button class="btn btn-success w-100" disabled>
+                            ✔ Active
                         </button>
                     @else
                         <button
@@ -128,7 +119,7 @@
     </div>
 </div>
 
-{{-- ================= MODAL ================= --}}
+{{-- ================= BUY MODAL ================= --}}
 <div class="modal fade" id="buyPlanModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4">
@@ -139,7 +130,6 @@
 
             <form method="POST" id="buyPlanForm">
                 @csrf
-                <input type="hidden" name="action_type" id="actionType" value="buy">
 
                 <div class="modal-body">
                     <div class="text-center mb-4">
@@ -170,36 +160,19 @@
 <script>
     let basePrice = 0;
 
-    // BUY NEW PLAN
     document.querySelectorAll('.openBuyModal').forEach(btn => {
         btn.onclick = () => {
             basePrice = parseFloat(btn.dataset.planAmount);
-            document.getElementById('modalTitle').innerText = 'Confirm Subscription';
+
             document.getElementById('modalPlanName').innerText = btn.dataset.planName;
             document.getElementById('modalPlanAmount').innerText = basePrice.toFixed(2);
-            document.getElementById('actionType').value = 'buy';
             document.getElementById('buyPlanForm').action =
                 "{{ url('admin/subscription/buy') }}/" + btn.dataset.planId;
+
             document.getElementById('userCountInput').value = 1;
         };
     });
 
-    // ADD USERS TO CURRENT PLAN
-    document.querySelectorAll('.openAddUserModal').forEach(btn => {
-        btn.onclick = () => {
-            basePrice = parseFloat(btn.dataset.planAmount);
-            document.getElementById('modalTitle').innerText = 'Add Users to Current Plan';
-            document.getElementById('modalPlanName').innerText =
-                btn.dataset.planName + ' (Add Users)';
-            document.getElementById('modalPlanAmount').innerText = basePrice.toFixed(2);
-            document.getElementById('actionType').value = 'add_user';
-            document.getElementById('buyPlanForm').action =
-                "{{ url('admin/subscription/add-users') }}/" + btn.dataset.planId;
-            document.getElementById('userCountInput').value = 1;
-        };
-    });
-
-    // PRICE × USER COUNT
     document.getElementById('userCountInput').addEventListener('input', function () {
         let count = parseInt(this.value) || 1;
         this.value = count;

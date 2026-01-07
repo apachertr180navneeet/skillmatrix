@@ -21,30 +21,21 @@ class SubscriptionController extends Controller
 
         $subcriptions = SubscriptionPlan::where('status', 'active')->get();
 
-        $subscriptions = UserSubscription::where('company_id', $companyId)
+        $currentsubscriptions = UserSubscription::where('company_id', $companyId)
             ->where('status', 'active')
             ->get();
-
             
 
-        $totalAllowed = $subscriptions->sum('user_count');
-        $totalUsed    = $subscriptions->sum('used_users');
+        $totalAllowed = $currentsubscriptions->sum('user_count');
+        $totalUsed    = $currentsubscriptions->sum('used_users');
         $totalRemain  = $totalAllowed - $totalUsed;
-
-        $currentSubscription = $subscriptions->sortByDesc('id')->first();
-
-        $currentPlanId = $currentSubscription?->subscription_plan_id;
-        $currentPlanEndDate = $currentSubscription?->end_date;
 
         return view('admin.subscription.index', compact(
             'subcriptions',
-            'subscriptions',
+            'currentsubscriptions',
             'totalAllowed',
             'totalUsed',
             'totalRemain',
-            'currentSubscription',
-            'currentPlanId',
-            'currentPlanEndDate'
         ));
     }
 

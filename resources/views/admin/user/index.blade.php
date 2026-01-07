@@ -5,12 +5,54 @@
     .error-text {
         font-size: 12px;
     }
+
+    .overview-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        height: 100%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: #1e78d6;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .stat-content h6 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .stat-content p {
+        margin: 0;
+        font-size: 13px;
+        color: #555;
+    }
 </style>
 @endsection
 
 @section('content')
 <div class="container-fluid flex-grow-1 container-p-y">
-
+    {{-- ================= HEADER ================= --}}
     <div class="row mb-3">
         <div class="col-md-4">
             <h5><span class="text-primary fw-light">User</span> Management</h5>
@@ -21,8 +63,23 @@
             <button class="btn btn-success" id="bulkActive">Set Active</button>
             <button class="btn btn-secondary" id="bulkInactive">Set Inactive</button>
         </div>
+        <!-- User -->
+        @foreach ($userSubscriptions as $subscription)
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bx bx-user"></i></div>
+                    <div class="stat-content">
+                        <h6>{{ $subscription->plan->plan_name }}</h6>
+                        <p>Total :- {{ $subscription->user_count}}</p>
+                        <p>Used :- {{ $subscription->used_users}}</p>
+                        <p>Remaining :- {{ $subscription->user_count - $subscription->used_users }}</p>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 
+    {{-- ================= TABLE ================= --}}
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
@@ -34,6 +91,7 @@
                             <th>Department</th>
                             <th>HOD Name</th>
                             <th>HOD Email</th>
+                            <th>Plan</th>
                             <th>Phone</th>
                             <th>Status</th>
                             <th width="150">Action</th>
@@ -46,7 +104,7 @@
 
 </div>
 
-{{-- ================= ADD MODAL ================= --}}
+{{-- ================= ADD USER MODAL ================= --}}
 <div class="modal fade" id="addModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -66,6 +124,19 @@
                     <label>User Name</label>
                     <input type="text" id="name" class="form-control">
                     <small class="text-danger error-text name_error"></small>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Select Plan</label>
+                    <select id="user_plan_id" class="form-control">
+                        <option value="">Select Plan</option>
+                        @foreach ($userSubscriptions as $subscription)
+                            <option value="{{ $subscription->id }}">
+                                {{ $subscription->plan->plan_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small class="text-danger error-text user_plan_id_error"></small>
                 </div>
 
                 <div class="col-md-6">
@@ -109,7 +180,7 @@
     </div>
 </div>
 
-{{-- ================= EDIT MODAL ================= --}}
+{{-- ================= EDIT USER MODAL ================= --}}
 <div class="modal fade" id="editModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -126,6 +197,19 @@
                     <label>User Name</label>
                     <input type="text" id="edit_name" class="form-control">
                     <small class="text-danger error-text edit_name_error"></small>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Select Plan</label>
+                    <select id="edit_user_plan_id" class="form-control">
+                        <option value="">Select Plan</option>
+                        @foreach ($userSubscriptions as $subscription)
+                            <option value="{{ $subscription->id }}">
+                                {{ $subscription->plan->plan_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small class="text-danger error-text edit_user_plan_id_error"></small>
                 </div>
 
                 <div class="col-md-6">
@@ -157,6 +241,7 @@
                     <input type="password" id="edit_password" class="form-control">
                     <small class="text-danger error-text edit_password_error"></small>
                 </div>
+
             </div>
 
             <div class="modal-footer">
@@ -182,15 +267,14 @@ $(document).ready(function () {
             { data:'department.department_name' },
             { data:'hod_name' },
             { data:'hod_email' },
+            { data:'usersubscription.plan.plan_name' },
             { data:'phone' },
             {
                 data:'status',
                 render:(d,t,row)=>`
                 <div class="form-check form-switch">
-                    <input class="form-check-input changeStatus"
-                        type="checkbox"
-                        data-id="${row.id}"
-                        ${d === 'active' ? 'checked' : ''}>
+                    <input class="form-check-input changeStatus" type="checkbox"
+                        data-id="${row.id}" ${d === 'active' ? 'checked' : ''}>
                 </div>`
             },
             {
@@ -202,23 +286,10 @@ $(document).ready(function () {
         ]
     });
 
-    /* ================= HELPERS ================= */
     function clearErrors(){
         $('.error-text').text('');
         $('.form-control').removeClass('is-invalid');
         $('#planError').addClass('d-none').text('');
-    }
-
-    function resetAddForm(){
-        $('#name,#hod_name,#hod_email,#phone,#password').val('');
-        $('#department_id').val('');
-        clearErrors();
-    }
-
-    function resetEditForm(){
-        $('#editid,#edit_name,#edit_hod_name,#edit_hod_email,#edit_phone,#edit_password').val('');
-        $('#edit_department_id').val('');
-        clearErrors();
     }
 
     function loadDepartments(select){
@@ -239,22 +310,18 @@ $(document).ready(function () {
         $.post("{{ route('admin.user.store') }}",{
             _token:"{{ csrf_token() }}",
             name:$('#name').val(),
+            user_plan_id:$('#user_plan_id').val(),
             department_id:$('#department_id').val(),
             hod_name:$('#hod_name').val(),
             hod_email:$('#hod_email').val(),
             phone:$('#phone').val(),
             password:$('#password').val(),
         }).done(res=>{
-            resetAddForm();
             $('#addModal').modal('hide');
             table.ajax.reload(null,false);
             Toast.fire({icon:'success',title:res.message});
         }).fail(xhr=>{
             if(xhr.status===422){
-                if(xhr.responseJSON.errors.plan){
-                    $('#planError').removeClass('d-none').text(xhr.responseJSON.errors.plan[0]);
-                    return;
-                }
                 $.each(xhr.responseJSON.errors,(k,v)=>{
                     $('.'+k+'_error').text(v[0]);
                     $('#'+k).addClass('is-invalid');
@@ -268,6 +335,7 @@ $(document).ready(function () {
         $.get("{{ url('admin/users/get') }}/"+id,data=>{
             $('#editid').val(data.id);
             $('#edit_name').val(data.full_name);
+            $('#edit_user_plan_id').val(data.user_plan_id);
             $('#edit_department_id').val(data.department_id);
             $('#edit_hod_name').val(data.hod_name);
             $('#edit_hod_email').val(data.hod_email);
@@ -282,13 +350,13 @@ $(document).ready(function () {
             _token:"{{ csrf_token() }}",
             id:$('#editid').val(),
             name:$('#edit_name').val(),
+            user_plan_id:$('#edit_user_plan_id').val(),
             department_id:$('#edit_department_id').val(),
             hod_name:$('#edit_hod_name').val(),
             hod_email:$('#edit_hod_email').val(),
             phone:$('#edit_phone').val(),
             password:$('#edit_password').val(),
         }).done(res=>{
-            resetEditForm();
             $('#editModal').modal('hide');
             table.ajax.reload(null,false);
             Toast.fire({icon:'success',title:res.message});
@@ -301,62 +369,6 @@ $(document).ready(function () {
             }
         });
     });
-
-    /* ================= DELETE ================= */
-    window.deleteUser=function(id){
-        if(confirm('Are you sure?')){
-            $.ajax({
-                url:"{{ url('admin/users/delete') }}/"+id,
-                method:"DELETE",
-                data:{ _token:"{{ csrf_token() }}" }
-            }).done(res=>{
-                table.ajax.reload(null,false);
-                Toast.fire({icon:'success',title:res.message});
-            });
-        }
-    };
-
-    /* ================= STATUS ================= */
-    $(document).on('change','.changeStatus',function(){
-        $.post("{{ route('admin.user.status') }}",{
-            _token:"{{ csrf_token() }}",
-            userId:$(this).data('id'),
-            status:$(this).is(':checked')?'active':'inactive'
-        },()=>table.ajax.reload(null,false));
-    });
-
-    /* ================= BULK ================= */
-    $('#selectAll').on('change',()=>$('.rowCheckbox').prop('checked',$('#selectAll').is(':checked')));
-
-    function getSelectedIds(){
-        return $('.rowCheckbox:checked').map(function(){return this.value}).get();
-    }
-
-    $('#bulkDelete').click(()=>{
-        let ids=getSelectedIds();
-        if(!ids.length) return alert('Select at least one');
-        if(confirm('Are you sure?')){
-            $.post("{{ route('admin.user.bulkDelete') }}",{_token:"{{ csrf_token() }}",ids},res=>{
-                table.ajax.reload(null,false);
-                Toast.fire({icon:'success',title:res.message});
-            });
-        }
-    });
-
-    $('#bulkActive').click(()=>bulkStatus('active'));
-    $('#bulkInactive').click(()=>bulkStatus('inactive'));
-
-    function bulkStatus(status){
-        let ids=getSelectedIds();
-        if(!ids.length) return alert('Select at least one');
-        $.post("{{ route('admin.user.bulkStatus') }}",{_token:"{{ csrf_token() }}",ids,status},res=>{
-            table.ajax.reload(null,false);
-            Toast.fire({icon:'success',title:res.message});
-        });
-    }
-
-    $('#addModal').on('hidden.bs.modal', resetAddForm);
-    $('#editModal').on('hidden.bs.modal', resetEditForm);
 
 });
 </script>
