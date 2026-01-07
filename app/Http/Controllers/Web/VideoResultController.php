@@ -44,31 +44,38 @@ class VideoResultController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        // All Video questions with correct answers
-        $videoQuestions = VedioQuesans::where('vedio_id', $result->vedio_id)->get();
-
-        // User answers (ques_id => answer)
-        $userAnswers = VideoUserQuesAns::where('vedio_id', $result->vedio_id)
+        // ✅ User answers in SAME ORDER as submitted
+        $userAnswerRows = VideoUserQuesAns::where('vedio_id', $result->vedio_id)
             ->where('user_id', $result->user_id)
-            ->pluck('answere', 'ques_id');
+            ->orderBy('id') // or created_at
+            ->get();
 
-        // Build question list for UI
-        $questions = $videoQuestions->map(function ($q) use ($userAnswers) {
+        // All related questions indexed by id
+        $questionsMaster = VedioQuesans::where('vedio_id', $result->vedio_id)
+            ->whereIn('id', $userAnswerRows->pluck('ques_id'))
+            ->get()
+            ->keyBy('id');
+
+        // Build question list in USER ANSWER ORDER
+        $questiondeatil = $userAnswerRows->map(function ($ua) use ($questionsMaster) {
+
+            $q = $questionsMaster[$ua->ques_id];
+
             return [
-                'question'       => $q->question,
-                'options'        => [
+                'question' => $q->question,
+                'options' => [
                     '1' => $q->option_one,
                     '2' => $q->option_two,
                     '3' => $q->option_three,
                     '4' => $q->option_four,
                 ],
-                'correct_answer' => (int) $q->answere_option,          // 1–4
-                'user_answer'    => (int) ($userAnswers[$q->id] ?? 0) // 1–4
+                'correct_answer' => (int) $q->answere_option,
+                'user_answer'    => (int) $ua->answere,
+                'status' => $ua->answere == $q->answere_option
+                    ? 'correct'
+                    : 'wrong'
             ];
-        });
-
-
-        $questiondeatil = $questions->toArray();
+        })->toArray();
 
         return view('web.video_results.view', compact('result', 'questiondeatil'));
     }

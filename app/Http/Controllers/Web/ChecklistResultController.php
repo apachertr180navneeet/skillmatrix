@@ -44,32 +44,49 @@ class ChecklistResultController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        // All Checklist questions with correct answers
-        $checklistQuestions = ChecklistQuesAns::where('checklist_id', $result->checklist_id)->get();
-
-        // User answers (ques_id => answer)
-        $userAnswers = ChecklistUserQuesAns::where('checklist_id', $result->checklist_id)
+        // User answered questions only
+        $answeredQuestions = ChecklistUserQuesAns::where('checklist_id', $result->checklist_id)
             ->where('user_id', $result->user_id)
-            ->pluck('answere', 'ques_id');
+            ->whereNotNull('answere')
+            ->get();
 
-        // Build question list for UI
-        $questions = $checklistQuestions->map(function ($q) use ($userAnswers) {
+        $questionIds = $answeredQuestions->pluck('ques_id');
+
+        // Fetch checklist questions
+        $checklistQuestions = ChecklistQuesAns::whereIn('id', $questionIds)
+            ->get()
+            ->keyBy('id');
+
+        // Build UI data
+        $questions = $answeredQuestions->map(function ($answer) use ($checklistQuestions) {
+
+            $q = $checklistQuestions[$answer->ques_id] ?? null;
+
+            if (!$q) {
+                return null;
+            }
+
             return [
-                'question'       => $q->question,
-                'options'        => [
-                    '1' => $q->option_one,
-                    '2' => $q->option_two,
-                    '3' => $q->option_three,
-                    '4' => $q->option_four,
+                'question' => $q->question,
+                'options'  => [
+                    1 => $q->option_one,
+                    2 => $q->option_two,
+                    3 => $q->option_three,
+                    4 => $q->option_four,
                 ],
-                'correct_answer' => (int) $q->answere_option,          // 1–4
-                'user_answer'    => (int) ($userAnswers[$q->id] ?? 0) // 1–4
+
+                // ✅ IMPORTANT FIX HERE
+                'correct_answer' => (int) ($q->answer_option ?? $q->answere_option ?? 0),
+
+                'user_answer'    => (int) $answer->answere,
+
+                'is_correct'     => ((int)($q->answer_option ?? $q->answere_option) === (int)$answer->answere)
             ];
-        });
+        })->filter(); // remove null rows
 
-
-        $questiondeatil = $questions->toArray();
+        $questiondeatil = $questions->values()->toArray();
 
         return view('web.checklist_results.view', compact('result', 'questiondeatil'));
     }
+
 }

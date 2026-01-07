@@ -227,7 +227,7 @@
     </div>
 
     <!-- ================= BACK ================= -->
-    <a href="{{ route('user.sop.result.index') }}" class="btn btn-secondary mt-3">
+    <a href="{{ route('user.sop.results') }}" class="btn btn-secondary mt-3">
         ← Back to Results
     </a>
 

@@ -50,38 +50,43 @@ class SopController extends Controller
 
     public function qaSubmit(Request $request)
     {
-        $userId = auth()->user()->id;
+        $userId    = auth()->user()->id;
         $companyId = auth()->user()->company_id;
-        $sopId  = $request->sop_id;
+        $sopId     = $request->sop_id;
+
+        // ---------------- RANDOM QUESTION IDS (ONLY 10) ----------------
+        $questionIds = $request->ques_id; // random 10 questions shown to user
+
+        // ---------------- DELETE OLD ANSWERS (RE-ATTEMPT SAFE) ----------------
+        SopUserQuesAns::where('sop_id', $sopId)
+            ->where('user_id', $userId)
+            ->whereIn('ques_id', $questionIds)
+            ->delete();
 
         // ---------------- SAVE USER ANSWERS ----------------
-        foreach ($request->ques_id as $quesId) {
-            $answer = $request->answers[$quesId] ?? null;
-
-            SopUserQuesAns::Create(
-                [
-                    'sop_id'  => $sopId,
-                    'user_id' => $userId,
-                    'ques_id' => $quesId,
-                    'company_id' => $companyId,
-                    'answere' => $answer,
-                    'sop_id'  => $sopId,
-                    'user_id' => $userId,
-                ]
-            );
+        foreach ($questionIds as $quesId) {
+            SopUserQuesAns::create([
+                'sop_id'     => $sopId,
+                'user_id'    => $userId,
+                'ques_id'    => $quesId,
+                'company_id' => $companyId,
+                'answere'    => $request->answers[$quesId] ?? null,
+            ]);
         }
 
-        // ---------------- FETCH CORRECT ANSWERS ----------------
+        // ---------------- FETCH CORRECT ANSWERS (ONLY RANDOM 10) ----------------
         $correctAnswers = SopQuesAns::where('sop_id', $sopId)
+            ->whereIn('id', $questionIds)
             ->pluck('answere_option', 'id'); // [ques_id => correct_answer]
 
-        // ---------------- FETCH USER ANSWERS ----------------
+        // ---------------- FETCH USER ANSWERS (ONLY RANDOM 10) ----------------
         $userAnswers = SopUserQuesAns::where('sop_id', $sopId)
             ->where('user_id', $userId)
+            ->whereIn('ques_id', $questionIds)
             ->pluck('answere', 'ques_id'); // [ques_id => user_answer]
 
         // ---------------- CALCULATE RESULT ----------------
-        $totalQuestions = $correctAnswers->count();
+        $totalQuestions = count($questionIds);
         $correctCount   = 0;
 
         foreach ($correctAnswers as $quesId => $correctAnswer) {
@@ -101,19 +106,22 @@ class SopController extends Controller
 
         $resultStatus = $percentage >= 60 ? 'pass' : 'fail';
 
+        // ---------------- DELETE OLD RESULT (IF EXISTS) ----------------
+        SopUserResult::where('sop_id', $sopId)
+            ->where('user_id', $userId)
+            ->delete();
+
         // ---------------- STORE FINAL RESULT ----------------
-        SopUserResult::Create(
-            [
-                'sop_id'         => $sopId,
-                'user_id'        => $userId,
-                'total_questions' => $totalQuestions,
-                'correct_answers' => $correctCount,
-                'wrong_answers'   => $wrongCount,
-                'result'          => $percentage,
-                'result_status'   => $resultStatus,
-                'company_id' => $companyId,
-            ]
-        );
+        SopUserResult::create([
+            'sop_id'           => $sopId,
+            'user_id'          => $userId,
+            'company_id'       => $companyId,
+            'total_questions'  => $totalQuestions,
+            'correct_answers'  => $correctCount,
+            'wrong_answers'    => $wrongCount,
+            'result'           => $percentage,
+            'result_status'    => $resultStatus,
+        ]);
 
         return redirect()
             ->route('user.sop')

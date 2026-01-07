@@ -51,40 +51,42 @@ class VideoController extends Controller
     {
         $userId  = auth()->user()->id;
         $videoId = $request->video_id;
-        
+        $companyId = auth()->user()->company_id;
+
         // ---------------- SAVE USER ANSWERS ----------------
         foreach ($request->ques_id as $quesId) {
 
-            $answer = $request->answers[$quesId] ?? null;
+            if (!isset($request->answers[$quesId])) {
+                continue; // skip unanswered question
+            }
 
-            VideoUserQuesAns::Create(
-                [
-                    'vedio_id' => $videoId,
-                    'user_id'  => $userId,
-                    'ques_id'  => $quesId,
-                    'answere' => $answer,
-                    'company_id' => auth()->user()->company_id,
-                ]
-            );
+            VideoUserQuesAns::create([
+                'vedio_id'   => $videoId,
+                'user_id'    => $userId,
+                'ques_id'    => $quesId,
+                'answere'    => $request->answers[$quesId],
+                'company_id'=> $companyId,
+            ]);
         }
 
-        // ---------------- FETCH CORRECT ANSWERS ----------------
-        $correctAnswers = VedioQuesans::where('vedio_id', $videoId)
-            ->pluck('answere_option', 'id'); // [ques_id => correct_answer]
-
-        // ---------------- FETCH USER ANSWERS ----------------
+        // ---------------- FETCH USER ANSWERS (ONLY ANSWERED) ----------------
         $userAnswers = VideoUserQuesAns::where('vedio_id', $videoId)
             ->where('user_id', $userId)
             ->pluck('answere', 'ques_id'); // [ques_id => user_answer]
 
+        // ---------------- FETCH CORRECT ANSWERS FOR ANSWERED QUESTIONS ----------------
+        $correctAnswers = VedioQuesans::where('vedio_id', $videoId)
+            ->whereIn('id', $userAnswers->keys())
+            ->pluck('answere_option', 'id');
+
         // ---------------- CALCULATE RESULT ----------------
-        $totalQuestions = $correctAnswers->count();
+        $totalQuestions = $userAnswers->count(); // ✅ only answered
         $correctCount   = 0;
 
-        foreach ($correctAnswers as $quesId => $correctAnswer) {
+        foreach ($userAnswers as $quesId => $userAnswer) {
             if (
-                isset($userAnswers[$quesId]) &&
-                $userAnswers[$quesId] == $correctAnswer
+                isset($correctAnswers[$quesId]) &&
+                $userAnswer == $correctAnswers[$quesId]
             ) {
                 $correctCount++;
             }
@@ -99,18 +101,16 @@ class VideoController extends Controller
         $resultStatus = $percentage >= 60 ? 'pass' : 'fail';
 
         // ---------------- STORE FINAL RESULT ----------------
-        VideoUserResult::Create(
-            [
-                'vedio_id' => $videoId,
-                'user_id'  => $userId,
-                'company_id' => auth()->user()->company_id,
-                'total_questions' => $totalQuestions,
-                'correct_answers' => $correctCount,
-                'wrong_answers'   => $wrongCount,
-                'result'          => $percentage,
-                'result_status'   => $resultStatus,
-            ]
-        );
+        VideoUserResult::create([
+            'vedio_id'         => $videoId,
+            'user_id'          => $userId,
+            'company_id'       => $companyId,
+            'total_questions'  => $totalQuestions,
+            'correct_answers'  => $correctCount,
+            'wrong_answers'    => $wrongCount,
+            'result'           => $percentage,
+            'result_status'    => $resultStatus,
+        ]);
 
         return redirect()
             ->route('user.video')
@@ -119,4 +119,5 @@ class VideoController extends Controller
                 "Video submitted successfully. Result: {$percentage}% ({$resultStatus})"
             );
     }
+
 }

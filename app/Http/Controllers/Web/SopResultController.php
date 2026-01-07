@@ -38,22 +38,28 @@ class SopResultController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        // Result summary
+        // ---------------- RESULT SUMMARY ----------------
         $result = SopUserResult::with('sop', 'user')
             ->where('company_id', $companyId)
             ->where('id', $id)
             ->firstOrFail();
 
-        // All SOP questions with correct answers
-        $sopQuestions = SopQuesAns::where('sop_id', $result->sop_id)->get();
-
-        // User answers (ques_id => answer)
-        $userAnswers = SopUserQuesAns::where('sop_id', $result->sop_id)
+        // ---------------- USER ANSWERED QUESTIONS ONLY ----------------
+        $answeredQuestions = SopUserQuesAns::where('sop_id', $result->sop_id)
             ->where('user_id', $result->user_id)
-            ->pluck('answere', 'ques_id');
+            ->whereNotNull('answere')
+            ->get();
 
-        // Build question list for UI
-        $questions = $sopQuestions->map(function ($q) use ($userAnswers) {
+        // ---------------- FETCH QUESTION DETAILS ----------------
+        $questionIds = $answeredQuestions->pluck('ques_id');
+
+        $sopQuestions = SopQuesAns::whereIn('id', $questionIds)->get()->keyBy('id');
+
+        // ---------------- BUILD QUESTION LIST FOR UI ----------------
+        $questions = $answeredQuestions->map(function ($answer) use ($sopQuestions) {
+
+            $q = $sopQuestions[$answer->ques_id];
+
             return [
                 'question'       => $q->question,
                 'options'        => [
@@ -62,8 +68,9 @@ class SopResultController extends Controller
                     '3' => $q->option_three,
                     '4' => $q->option_four,
                 ],
-                'correct_answer' => (int) $q->answere_option,          // 1–4
-                'user_answer'    => (int) ($userAnswers[$q->id] ?? 0) // 1–4
+                'correct_answer' => (int) $q->answere_option, // correct option (1–4)
+                'user_answer'    => (int) $answer->answere,  // user selected option (1–4)
+                'is_correct'     => ((int)$q->answere_option === (int)$answer->answere)
             ];
         });
 
