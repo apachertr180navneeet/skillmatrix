@@ -42,6 +42,17 @@
 @section('content')
 <div class="container-fluid container-p-y">
 
+<!-- IMPORT EXCEL -->
+<div class="d-flex justify-content-end mb-3">
+    <button type="button"
+            class="btn btn-success btn-sm"
+            onclick="document.getElementById('excelInput').click()">
+        📥 Import Excel
+    </button>
+</div>
+
+<input type="file" id="excelInput" accept=".xls,.xlsx" hidden>
+
 <div class="form-card">
 <form action="{{ route('admin.video.qa.store') }}" method="POST">
 @csrf
@@ -49,125 +60,75 @@
 <!-- VIDEO TITLE -->
 <div class="mb-4">
     <label class="form-label">Video Title</label>
-    <input type="text" class="form-control" value="{{ $videoDetails->title }}" readonly>
-    <input type="hidden" name="vedio_id" value="{{ $videoDetails->id }}">
+    <input type="text" class="form-control"
+           value="{{ $videoDetails->title }}" readonly>
+    <input type="hidden" name="vedio_id"
+           value="{{ $videoDetails->id }}">
 </div>
 
 <!-- QUESTIONS -->
 <div id="questionWrapper">
 
 @if($videoQuesAns->count() > 0)
-
 @foreach($videoQuesAns as $qIndex => $qa)
-
-<div class="question-card" data-index="{{ $qIndex }}">
+<div class="question-card">
 
     <div class="d-flex justify-content-between mb-3">
         <label class="form-label">Question {{ $qIndex + 1 }}</label>
 
         <button type="button"
-            class="btn btn-danger btn-sm remove-question {{ $qIndex == 0 ? 'd-none' : '' }}">
+                class="btn btn-danger btn-sm remove-question {{ $qIndex == 0 && $videoQuesAns->count() == 1 ? 'd-none' : '' }}">
             Remove
         </button>
     </div>
 
-    <!-- QUESTION -->
     <input type="text"
-        name="questions[{{ $qIndex }}][question]"
-        class="form-control mb-3"
-        value="{{ $qa->question }}"
-        required>
+           name="questions[{{ $qIndex }}][question]"
+           class="form-control mb-3"
+           value="{{ $qa->question }}"
+           required>
 
-    <!-- OPTION 1 -->
+    @foreach([1,2,3,4] as $i)
     <div class="option-row">
         <input type="radio"
-            name="questions[{{ $qIndex }}][correct]"
-            value="1"
-            {{ $qa->answere_option == 1 ? 'checked' : '' }}
-            required>
+               name="questions[{{ $qIndex }}][correct]"
+               value="{{ $i }}"
+               {{ $qa->answere_option == $i ? 'checked' : '' }}
+               required>
 
         <input type="text"
-            name="questions[{{ $qIndex }}][options][1]"
-            class="form-control"
-            value="{{ $qa->option_one }}"
-            placeholder="Option 1"
-            required>
+               name="questions[{{ $qIndex }}][options][{{ $i }}]"
+               class="form-control"
+               value="{{ $qa->{'option_'.['one','two','three','four'][$i-1]} }}"
+               required>
     </div>
-
-    <!-- OPTION 2 -->
-    <div class="option-row">
-        <input type="radio"
-            name="questions[{{ $qIndex }}][correct]"
-            value="2"
-            {{ $qa->answere_option == 2 ? 'checked' : '' }}
-            required>
-
-        <input type="text"
-            name="questions[{{ $qIndex }}][options][2]"
-            class="form-control"
-            value="{{ $qa->option_two }}"
-            placeholder="Option 2"
-            required>
-    </div>
-
-    <!-- OPTION 3 -->
-    <div class="option-row">
-        <input type="radio"
-            name="questions[{{ $qIndex }}][correct]"
-            value="3"
-            {{ $qa->answere_option == 3 ? 'checked' : '' }}
-            required>
-
-        <input type="text"
-            name="questions[{{ $qIndex }}][options][3]"
-            class="form-control"
-            value="{{ $qa->option_three }}"
-            placeholder="Option 3"
-            required>
-    </div>
-
-    <!-- OPTION 4 -->
-    <div class="option-row">
-        <input type="radio"
-            name="questions[{{ $qIndex }}][correct]"
-            value="4"
-            {{ $qa->answere_option == 4 ? 'checked' : '' }}
-            required>
-
-        <input type="text"
-            name="questions[{{ $qIndex }}][options][4]"
-            class="form-control"
-            value="{{ $qa->option_four }}"
-            placeholder="Option 4"
-            required>
-    </div>
+    @endforeach
 
 </div>
 @endforeach
-
 @else
-<!-- DEFAULT QUESTION -->
-<div class="question-card" data-index="0">
+<!-- DEFAULT EMPTY QUESTION -->
+<div class="question-card">
 <label class="form-label">Question 1</label>
 
 <input type="text"
-    name="questions[0][question]"
-    class="form-control mb-3"
-    placeholder="Enter question"
-    required>
+       name="questions[0][question]"
+       class="form-control mb-3"
+       placeholder="Enter question"
+       required>
 
 @foreach([1,2,3,4] as $i)
 <div class="option-row">
     <input type="radio"
-        name="questions[0][correct]"
-        value="{{ $i }}"
-        required>
+           name="questions[0][correct]"
+           value="{{ $i }}"
+           required>
 
     <input type="text"
-        name="questions[0][options][{{ $i }}]"
-        class="form-control"
-        placeholder="Option {{ $i }}"
-        required>
+           name="questions[0][options][{{ $i }}]"
+           class="form-control"
+           placeholder="Option {{ $i }}"
+           required>
 </div>
 @endforeach
 </div>
@@ -175,12 +136,16 @@
 
 </div>
 
-<button type="button" class="btn btn-primary btn-sm mb-3" id="addQuestion">
+<button type="button"
+        class="btn btn-primary btn-sm mb-3"
+        id="addQuestion">
 + Add Question
 </button>
 
 <div class="text-end">
-<button type="submit" class="submit-btn">Submit Video Questions</button>
+<button type="submit" class="submit-btn">
+Submit Video Questions
+</button>
 </div>
 
 </form>
@@ -189,42 +154,131 @@
 @endsection
 
 @section('script')
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 <script>
 let questionIndex = {{ $videoQuesAns->count() > 0 ? $videoQuesAns->count() : 1 }};
 
+/* ADD QUESTION */
 document.getElementById('addQuestion').addEventListener('click', function () {
-
-let wrapper = document.getElementById('questionWrapper');
-
-let html = `
-<div class="question-card" data-index="${questionIndex}">
-<label class="form-label">Question ${questionIndex + 1}</label>
-
-<input type="text"
-name="questions[${questionIndex}][question]"
-class="form-control mb-3"
-required>
-
-${[1,2,3,4].map(i => `
-<div class="option-row">
-<input type="radio" name="questions[${questionIndex}][correct]" value="${i}" required>
-<input type="text" name="questions[${questionIndex}][options][${i}]"
-class="form-control" placeholder="Option ${i}" required>
-</div>`).join('')}
-
-<button type="button" class="btn btn-danger btn-sm remove-question mt-2">
-Remove
-</button>
-</div>`;
-
-wrapper.insertAdjacentHTML('beforeend', html);
-questionIndex++;
+    addQuestion();
 });
 
-document.addEventListener('click', function(e){
-if(e.target.classList.contains('remove-question')){
-e.target.closest('.question-card').remove();
+function addQuestion(data = null) {
+
+    let html = `
+    <div class="question-card">
+        <div class="d-flex justify-content-between mb-3">
+            <label class="form-label">Question ${questionIndex + 1}</label>
+            <button type="button"
+                    class="btn btn-danger btn-sm remove-question">
+                Remove
+            </button>
+        </div>
+
+        <input type="text"
+               name="questions[${questionIndex}][question]"
+               class="form-control mb-3"
+               value="${data?.question ?? ''}"
+               required>
+    `;
+
+    [1,2,3,4].forEach(i => {
+        html += `
+        <div class="option-row">
+            <input type="radio"
+                   name="questions[${questionIndex}][correct]"
+                   value="${i}"
+                   ${data?.correct === i ? 'checked' : ''}
+                   required>
+
+            <input type="text"
+                   name="questions[${questionIndex}][options][${i}]"
+                   class="form-control"
+                   value="${data?.options?.[i-1] ?? ''}"
+                   required>
+        </div>
+        `;
+    });
+
+    html += `</div>`;
+
+    document.getElementById('questionWrapper')
+        .insertAdjacentHTML('beforeend', html);
+
+    questionIndex++;
+    updateRemoveButtons();
 }
+
+/* REMOVE QUESTION */
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-question')) {
+        e.target.closest('.question-card').remove();
+        updateRemoveButtons();
+    }
+});
+
+/* UPDATE REMOVE BUTTON VISIBILITY */
+function updateRemoveButtons() {
+    const cards = document.querySelectorAll('.question-card');
+    cards.forEach((card, index) => {
+        const btn = card.querySelector('.remove-question');
+        if (btn) {
+            btn.style.display = cards.length > 1 ? 'inline-block' : 'none';
+        }
+    });
+}
+
+/* EXCEL IMPORT (SMART FILL) */
+document.getElementById('excelInput').addEventListener('change', function (e) {
+
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (evt) {
+
+        const wb = XLSX.read(evt.target.result, { type: 'binary' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        rows.shift();
+
+        rows.forEach((row, index) => {
+
+            if (!row[0]) return;
+
+            const data = {
+                question: row[0],
+                options: [row[1], row[2], row[3], row[4]],
+                correct: parseInt(row[5])
+            };
+
+            const firstQ = document.querySelector('input[name="questions[0][question]"]');
+
+            if (index === 0 && firstQ && firstQ.value.trim() === '') {
+
+                firstQ.value = data.question;
+
+                data.options.forEach((opt, i) => {
+                    document.querySelector(`input[name="questions[0][options][${i+1}]"]`).value = opt ?? '';
+                    if (data.correct === i + 1) {
+                        document.querySelector(`input[name="questions[0][correct]"][value="${i+1}"]`).checked = true;
+                    }
+                });
+
+            } else {
+                addQuestion(data);
+            }
+        });
+
+        updateRemoveButtons();
+        e.target.value = '';
+    };
+
+    reader.readAsBinaryString(file);
 });
 </script>
 @endsection
