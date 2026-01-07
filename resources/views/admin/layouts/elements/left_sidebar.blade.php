@@ -41,6 +41,7 @@
 				['route' => 'admin.video.index', 'text' => 'Video Management'],
 				['route' => 'admin.sop.result.index', 'text' => 'SOP Results'],
 				['route' => 'admin.video.result.index', 'text' => 'Video Results'],
+				['route' => 'admin.checklist.result.index', 'text' => 'Checklist Results'],
 			] as $menu)
 
 				<li class="menu-item {{ request()->routeIs($menu['route']) ? 'active' : '' }}">

@@ -42,6 +42,7 @@ use App\Http\Controllers\Admin\{
     VideoQuesAnsController as AdminVideoQuesAnsController,
     SopResultController as AdminSopResultController,
     VideoResultController as AdminVideoResultController,
+    ChecklistResultController as AdminChecklistResultController
 };
 
 /*
@@ -399,6 +400,13 @@ Route::prefix('admin')
 
                 Route::prefix('video-results')->name('video.result.')
                     ->controller(AdminVideoResultController::class)
+                    ->group(function () {
+                        Route::get('/', 'index')->name('index');
+                        Route::get('{id}/view', 'view')->name('view');
+                    });
+
+                Route::prefix('checklist-results')->name('checklist.result.')
+                    ->controller(AdminChecklistResultController::class)
                     ->group(function () {
                         Route::get('/', 'index')->name('index');
                         Route::get('{id}/view', 'view')->name('view');
