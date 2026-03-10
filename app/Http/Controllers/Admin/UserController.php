@@ -62,10 +62,8 @@ class UserController extends Controller
         if (!$userSubscription) {
             return response()->json([
                 'success' => false,
-                'errors' => [
-                    'plan' => ['No available user seats. Please buy more users.']
-                ]
-            ], 422);
+                'message' => 'No available user seats. Please buy more users.'
+            ]);
         }
 
         /* =====================================================
@@ -188,10 +186,8 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'errors' => [
-                    'user' => ['User not found.']
-                ]
-            ], 404);
+                'message' => 'User not found.'
+            ]);
         }
 
         /* =====================================================
@@ -200,10 +196,8 @@ class UserController extends Controller
         if ($user->is_locked == 1) {
             return response()->json([
                 'success' => false,
-                'errors' => [
-                    'user' => ['This user is locked and cannot be updated.']
-                ]
-            ], 422);
+                'message' => 'This user is locked and cannot be updated.'
+            ]);
         }
 
         /* =====================================================
@@ -257,9 +251,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'errors' => [
-                    'user' => ['User not found.']
-                ]
+                'message' => 'User not found.'
             ], 404);
         }
 
@@ -267,9 +259,7 @@ class UserController extends Controller
         if ($user->is_locked == 1) {
             return response()->json([
                 'success' => false,
-                'errors' => [
-                    'user' => ['This user is locked and cannot be deleted or reassigned.']
-                ]
+                'message' => 'This user is locked and cannot be deleted or reassigned.'
             ], 422);
         }
 

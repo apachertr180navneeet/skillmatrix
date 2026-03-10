@@ -92,6 +92,10 @@
                         Duration: {{ $subscription->duration }} days
                     </p>
 
+                    <p class="plan-period">
+                        Description: {{ $subscription->description }}
+                    </p>
+
                     <h2 class="plan-price">
                         ₹{{ number_format($subscription->amount, 2) }}
                     </h2>

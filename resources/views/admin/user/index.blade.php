@@ -370,6 +370,105 @@ $(document).ready(function () {
         });
     });
 
+
+    /* ================= DELETE ================= */
+    window.deleteUser = function(id){
+        if(confirm('Are you sure?')){
+            $.ajax({
+                url: "{{ url('admin/users/delete') }}/"+id,
+                method: "DELETE",
+                data: { _token: "{{ csrf_token() }}" },
+                success: res => {
+                    table.ajax.reload(null,false);
+                    Toast.fire({ icon:'success', title: res.message });
+                }
+            });
+        }
+    };
+
+    /* ================= STATUS ================= */
+    $(document).on('change', '.changeStatus', function () {
+
+        $.post("{{ route('admin.user.status') }}", {
+            _token: "{{ csrf_token() }}",
+            userId: $(this).data('id'),
+            status: $(this).is(':checked') ? 'active' : 'inactive'
+        }, function (res) {
+            if (res.success) {
+                table.ajax.reload(null, false);
+                Toast.fire({ icon: 'success', title: 'Status updated!' });
+            }
+        });
+    });
+    /* ================= SELECT ALL ================= */
+    $('#selectAll').on('change', function () {
+        $('.rowCheckbox').prop('checked', $(this).is(':checked'));
+    });
+
+    $(document).on('change', '.rowCheckbox', function () {
+        $('#selectAll').prop(
+            'checked',
+            $('.rowCheckbox:checked').length === $('.rowCheckbox').length
+        );
+    });
+
+    /* ================= BULK DELETE ================= */
+    function getSelectedIds() {
+        let ids = [];
+        $('.rowCheckbox:checked').each(function () {
+            ids.push($(this).val());
+        });
+        return ids;
+    }
+
+    /* ================= BULK DELETE ================= */
+    $('#bulkDelete').click(function () {
+        let ids = getSelectedIds();
+        if (ids.length === 0) {
+            alert('Please select at least one user');
+            return;
+        }
+
+        if (!confirm('Are you sure you want to delete selected users?')) return;
+
+        $.post("{{ route('admin.user.bulkDelete') }}", {
+            _token: "{{ csrf_token() }}",
+            ids: ids
+        }, function (res) {
+            if (res.success) {
+                table.ajax.reload(null, false);
+                $('#selectAll').prop('checked', false);
+                Toast.fire({ icon: 'success', title: res.message });
+            }
+        });
+    });
+
+    /* ================= BULK STATUS ================= */
+    function bulkStatus(status) {
+        let ids = getSelectedIds();
+
+        if (ids.length === 0) {
+            alert('Please select at least one department');
+            return;
+        }
+
+        $.post("{{ route('admin.user.bulkStatus') }}", {
+            _token: "{{ csrf_token() }}",
+            ids: ids,
+            status: status
+        }, function (res) {
+            if (res.success) {
+                table.ajax.reload(null, false);
+                $('#selectAll').prop('checked', false);
+                Toast.fire({ icon: 'success', title: res.message });
+            }
+        });
+    }
+
+    /* ================= BULK ACTIVE/INACTIVE ================= */
+    $('#bulkActive').click(() => bulkStatus('active'));
+    $('#bulkInactive').click(() => bulkStatus('inactive'));
+
 });
 </script>
 @endsection
