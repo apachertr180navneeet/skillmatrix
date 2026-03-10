@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Super_Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Video;
+use App\Models\{Video, VedioQuesans};
 use Illuminate\Http\Request;
 
 class VideoController extends Controller
@@ -42,5 +42,19 @@ class VideoController extends Controller
         }
 
         return view('super_admin.video.show', compact('video'));
+    }
+
+
+    public function showQA(Request $request, $id)
+    {
+        $video = Video::with(['department', 'company'])->find($id);
+
+        $videoQUesAns = VedioQuesans::where('vedio_id', $id)->get();
+
+        if (!$video) {
+            abort(404, 'SOP not found');
+        }
+
+        return view('super_admin.video.showqa', compact('video' , 'videoQUesAns'));
     }
 }

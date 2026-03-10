@@ -22,10 +22,12 @@
                 <table class="table table-bordered" id="checklistTable">
                     <thead>
                         <tr>
+                            <th>S.No.</th>
                             <th>Title</th>
                             <th>Department</th>
                             <th>Company</th>
                             <th>Description</th>
+                            <th>Created At</th>
                             <th width="150">Action</th>
                         </tr>
                     </thead>
@@ -48,6 +50,14 @@ $(document).ready(function () {
         ajax: "{{ route('super.admin.checklist.getall') }}",
         columns: [
 
+            // S.No
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
+
             // Title
             { data: 'title' },
 
@@ -63,11 +73,11 @@ $(document).ready(function () {
             {
                 data: 'company',
                 render: function (data) {
-                    return data ? data.name : '-';
+                    return data ? data.copmany_name : '-';
                 }
             },
 
-            // Description (short)
+            // Description
             {
                 data: 'description',
                 render: function (data) {
@@ -78,7 +88,17 @@ $(document).ready(function () {
                 }
             },
 
-            // Actions
+            // Created Date
+            {
+                data: 'created_at',
+                render: function (data) {
+                    if (!data) return '-';
+                    let date = new Date(data);
+                    return date.toLocaleDateString('en-IN');
+                }
+            },
+
+            // Action
             {
                 data: 'id',
                 orderable: false,
@@ -86,8 +106,13 @@ $(document).ready(function () {
                 render: function (id) {
                     return `
                         <a href="/super-admin/checklist/show/${id}"
-                           class="btn btn-sm btn-info">
-                           View
+                        class="btn btn-sm btn-info">
+                        View
+                        </a>
+
+
+                        <a href="/super-admin/checklist/${id}/qa" class="btn btn-sm btn-secondary">
+                            Q&A
                         </a>
                     `;
                 }

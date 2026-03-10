@@ -23,7 +23,8 @@
                 <table class="table table-bordered" id="companyTable">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Company Name</th>
+                            <th>Admin Name</th>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>City</th>
@@ -53,8 +54,14 @@
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Name</label>
-                        <input type="text" id="name" class="form-control" placeholder="Enter name">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" id="copmany_name" class="form-control" placeholder="Enter company name">
+                        <small class="error-text text-danger"></small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Admin Name</label>
+                        <input type="text" id="admin_name" class="form-control" placeholder="Enter admin name">
                         <small class="error-text text-danger"></small>
                     </div>
 
@@ -126,8 +133,14 @@
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
-                        <label>Name</label>
-                        <input type="text" id="editname" class="form-control">
+                        <label>Company Name</label>
+                        <input type="text" id="editcompanyname" class="form-control">
+                        <small class="error-text text-danger"></small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Admin Name</label>
+                        <input type="text" id="editadmin_name" class="form-control">
                         <small class="error-text text-danger"></small>
                     </div>
 
@@ -193,7 +206,8 @@ $(document).ready(function () {
         processing: true,
         ajax: "{{ route('super.admin.company.getall') }}",
         columns: [
-            { data: 'name' },
+            { data: 'copmany_name' },
+            { data: 'admin_name' },
             { data: 'email' },
             { data: 'phone' },
             { data: 'city' },
@@ -224,19 +238,32 @@ $(document).ready(function () {
         ]
     });
 
-    // Add company
+
+    /* CLEAR ERRORS */
+
+    function clearErrors() {
+
+        $('.error-text').text('');
+        $('.form-control').removeClass('is-invalid');
+
+    }
+
+    /* ADD COMPANY */
+
     $('#AddItem').click(function () {
+
+        clearErrors();
 
         let formData = new FormData();
 
-        formData.append('name', $('#name').val());
+        formData.append('copmany_name', $('#copmany_name').val());
+        formData.append('admin_name', $('#admin_name').val());
         formData.append('email', $('#email').val());
         formData.append('phone', $('#phone').val());
         formData.append('address', $('#address').val());
         formData.append('city', $('#city').val());
         formData.append('state', $('#state').val());
         formData.append('country', $('#country').val());
-        formData.append('status', $('#status').val());
 
         if ($('#logo')[0].files[0]) {
             formData.append('logo', $('#logo')[0].files[0]);
@@ -245,22 +272,50 @@ $(document).ready(function () {
         formData.append('_token', "{{ csrf_token() }}");
 
         $.ajax({
+
             url: "{{ route('super.admin.company.store') }}",
-            method: "POST",
+            type: "POST",
             data: formData,
             processData: false,
             contentType: false,
+
             success: function (res) {
-                if (res.success) {
-                    $('#addModal').modal('hide');
-                    $('#addModal').find('input, select').val('');
-                    table.ajax.reload();
-                    Toast.fire({ icon: 'success', title: res.message });
-                } else {
-                    Toast.fire({ icon: 'error', title: res.message });
+
+                $('#addModal').modal('hide');
+                $('#addModal').find('input').val('');
+                table.ajax.reload();
+
+                Toast.fire({
+                    icon: 'success',
+                    title: res.message
+                });
+
+            },
+
+            error: function (xhr) {
+
+                if (xhr.status === 422) {
+
+                    let errors = xhr.responseJSON.errors;
+
+                    $.each(errors, function (key, value) {
+
+                        let input = $('#' + key);
+
+                        input.addClass('is-invalid');
+
+                        input.closest('.mb-3')
+                            .find('.error-text')
+                            .text(value[0]);
+
+                    });
+
                 }
+
             }
+
         });
+
     });
 
     // Expose functions
@@ -268,7 +323,8 @@ $(document).ready(function () {
         $.get("{{ url('super-admin/company/get') }}/" + id, function (data) {
 
             $('#editid').val(data.id);
-            $('#editname').val(data.name);
+            $('#editcompanyname').val(data.copmany_name);
+            $('#editadmin_name').val(data.admin_name);
             $('#editemail').val(data.email);
             $('#editphone').val(data.phone);
             $('#editaddress').val(data.address);
@@ -288,12 +344,17 @@ $(document).ready(function () {
     };
 
     // Update company
+
     $('#EditCompany').click(function () {
 
+        clearErrors();
+
         let formData = new FormData();
+
         formData.append('_token', "{{ csrf_token() }}");
         formData.append('id', $('#editid').val());
-        formData.append('name', $('#editname').val());
+        formData.append('copmany_name', $('#editcompanyname').val());
+        formData.append('admin_name', $('#editadmin_name').val());
         formData.append('email', $('#editemail').val());
         formData.append('phone', $('#editphone').val());
         formData.append('address', $('#editaddress').val());
@@ -301,28 +362,54 @@ $(document).ready(function () {
         formData.append('state', $('#editstate').val());
         formData.append('country', $('#editcountry').val());
 
-        // ✅ New logo if selected
         if ($('#editlogo')[0].files[0]) {
             formData.append('logo', $('#editlogo')[0].files[0]);
         }
 
         $.ajax({
+
             url: "{{ route('super.admin.company.update') }}",
-            method: "POST",
+            type: "POST",
             data: formData,
             processData: false,
             contentType: false,
+
             success: function (res) {
-                if (res.success) {
-                    $('#editModal').modal('hide');
-                    table.ajax.reload();
-                    Toast.fire({ icon: 'success', title: res.message });
-                } else if (res.errors) {
-                    Toast.fire({ icon: 'error', title: 'Validation error' });
-                    console.log(res.errors);
+
+                $('#editModal').modal('hide');
+                table.ajax.reload();
+
+                Toast.fire({
+                    icon: 'success',
+                    title: res.message
+                });
+
+            },
+
+            error: function (xhr) {
+
+                if (xhr.status === 422) {
+
+                    let errors = xhr.responseJSON.errors;
+
+                    $.each(errors, function (key, value) {
+
+                        let input = $('#edit' + key);
+
+                        input.addClass('is-invalid');
+
+                        input.closest('.mb-3')
+                            .find('.error-text')
+                            .text(value[0]);
+
+                    });
+
                 }
+
             }
+
         });
+
     });
 
 

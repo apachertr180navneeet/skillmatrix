@@ -10,7 +10,7 @@
     <div class="row mb-3">
         <div class="col-md-6">
             <h5>
-                <span class="text-primary fw-light">SOP</span>
+                <span class="text-primary fw-light">Department</span>
             </h5>
         </div>
         <div class="col-md-6 text-end">
@@ -58,7 +58,7 @@ $(document).ready(function () {
             {
                 data: 'company',
                 render: function (data) {
-                    return data ? data.name : '-';
+                    return data ? data.copmany_name : '-';
                 }
             },
 

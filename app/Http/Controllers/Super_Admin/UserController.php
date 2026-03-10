@@ -25,7 +25,7 @@ class UserController extends Controller
 
         // Only active companies
         $companies = Company::where('status', 'active')
-            ->orderBy('name')
+            ->orderBy('copmany_name')
             ->get();
 
         return view('super_admin.user.index', compact('departments', 'companies'));
@@ -92,7 +92,7 @@ class UserController extends Controller
         $rules = [
             'name'          => 'required|string|max:191',
             'email'         => 'required|email|max:191|unique:users,email',
-            'phone'         => 'nullable|numeric|digits_between:7,15|unique:users,phone',
+            'phone'         => 'nullable|numeric|digits_between:10,12|unique:users,phone',
             'city'          => 'nullable|string|max:191',
             'hod_name'      => 'nullable|string|max:191',
             'hod_email'     => 'nullable|email|max:191',
@@ -119,6 +119,8 @@ class UserController extends Controller
             'email'      => $request->email,
             'phone'      => $request->phone,
             'city'       => $request->city,
+            'hod_name'   => $request->hod_name,
+            'hod_email'  => $request->hod_email,
             'role'       => 'admin',
             'company_id' => $request->company_id ?? 0,
             'status'     => 'active',
@@ -188,7 +190,7 @@ class UserController extends Controller
             'phone'         => [
                 'nullable',
                 'numeric',
-                'digits_between:7,15',
+                'digits_between:10,12',
                 Rule::unique('users', 'phone')->ignore($request->id),
             ],
             'city'          => 'nullable|string|max:191',
@@ -216,6 +218,8 @@ class UserController extends Controller
             'email'         => $request->email,
             'phone'         => $request->phone,
             'city'          => $request->city,
+            'hod_name'   => $request->hod_name,
+            'hod_email'  => $request->hod_email,
             'company_id'    => $request->company_id ?? 0,
             'role'          => 'admin',
         ];

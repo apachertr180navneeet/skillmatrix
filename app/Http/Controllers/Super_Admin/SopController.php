@@ -4,12 +4,7 @@ namespace App\Http\Controllers\Super_Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Sop;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-
-use Illuminate\Validation\Rule;
-use Exception;
+use App\Models\{Sop,SopQuesAns};
 
 class SopController extends Controller
 {
@@ -47,5 +42,18 @@ class SopController extends Controller
         }
 
         return view('super_admin.sop.show', compact('sop'));
+    }
+
+    public function showQA(Request $request, $id)
+    {
+        $sop = Sop::with(['department', 'company'])->find($id);
+
+        $sopQuesAns = SopQuesAns::where('sop_id', $id)->get();
+
+        if (!$sop) {
+            abort(404, 'SOP not found');
+        }
+
+        return view('super_admin.sop.showqa', compact('sop' , 'sopQuesAns'));
     }
 }

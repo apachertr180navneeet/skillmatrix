@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Super_Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Checklist;
+use App\Models\{Checklist, ChecklistQuesAns};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -46,5 +46,18 @@ class ChecklistController extends Controller
         }
 
         return view('super_admin.checklist.show', compact('checklist'));
+    }
+
+    public function showQA(Request $request, $id)
+    {
+        $checklist = Checklist::with(['department', 'company'])->find($id);
+
+        $checklistQuesAns = ChecklistQuesAns::where('checklist_id', $id)->get();
+
+        if (!$checklist) {
+            abort(404, 'SOP not found');
+        }
+
+        return view('super_admin.checklist.showqa', compact('checklist' , 'checklistQuesAns'));
     }
 }

@@ -24,6 +24,8 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>HOD Name</th>
+                            <th>HOD Email</th>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Company</th>
@@ -76,13 +78,23 @@
                         <input type="text" id="city" class="form-control">
                         <small id="city_error" class="text-danger"></small>
                     </div>
+                    <div class="col-md-6 mb-3">
+                        <label>HOD Name</label>
+                        <input type="text" id="hod_name" class="form-control">
+                        <small id="hod_name_error" class="text-danger"></small>
+                    </div>
 
+                    <div class="col-md-6 mb-3">
+                        <label>HOD Email</label>
+                        <input type="email" id="hod_email" class="form-control">
+                        <small id="hod_email_error" class="text-danger"></small>
+                    </div>
                     <div class="col-md-6 mb-3">
                         <label>Company</label>
                         <select id="company_id" class="form-control">
                             <option value="0">Select Company</option>
                             @foreach($companies as $c)
-                                <option value="{{ $c->id }}">{{ $c->name }}</option>
+                                <option value="{{ $c->id }}">{{ $c->copmany_name }}</option>
                             @endforeach
                         </select>
                         <small id="company_id_error" class="text-danger"></small>
@@ -151,12 +163,23 @@
                         <input type="text" id="editcity" class="form-control">
                         <small id="editcity_error" class="text-danger"></small>
                     </div>
+                    <div class="col-md-6 mb-3">
+                        <label>HOD Name</label>
+                        <input type="text" id="edithod_name" class="form-control">
+                        <small id="edithod_name_error" class="text-danger"></small>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>HOD Email</label>
+                        <input type="email" id="edithod_email" class="form-control">
+                        <small id="edithod_email_error" class="text-danger"></small>
+                    </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Company</label>
                         <select id="editcompany" class="form-control">
                             @foreach($companies as $c)
-                                <option value="{{ $c->id }}">{{ $c->name }}</option>
+                                <option value="{{ $c->id }}">{{ $c->copmany_name }}</option>
                             @endforeach
                         </select>
                         <small id="editcompany_error" class="text-danger"></small>
@@ -196,6 +219,8 @@ $(function(){
         ajax: "{{ route('super.admin.user.getall') }}",
         columns: [
             { data: 'full_name' },
+            { data: 'hod_name', defaultContent:'-' },
+            { data: 'hod_email', defaultContent:'-' },
             { data: 'email' },
             { data: 'phone' },
             { data: 'company.name', defaultContent:'-' },
@@ -229,6 +254,8 @@ $(function(){
         form.append("email",$("#email").val());
         form.append("phone",$("#phone").val());
         form.append("city",$("#city").val());
+        form.append("hod_name",$("#hod_name").val());
+        form.append("hod_email",$("#hod_email").val());
         form.append("company_id",$("#company_id").val());
         form.append("password",$("#password").val());
         form.append("password_confirmation",$("#password_confirmation").val());
@@ -267,6 +294,8 @@ $(function(){
             $("#editemail").val(d.email);
             $("#editphone").val(d.phone);
             $("#editcity").val(d.city);
+            $("#edithod_name").val(d.hod_name);
+            $("#edithod_email").val(d.hod_email);
             $("#editcompany").val(d.company_id);
             $("#editModal").modal("show");
         });
@@ -285,6 +314,8 @@ $(function(){
         form.append("email",$("#editemail").val());
         form.append("phone",$("#editphone").val());
         form.append("city",$("#editcity").val());
+        form.append("hod_name",$("#edithod_name").val());
+        form.append("hod_email",$("#edithod_email").val());
         form.append("company_id",$("#editcompany").val());
         form.append("password",$("#editpassword").val());
         form.append("password_confirmation",$("#editpassword_confirmation").val());

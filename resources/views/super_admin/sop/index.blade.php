@@ -27,11 +27,13 @@
                 <table class="table table-bordered" id="sopTable">
                     <thead>
                         <tr>
+                            <th>S.No.</th>
                             <th>Title</th>
                             <th>Department</th>
                             <th>Company</th>
                             <th>Suggestion</th>
                             <th>Status</th>
+                            <th>Created At</th>
                             <th width="200">Action</th>
                         </tr>
                     </thead>
@@ -54,10 +56,18 @@ $(document).ready(function () {
         ajax: "{{ route('super.admin.sop.getall') }}",
         columns: [
 
+            // S.No
+            {
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
+
             // SOP Title
             { data: 'title' },
 
-            // Department (relation)
+            // Department
             {
                 data: 'department',
                 render: function (data) {
@@ -65,15 +75,15 @@ $(document).ready(function () {
                 }
             },
 
-            // Company (relation)
+            // Company
             {
                 data: 'company',
                 render: function (data) {
-                    return data ? data.name : '-';
+                    return data ? data.copmany_name : '-';
                 }
             },
 
-            // is_suggestion
+            // Suggestion
             {
                 data: 'is_suggestion',
                 render: function (data) {
@@ -82,7 +92,6 @@ $(document).ready(function () {
                         : '<span class="badge bg-secondary">No Suggestion</span>';
                 }
             },
-
 
             // Status
             {
@@ -94,21 +103,29 @@ $(document).ready(function () {
                 }
             },
 
-            // Action Buttons (ONLY View & Q&A)
+            // Created At
+            {
+                data: 'created_at',
+                render: function (data) {
+                    if (!data) return '-';
+                    let date = new Date(data);
+                    return date.toLocaleDateString('en-IN');
+                }
+            },
+
+            // Action
             {
                 data: 'id',
                 orderable: false,
                 searchable: false,
                 render: function (id) {
                     return `
-                        <a href="/super-admin/sop/show/${id}"
-                           class="btn btn-sm btn-info me-1">
-                           View
+                        <a href="/super-admin/sop/show/${id}" class="btn btn-sm btn-info me-1">
+                            View
                         </a>
 
-                        <a href="/super-admin/sopquesans/${id}/qa"
-                           class="btn btn-sm btn-secondary">
-                           Q&A
+                        <a href="/super-admin/sop/${id}/qa" class="btn btn-sm btn-secondary">
+                            Q&A
                         </a>
                     `;
                 }

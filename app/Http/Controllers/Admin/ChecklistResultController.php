@@ -42,29 +42,29 @@ class ChecklistResultController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        // All Checklist questions with correct answers
-        $checklistQuestions = ChecklistQuesAns::where('checklist_id', $result->checklist_id)->get();
-
-        // User answers (ques_id => answer)
-        $userAnswers = ChecklistUserQuesAns::where('checklist_id', $result->checklist_id)
+        // ONLY attempted questions (same order user answered)
+        $questions = ChecklistUserQuesAns::where('checklist_id', $result->checklist_id)
             ->where('user_id', $result->user_id)
-            ->pluck('answere', 'ques_id');
+            ->orderBy('id')
+            ->with('question')
+            ->get()
+            ->map(function ($row) {
 
-        // Build question list for UI
-        $questions = $checklistQuestions->map(function ($q) use ($userAnswers) {
-            return [
-                'question'       => $q->question,
-                'options'        => [
-                    '1' => $q->option_one,
-                    '2' => $q->option_two,
-                    '3' => $q->option_three,
-                    '4' => $q->option_four,
-                ],
-                'correct_answer' => (int) $q->answere_option,          // 1–4
-                'user_answer'    => (int) ($userAnswers[$q->id] ?? 0) // 1–4
-            ];
-        });
+                $q = $row->question;
 
+                return [
+                    'question'       => $q->question,
+                    'options'        => [
+                        '1' => $q->option_one,
+                        '2' => $q->option_two,
+                        '3' => $q->option_three,
+                        '4' => $q->option_four,
+                    ],
+                    // ✅ FIX HERE
+                    'correct_answer' => (int) $q->answer_option,
+                    'user_answer'    => (int) $row->answere,
+                ];
+            });
 
         $questiondeatil = $questions->toArray();
 

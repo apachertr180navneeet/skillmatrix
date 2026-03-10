@@ -39,6 +39,6 @@ class SopUserQuesAns extends Model
 
     public function question()
     {
-        return $this->belongsTo(SopQuestion::class, 'ques_id');
+        return $this->belongsTo(SopQuesAns::class, 'ques_id');
     }
 }

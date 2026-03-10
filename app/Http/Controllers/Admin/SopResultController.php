@@ -42,31 +42,31 @@ class SopResultController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        // All SOP questions with correct answers
-        $sopQuestions = SopQuesAns::where('sop_id', $result->sop_id)->get();
-
-        // User answers (ques_id => answer)
-        $userAnswers = SopUserQuesAns::where('sop_id', $result->sop_id)
+        // 👉 User attempted questions ONLY (in answered order)
+        $questions = SopUserQuesAns::where('sop_id', $result->sop_id)
             ->where('user_id', $result->user_id)
-            ->pluck('answere', 'ques_id');
+            ->orderBy('id') // answer diya gaya order
+            ->with('question') // relation: SopQuesAns
+            ->get()
+            ->map(function ($row) {
+                $q = $row->question;
 
-        // Build question list for UI
-        $questions = $sopQuestions->map(function ($q) use ($userAnswers) {
-            return [
-                'question'       => $q->question,
-                'options'        => [
-                    '1' => $q->option_one,
-                    '2' => $q->option_two,
-                    '3' => $q->option_three,
-                    '4' => $q->option_four,
-                ],
-                'correct_answer' => (int) $q->answere_option,          // 1–4
-                'user_answer'    => (int) ($userAnswers[$q->id] ?? 0) // 1–4
-            ];
-        });
+                return [
+                    'question'       => $q->question,
+                    'options'        => [
+                        '1' => $q->option_one,
+                        '2' => $q->option_two,
+                        '3' => $q->option_three,
+                        '4' => $q->option_four,
+                    ],
+                    'correct_answer' => (int) $q->answere_option,
+                    'user_answer'    => (int) $row->answere,
+                ];
+            });
 
         $questiondeatil = $questions->toArray();
 
         return view('admin.sop_results.view', compact('result', 'questiondeatil'));
     }
+
 }

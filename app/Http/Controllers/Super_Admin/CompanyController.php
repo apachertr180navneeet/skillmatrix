@@ -79,14 +79,15 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name'    => 'required|string|max:191',
-            'email'   => 'nullable|email|max:191|unique:companies,email',
-            'phone'   => 'nullable|numeric|digits_between:7,15|unique:companies,phone',
-            'address' => 'nullable|string|max:255',
-            'city'    => 'nullable|string|max:100',
-            'state'   => 'nullable|string|max:100',
-            'country' => 'nullable|string|max:100',
-            'logo'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'copmany_name' => 'required|string|max:191',
+            'admin_name'   => 'required|string|max:191',
+            'email'        => 'nullable|email|max:191|unique:companies,email',
+            'phone'        => 'nullable|numeric|digits_between:10,12|unique:companies,phone',
+            'address'      => 'nullable|string|max:255',
+            'city'         => 'nullable|string|max:100',
+            'state'        => 'nullable|string|max:100',
+            'country'      => 'nullable|string|max:100',
+            'logo'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -99,21 +100,23 @@ class CompanyController extends Controller
         }
 
         $data = [
-            'name'    => $request->name,
-            'email'   => $request->email,
-            'phone'   => $request->phone,
-            'address' => $request->address,
-            'city'    => $request->city,
-            'state'   => $request->state,
-            'country' => $request->country,
-            'status'  => 'active',
+            'copmany_name' => $request->copmany_name,
+            'admin_name'   => $request->admin_name,
+            'email'        => $request->email,
+            'phone'        => $request->phone,
+            'address'      => $request->address,
+            'city'         => $request->city,
+            'state'        => $request->state,
+            'country'      => $request->country,
+            'status'       => 'active',
         ];
 
-        // ✅ Logo upload + FULL URL store
+        // Logo upload
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('company', 'public'); // storage/app/public/company/...
-            $fullUrl = asset('storage/' . $path);                       // https://yourdomain.com/storage/company/xyz.png
-            $data['logo'] = $fullUrl;
+
+            $path = $request->file('logo')->store('company', 'public');
+            $data['logo'] = asset('storage/' . $path);
+
         }
 
         Company::create($data);
@@ -141,25 +144,26 @@ class CompanyController extends Controller
     public function update(Request $request)
     {
         $rules = [
-            'id'      => 'required|integer|exists:companies,id',
-            'name'    => 'required|string|max:191',
-            'email'   => [
+            'id'           => 'required|integer|exists:companies,id',
+            'copmany_name' => 'required|string|max:191',
+            'admin_name'   => 'required|string|max:191',
+            'email'        => [
                 'nullable',
                 'email',
                 'max:191',
                 Rule::unique('companies', 'email')->ignore($request->id),
             ],
-            'phone'   => [
+            'phone'        => [
                 'nullable',
                 'numeric',
-                'digits_between:7,15',
+                'digits_between:10,12',
                 Rule::unique('companies', 'phone')->ignore($request->id),
             ],
-            'address' => 'nullable|string|max:255',
-            'city'    => 'nullable|string|max:100',
-            'state'   => 'nullable|string|max:100',
-            'country' => 'nullable|string|max:100',
-            'logo'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'address'      => 'nullable|string|max:255',
+            'city'         => 'nullable|string|max:100',
+            'state'        => 'nullable|string|max:100',
+            'country'      => 'nullable|string|max:100',
+            'logo'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -174,20 +178,22 @@ class CompanyController extends Controller
         $company = Company::findOrFail($request->id);
 
         $updateData = [
-            'name'    => $request->name,
-            'email'   => $request->email,
-            'phone'   => $request->phone,
-            'address' => $request->address,
-            'city'    => $request->city,
-            'state'   => $request->state,
-            'country' => $request->country,
+            'copmany_name' => $request->copmany_name,
+            'admin_name'   => $request->admin_name,
+            'email'        => $request->email,
+            'phone'        => $request->phone,
+            'address'      => $request->address,
+            'city'         => $request->city,
+            'state'        => $request->state,
+            'country'      => $request->country,
         ];
 
-        // ✅ If new logo uploaded on update
+        // Update logo
         if ($request->hasFile('logo')) {
+
             $path = $request->file('logo')->store('company', 'public');
-            $fullUrl = asset('storage/' . $path);
-            $updateData['logo'] = $fullUrl;
+            $updateData['logo'] = asset('storage/' . $path);
+
         }
 
         $company->update($updateData);
