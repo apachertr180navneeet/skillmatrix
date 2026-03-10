@@ -52,11 +52,13 @@
                     <div class="col-md-12 mb-3">
                         <label class="form-label">Title</label>
                         <input type="text" id="title" class="form-control">
+                        <span class="text-danger error-text title_error"></span>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label class="form-label">Description</label>
                         <textarea id="description" class="form-control" rows="4"></textarea>
+                        <span class="text-danger error-text description_error"></span>
                     </div>
 
                 </div>
@@ -88,11 +90,13 @@
                     <div class="col-md-12 mb-3">
                         <label>Title</label>
                         <input type="text" id="edit_title" class="form-control">
+                        <span class="text-danger error-text edit_title_error"></span>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Description</label>
                         <textarea id="edit_description" class="form-control" rows="4"></textarea>
+                        <span class="text-danger error-text edit_description_error"></span>
                     </div>
                 </div>
             </div>
@@ -170,20 +174,53 @@ $(document).ready(function () {
 
     // ================= ADD CMS =================
     $('#addCms').click(function () {
-        $.post("{{ route('super.admin.cms.store') }}", {
-            _token: "{{ csrf_token() }}",
-            title: $('#title').val(),
-            description: addEditor.getData(),
-            status: 'active'
-        }, function (res) {
-            if (res.success) {
-                $('#addModal').modal('hide');
-                $('#title').val('');
-                addEditor.setData('');
-                table.ajax.reload();
-                Toast.fire({ icon: 'success', title: res.message });
+
+        $('.error-text').text('');
+
+        $.ajax({
+            url: "{{ route('super.admin.cms.store') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                title: $('#title').val(),
+                description: addEditor.getData(),
+                status: 'active'
+            },
+
+            success: function (res) {
+
+                if (res.success) {
+
+                    $('#addModal').modal('hide');
+                    $('#title').val('');
+                    addEditor.setData('');
+                    table.ajax.reload();
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+                }
+            },
+
+            error: function (xhr) {
+
+                if (xhr.status === 422) {
+
+                    let errors = xhr.responseJSON.errors;
+
+                    $.each(errors, function (key, value) {
+
+                        $('.' + key + '_error').text(value[0]);
+
+                    });
+
+                }
+
             }
+
         });
+
     });
 
     // ================= EDIT CMS =================
@@ -198,19 +235,53 @@ $(document).ready(function () {
 
     // ================= UPDATE CMS =================
     $('#updateCms').click(function () {
-        $.post("{{ route('super.admin.cms.update') }}", {
-            _token: "{{ csrf_token() }}",
-            id: $('#edit_id').val(),
-            title: $('#edit_title').val(),
-            description: editEditor.getData(),
-            status: 'active'
-        }, function (res) {
-            if (res.success) {
-                $('#editModal').modal('hide');
-                table.ajax.reload();
-                Toast.fire({ icon: 'success', title: res.message });
+
+        $('.error-text').text('');
+
+        $.ajax({
+            url: "{{ route('super.admin.cms.update') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: $('#edit_id').val(),
+                title: $('#edit_title').val(),
+                description: editEditor.getData(),
+                status: 'active'
+            },
+
+            success: function (res) {
+
+                if (res.success) {
+
+                    $('#editModal').modal('hide');
+                    table.ajax.reload();
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+
+                }
+            },
+
+            error: function (xhr) {
+
+                if (xhr.status === 422) {
+
+                    let errors = xhr.responseJSON.errors;
+
+                    $.each(errors, function (key, value) {
+
+                        $('.edit_' + key + '_error').text(value[0]);
+
+                    });
+
+                }
+
             }
+
         });
+
     });
 
     // ================= DELETE CMS =================
