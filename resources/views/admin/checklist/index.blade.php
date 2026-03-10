@@ -3,8 +3,8 @@
 @section('style')
 <style>
     .table th {
-        font-weight: 600;
         font-size: 13px;
+        font-weight: 600;
         background: #f8f9fa;
     }
 
@@ -13,43 +13,93 @@
         vertical-align: middle;
     }
 
-    /* ================= ACTION BUTTONS ================= */
+    /* VIEW BUTTON */
+    .btn-view {
+        background: #0ea5e9;
+        color: #fff;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 12px;
+    }
+
+    /* STATUS BADGE */
+    .badge-active {
+        background: #22c55e;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+    }
+
+    /* ACTION BUTTON GROUP */
     .action-btns {
         display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
+        gap: 8px;
     }
 
-    .action-btns .btn {
-        font-size: 11px;
-        padding: 6px 0;
-        border-radius: 6px;
-        width: 120px;
-        text-align: center;
+    /* Q&A BUTTON */
+    .btn-qa {
+        background: #ef4444;
+        color: #fff;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 12px;
     }
 
-    .action-btns form {
-        margin: 0;
+    /* EDIT BUTTON */
+    .btn-edit {
+        background: #f59e0b;
+        color: #fff;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 12px;
+    }
+
+    /* DELETE BUTTON */
+    .btn-delete {
+        background: #9ca3af;
+        color: #fff;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 12px;
     }
 
     .top-actions {
         display: flex;
         gap: 10px;
     }
+
+    .table-bordered {
+        border-collapse: separate;
+    }
+
+    .table-bordered td,
+    .table-bordered th {
+        border-top: none !important;
+        border-bottom: none !important;
+    }
+
+    .table-bordered tbody tr td,
+    .table-bordered tbody tr th {
+        border-top: none !important;
+        border-bottom: none !important;
+    }
+
+    .table-bordered thead th {
+        border-bottom: none !important;
+    }
 </style>
 @endsection
+
 
 @section('content')
 <div class="container-fluid flex-grow-1 container-p-y">
 
     <!-- ================= TOP BAR ================= -->
     <div class="d-flex justify-content-between align-items-center mb-4">
+
         <div class="d-flex gap-2">
-            <input type="text"
-                   class="form-control"
-                   id="searchInput"
-                   placeholder="Search here..."
-                   style="width:220px;">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search here..." style="width:220px;">
         </div>
 
         <div class="top-actions">
@@ -57,87 +107,120 @@
                 + Create
             </a>
         </div>
+
     </div>
+
 
     <!-- ================= FILTER ================= -->
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h5 class="mb-0">Checklists</h5>
 
         <select class="form-select w-auto" id="departmentFilter">
             <option value="">Department</option>
+
             @foreach ($departments as $department)
-                <option value="{{ $department->id }}">
-                    {{ $department->department_name }}
-                </option>
+            <option value="{{ $department->id }}">
+                {{ $department->department_name }}
+            </option>
             @endforeach
+
         </select>
+
     </div>
+
+
 
     <!-- ================= TABLE ================= -->
     <div class="card">
         <div class="card-body table-responsive">
-            <table class="table table-bordered align-middle">
+
+            <table class="table align-middle">
+
                 <thead>
                     <tr>
                         <th width="60">#</th>
                         <th>Title</th>
-                        <th width="180">Department</th>
-                        <th width="380">Action</th>
+                        <th width="200">Department</th>
+                        <th width="120">Document</th>
+                        <th width="120">Status</th>
+                        <th width="260">Action</th>
                     </tr>
                 </thead>
 
-                <!-- IMPORTANT ID -->
                 <tbody id="checklistTableBody">
+
                     @forelse ($checklists as $index => $checklist)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
+                    <tr>
 
-                            <td>
-                                <a href="{{ $checklist->file }}"
-                                   target="_blank"
-                                   class="fw-semibold">
-                                    {{ $checklist->title }}
+                        <td>{{ $index + 1 }}</td>
+
+                        <td class="fw-semibold">
+                            {{ $checklist->title }}
+                        </td>
+
+                        <td>
+                            {{ $checklist->department->department_name ?? '-' }}
+                        </td>
+
+                        <td>
+                            <a href="{{ route('admin.checklist.view', Crypt::encryptString($checklist->id)) }}"
+                                target="_blank" class="btn btn-view btn-sm">
+                                View
+                            </a>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-active">
+                                ACTIVE
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <div class="action-btns">
+
+                                <a href="{{ route('admin.checklist.qa.create', $checklist->id) }}"
+                                    class="btn btn-qa btn-sm">
+                                    Q&A
                                 </a>
-                            </td>
 
-                            <td>
-                                {{ $checklist->department->department_name ?? '-' }}
-                            </td>
+                                <a href="{{ route('admin.checklist.edit', $checklist->id) }}"
+                                    class="btn btn-edit btn-sm">
+                                    Edit
+                                </a>
 
-                            <td>
-                                <div class="action-btns">
-                                    <a href="{{ route('admin.checklist.edit', $checklist->id) }}"
-                                       class="btn btn-warning text-white">
-                                        Edit
-                                    </a>
+                                <form action="{{ route('admin.checklist.destroy', $checklist->id) }}" method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this checklist?')">
 
-                                    <a href="{{ route('admin.checklist.qa.create', $checklist->id) }}"
-                                       class="btn btn-info text-white">
-                                        Add Ques & Ans
-                                    </a>
+                                    @csrf
+                                    @method('DELETE')
 
-                                    <form action="{{ route('admin.checklist.destroy', $checklist->id) }}"
-                                          method="POST"
-                                          onsubmit="return confirm('Are you sure you want to delete this checklist?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-secondary">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
+                                    <button type="submit" class="btn btn-delete btn-sm">
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
                     @empty
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">
-                                No Checklists found
-                            </td>
-                        </tr>
+
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            No Checklists found
+                        </td>
+                    </tr>
                     @endforelse
+
                 </tbody>
 
             </table>
+
         </div>
     </div>
 
@@ -145,110 +228,141 @@
 @endsection
 
 
+
 @section('script')
 <script>
-$(document).ready(function () {
+    $(document).ready(function() {
 
-    function loadChecklists() {
+            function loadChecklists() {
 
-        let search = $('#searchInput').val();
-        let departmentId = $('#departmentFilter').val();
+                let search = $('#searchInput').val();
+                let departmentId = $('#departmentFilter').val();
 
-        $.ajax({
-            url: "{{ route('admin.checklist.filter') }}",
-            type: "GET",
-            data: {
-                search: search,
-                department_id: departmentId
-            },
-            beforeSend: function () {
-                $('#checklistTableBody').html(`
-                    <tr>
-                        <td colspan="4" class="text-center">
-                            Loading...
-                        </td>
-                    </tr>
-                `);
-            },
-            success: function (res) {
+                $.ajax({
 
-                let rows = '';
+                    url: "{{ route('admin.checklist.filter') }}",
+                    type: "GET",
 
-                if (res.data.length > 0) {
+                    data: {
+                        search: search,
+                        department_id: departmentId
+                    },
 
-                    $.each(res.data, function (index, checklist) {
+                    beforeSend: function() {
 
-                        rows += `
+                        $('#checklistTableBody').html(`
                             <tr>
-                                <td>${index + 1}</td>
-                                <td>
-                                    <a href="${checklist.file}"
-                                       target="_blank"
-                                       class="fw-semibold">
-                                        ${checklist.title}
-                                    </a>
-                                </td>
-                                <td>
-                                    ${checklist.department ? checklist.department.department_name : '-'}
-                                </td>
-                                <td>
-                                    <div class="action-btns">
-                                        <a href="/admin/checklist/edit/${checklist.id}"
-                                           class="btn btn-warning text-white">
-                                            Edit
-                                        </a>
-
-                                        <a href="/admin/checklist/qa/create/${checklist.id}"
-                                           class="btn btn-info text-white">
-                                            Add Ques & Ans
-                                        </a>
-
-                                        <form action="/admin/checklist/${checklist.id}"
-                                              method="POST"
-                                              onsubmit="return confirm('Are you sure you want to delete this checklist?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                    class="btn btn-secondary">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    });
-
-                } else {
-
-                    rows = `
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">
-                                No Checklists found
+                            <td colspan="6" class="text-center">
+                            Loading...
                             </td>
-                        </tr>
-                    `;
-                }
+                            </tr>
+                        `);
 
-                $('#checklistTableBody').html(rows);
+                    },
+
+                    success: function(res) {
+
+                        let rows = '';
+
+                        if (res.data.length > 0) {
+
+                            $.each(res.data, function(index, checklist) {
+
+                                rows += `
+
+                                            <tr>
+
+                                            <td>${index+1}</td>
+
+                                            <td class="fw-semibold">
+                                            ${checklist.title}
+                                            </td>
+
+                                            <td>
+                                            ${checklist.department ? checklist.department.department_name : '-'}
+                                            </td>
+
+                                            <td>
+                                            <a href="${checklist.file}"
+                                            target="_blank"
+                                            class="btn btn-view btn-sm">
+                                            View
+                                            </a>
+                                            </td>
+
+                                            <td>
+                                            <span class="badge badge-active">
+                                            ACTIVE
+                                            </span>
+                                            </td>
+
+                                            <td>
+
+                                            <div class="action-btns">
+
+                                            <a href="/admin/checklist/qa/create/${checklist.id}"
+                                            class="btn btn-qa btn-sm">
+                                            Q&A
+                                            </a>
+
+                                            <a href="/admin/checklist/edit/${checklist.id}"
+                                            class="btn btn-edit btn-sm">
+                                            Edit
+                                            </a>
+
+                                            <form action="/admin/checklist/${checklist.id}"
+                                                method="POST">
+
+                                            <button type="submit"
+                                                    class="btn btn-delete btn-sm">
+                                            Delete
+                                            </button>
+
+                                            </form>
+
+                                            </div>
+
+                                            </td>
+
+                                            </tr>
+
+                                            `;
+
+                            });
+
+                        } else {
+
+                            rows = `
+                                <tr>
+                                <td colspan="6" class="text-center text-muted">
+                                No Checklists found
+                                </td>
+                                </tr>
+                                `;
+
+                        }
+
+                        $('#checklistTableBody').html(rows);
+
+                    }
+
+                });
+
             }
+
+
+            /* SEARCH */
+            $('#searchInput').on('keyup', function() {
+                loadChecklists();
+            });
+
+
+            /* FILTER */
+            $('#departmentFilter').on('change', function() {
+                loadChecklists();
+            });
+
+
         });
-    }
-
-    // 🔍 Search
-    $('#searchBtn').on('click', function () {
-        loadChecklists();
-    });
-
-    $('#searchInput').on('keyup', function () {
-        loadChecklists();
-    });
-
-    // 🏷️ Department Filter
-    $('#departmentFilter').on('change', function () {
-        loadChecklists();
-    });
-
-});
 </script>
 @endsection

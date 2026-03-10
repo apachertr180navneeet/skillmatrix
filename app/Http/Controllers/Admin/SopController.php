@@ -226,11 +226,6 @@ class SopController extends Controller
             ->where('party_id', auth()->user()->company_id)
             ->firstOrFail();
 
-
-
-        return response()->file(
-            storage_path('app/' . $sop->sop_upload),
-            ['Content-Type' => 'application/pdf']
-        );
+        return redirect($sop->sop_upload);
     }
 }

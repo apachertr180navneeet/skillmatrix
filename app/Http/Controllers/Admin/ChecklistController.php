@@ -221,4 +221,20 @@ class ChecklistController extends Controller
             'data' => $checklists
         ]);
     }
+
+
+    public function view($encryptedId)
+    {
+        try {
+            $checklistId = Crypt::decryptString($encryptedId);
+        } catch (Exception $e) {
+            abort(403, 'Invalid link');
+        }
+
+        $ckecklist = Checklist::where('id', $checklistId)
+            ->where('party_id', auth()->user()->company_id)
+            ->firstOrFail();
+
+        return redirect($ckecklist->file);
+    }
 }

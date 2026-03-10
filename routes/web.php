@@ -357,6 +357,7 @@ Route::prefix('admin')
                         Route::put('{id}', 'update')->name('update');
                         Route::delete('{id}', 'destroy')->name('destroy');
                         Route::get('filter', 'filter')->name('filter');
+                        Route::get('view/{id}', 'view')->name('view');
                     });
 
                 Route::prefix('checklists')->name('checklist.')

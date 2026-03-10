@@ -103,7 +103,6 @@ class VideoController extends Controller
                 ->with('success', 'Video created successfully.');
 
         } catch (\Exception $e) {
-            dd($e);
             return back()->with('error', $e->getMessage())->withInput();
         }
     }
