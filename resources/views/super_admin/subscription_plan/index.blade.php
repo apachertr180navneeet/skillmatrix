@@ -26,7 +26,6 @@
                             <th>Plan Name</th>
                             <th>Amount</th>
                             <th>Duration (Days)</th>
-                            <th>Description</th>
                             <th>Status</th>
                             <th width="150">Action</th>
                         </tr>
@@ -55,16 +54,19 @@
                     <div class="col-md-12 mb-3">
                         <label>Plan Name</label>
                         <input type="text" id="plan_name" class="form-control">
+                        <span class="text-danger error-text plan_name_error"></span>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Amount</label>
                         <input type="number" id="amount" class="form-control">
+                        <span class="text-danger error-text plan_name_error"></span>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Duration (Days)</label>
                         <input type="number" id="duration" class="form-control">
+                        <span class="text-danger error-text duration_error"></span>
                     </div>
 
                     <input type="hidden" id="user" value="0" class="form-control">
@@ -103,16 +105,19 @@
                     <div class="col-md-12 mb-3">
                         <label>Plan Name</label>
                         <input type="text" id="edit_plan_name" class="form-control">
+                        <span class="text-danger error-text edit_plan_name_error"></span>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Amount</label>
                         <input type="number" id="edit_amount" class="form-control">
+                        <span class="text-danger error-text edit_amount_error"></span>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Duration (Days)</label>
                         <input type="number" id="edit_duration" class="form-control">
+                        <span class="text-danger error-text edit_duration_error"></span>
                     </div>
 
                     <input type="hidden" id="edit_user" value="0" class="form-control">
@@ -146,7 +151,6 @@ $(document).ready(function () {
             { data: 'plan_name' },
             { data: 'amount' },
             { data: 'duration' },
-            { data: 'description' },
             {
                 data: 'status',
                 render: function (data, type, row) {
@@ -174,21 +178,57 @@ $(document).ready(function () {
     });
 
     $('#AddPlan').click(function () {
-        $.post("{{ route('super.admin.subscriptionPlan.store') }}", {
-            _token: "{{ csrf_token() }}",
-            plan_name: $('#plan_name').val(),
-            amount: $('#amount').val(),
-            duration: $('#duration').val(),
-            user: $('#user').val(),
-            description: $('#description').val()
-        }, function (res) {
-            if (res.success) {
-                $('#addModal').modal('hide');
-                $('#addModal').find('input,textarea').val('');
-                table.ajax.reload();
-                Toast.fire({ icon: 'success', title: res.message });
+
+        $('.error-text').text('');
+
+        $.ajax({
+            url: "{{ route('super.admin.subscriptionPlan.store') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                plan_name: $('#plan_name').val(),
+                amount: $('#amount').val(),
+                duration: $('#duration').val(),
+                user: $('#user').val(),
+                description: $('#description').val()
+            },
+            success: function (res) {
+
+                if (res.success) {
+                    $('#addModal').modal('hide');
+                    $('#addModal').find('input,textarea').val('');
+                    table.ajax.reload();
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+                }
+
+            },
+            error: function (xhr) {
+
+                if (xhr.status === 422) {
+
+                    let errors = xhr.responseJSON.errors;
+
+                    if (errors.plan_name) {
+                        $('.plan_name_error').text(errors.plan_name[0]);
+                    }
+
+                    if (errors.amount) {
+                        $('.amount_error').text(errors.amount[0]);
+                    }
+
+                    if (errors.duration) {
+                        $('.duration_error').text(errors.duration[0]);
+                    }
+
+                }
+
             }
         });
+
     });
 
     window.editPlan = function (id) {
@@ -204,21 +244,59 @@ $(document).ready(function () {
     };
 
     $('#EditPlan').click(function () {
-        $.post("{{ route('super.admin.subscriptionPlan.update') }}", {
-            _token: "{{ csrf_token() }}",
-            id: $('#editid').val(),
-            plan_name: $('#edit_plan_name').val(),
-            amount: $('#edit_amount').val(),
-            duration: $('#edit_duration').val(),
-            user: $('#edit_user').val(),
-            description: $('#edit_description').val()
-        }, function (res) {
-            if (res.success) {
-                $('#editModal').modal('hide');
-                table.ajax.reload();
-                Toast.fire({ icon: 'success', title: res.message });
+
+        $('.error-text').text('');
+
+        $.ajax({
+            url: "{{ route('super.admin.subscriptionPlan.update') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: $('#editid').val(),
+                plan_name: $('#edit_plan_name').val(),
+                amount: $('#edit_amount').val(),
+                duration: $('#edit_duration').val(),
+                user: $('#edit_user').val(),
+                description: $('#edit_description').val()
+            },
+            success: function (res) {
+
+                if (res.success) {
+
+                    $('#editModal').modal('hide');
+                    table.ajax.reload();
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+
+                }
+
+            },
+            error: function (xhr) {
+
+                if (xhr.status === 422) {
+
+                    let errors = xhr.responseJSON.errors;
+
+                    if (errors.plan_name) {
+                        $('.edit_plan_name_error').text(errors.plan_name[0]);
+                    }
+
+                    if (errors.amount) {
+                        $('.edit_amount_error').text(errors.amount[0]);
+                    }
+
+                    if (errors.duration) {
+                        $('.edit_duration_error').text(errors.duration[0]);
+                    }
+
+                }
+
             }
         });
+
     });
 
     window.deletePlan = function (id) {
