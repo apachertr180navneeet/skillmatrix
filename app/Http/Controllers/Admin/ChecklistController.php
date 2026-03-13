@@ -18,20 +18,47 @@ class ChecklistController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        $departments = Department::where('company_id', $companyId)->where('status', 'active')->get();
-        
+        $departments = Department::where('company_id', $companyId)
+            ->where('status', 'active')
+            ->get()
+            ->keyBy('id'); // important
+
         $checklistsuggestions = Checklist::where('party_id', $companyId)
             ->where('is_suggestion', '1')
             ->latest()
             ->get();
 
-
-        $checklists = Checklist::with('department')
-            ->where('party_id', $companyId)
+        $checklists = Checklist::where('party_id', $companyId)
             ->where('is_suggestion', '0')
             ->latest()
             ->get();
-        return view('admin.checklist.index', compact('checklistsuggestions', 'checklists', 'departments'));
+
+
+        /* -------- Convert department ids to names -------- */
+
+        foreach ($checklists as $checklist) {
+
+            $deptNames = [];
+
+            if (!empty($checklist->department_id)) {
+
+                $ids = explode(',', $checklist->department_id);
+
+                foreach ($ids as $id) {
+                    if (isset($departments[$id])) {
+                        $deptNames[] = $departments[$id]->department_name;
+                    }
+                }
+            }
+
+            $checklist->department_names = implode(', ', $deptNames);
+        }
+
+        return view('admin.checklist.index', compact(
+            'checklistsuggestions',
+            'checklists',
+            'departments'
+        ));
     }
 
     /**
@@ -50,13 +77,14 @@ class ChecklistController extends Controller
     public function store(Request $request)
     {
         $companyId = auth()->user()->company_id;
-        
+
         // ---------------- VALIDATION ----------------
         $validator = Validator::make($request->all(), [
-            'title'         => 'required|string|max:255',
-            'department_id' => 'nullable|exists:departments,id',
-            'checklist_upload'    => 'required|file',
-            'description'   => 'nullable|string',
+            'title'             => 'required|string|max:255',
+            'department_id'     => 'nullable|array',
+            'department_id.*'   => 'exists:departments,id',
+            'checklist_upload'  => 'required|file',
+            'description'       => 'nullable|string',
             'is_suggestion'     => 'required|boolean',
         ]);
 
@@ -68,30 +96,38 @@ class ChecklistController extends Controller
 
         try {
 
-            // ---------------- FILE UPLOAD ----------------
+            /* ---------------- FILE UPLOAD ---------------- */
+
             $fileUrl = null;
 
             if ($request->hasFile('checklist_upload')) {
 
                 $file = $request->file('checklist_upload');
+
                 $fileName = 'checklist_' . time() . '.' . $file->getClientOriginalExtension();
 
-                // Store file publicly
                 $filePath = $file->storeAs('checklists', $fileName, 'public');
 
-                // Public URL
                 $fileUrl = asset('storage/' . $filePath);
             }
 
+            /* ---------------- DEPARTMENT COMMA SEPARATED ---------------- */
 
-            // ---------------- CREATE Checklist ----------------
+            $departmentIds = null;
+
+            if (!empty($request->department_id)) {
+                $departmentIds = implode(',', $request->department_id);
+            }
+
+            /* ---------------- CREATE Checklist ---------------- */
+
             Checklist::create([
-                'title'             => $request->title,
-                'department_id'     => $request->department_id ?? '0',
-                'description'       => $request->description,
-                'file'              => $fileUrl,   // FULL URL stored
-                'is_suggestion'     => $request->is_suggestion,
-                'party_id'          => $companyId,
+                'title'         => $request->title,
+                'department_id' => $departmentIds, // 1,3,5
+                'description'   => $request->description,
+                'file'          => $fileUrl,
+                'is_suggestion' => $request->is_suggestion,
+                'party_id'      => $companyId,
             ]);
 
             return redirect()->route('admin.checklist.index')
@@ -160,10 +196,19 @@ class ChecklistController extends Controller
             $checklist->file = $fileUrl;
         }
 
+
+        /* ---------------- DEPARTMENT COMMA SEPARATED ---------------- */
+
+        $departmentIds = null;
+
+        if (!empty($request->department_id)) {
+            $departmentIds = implode(',', $request->department_id);
+        }
+
         // ---------------- UPDATE DATA ----------------
         $checklist->update([
             'title'          => $request->title,
-            'department_id'  => $request->department_id,
+            'department_id'  => $departmentIds,
             'description'    => $request->description,
             'is_suggestion'  => $request->is_suggestion,
         ]);
@@ -201,20 +246,43 @@ class ChecklistController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        $query = Checklist::with('department')
-            ->where('party_id', $companyId);
+        $query = Checklist::where('party_id', $companyId);
 
-        // 🔍 Search by title
+        /* 🔍 Search by title */
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        // 🏷️ Department filter
+        /* 🏷️ Department filter (comma separated) */
         if ($request->filled('department_id')) {
-            $query->where('department_id', $request->department_id);
+            $query->whereRaw("FIND_IN_SET(?, department_id)", [$request->department_id]);
         }
 
         $checklists = $query->latest()->get();
+
+        /* -------- Get all departments -------- */
+        $departments = Department::where('company_id', $companyId)
+            ->get()
+            ->keyBy('id');
+
+        /* -------- Convert department ids to names -------- */
+        foreach ($checklists as $checklist) {
+
+            $deptNames = [];
+
+            if (!empty($checklist->department_id)) {
+
+                $ids = explode(',', $checklist->department_id);
+
+                foreach ($ids as $id) {
+                    if (isset($departments[$id])) {
+                        $deptNames[] = $departments[$id]->department_name;
+                    }
+                }
+            }
+
+            $checklist->department_names = implode(', ', $deptNames);
+        }
 
         return response()->json([
             'success' => true,

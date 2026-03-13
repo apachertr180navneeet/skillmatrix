@@ -1,6 +1,9 @@
 @extends('admin.layouts.app')
 
 @section('style')
+
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
     .form-card {
         background: #fff;
@@ -64,6 +67,10 @@
             @csrf
             @method('PUT')
 
+            @php
+            $selectedDepartments = explode(',', $checklist->department_id);
+            @endphp
+
             <!-- TITLE -->
             <div class="mb-4">
                 <label class="form-label">Checklist Title</label>
@@ -78,10 +85,10 @@
             </div>
 
             <!-- DEPARTMENT -->
-            <div class="mb-4">
+            {{--  <div class="mb-4">
                 <label class="form-label">Department</label>
                 <select name="department_id"
-                        class="form-select @error('department_id') is-invalid @enderror">
+                        class="form-select @error('department_id') is-invalid @enderror" multiple>
                     <option value="">Select department</option>
                     @foreach($departments as $department)
                         <option value="{{ $department->id }}"
@@ -93,6 +100,30 @@
                 @error('department_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+            </div>  --}}
+
+            <div class="mb-4">
+
+                <label class="form-label">Department</label>
+
+                <select name="department_id[]" class="form-select select2 @error('department_id') is-invalid @enderror" multiple>
+
+                    @foreach($departments as $department)
+
+                    <option value="{{ $department->id }}" {{ in_array($department->id, old('department_id',$selectedDepartments)) ? 'selected' : '' }}>
+
+                        {{ $department->department_name }}
+
+                    </option>
+
+                    @endforeach
+
+                </select>
+
+                @error('department_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+
             </div>
 
             <!-- FILE -->
@@ -167,10 +198,27 @@
 @endsection
 
 @section('script')
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <!-- CKEditor 5 -->
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
 <script>
+
+    $(document).ready(function() {
+
+        $('.select2').select2({
+            placeholder: "Select Department"
+            , width: '100%'
+        });
+
+    });
+
     ClassicEditor
         .create(document.querySelector('#description-editor'), {
             toolbar: [

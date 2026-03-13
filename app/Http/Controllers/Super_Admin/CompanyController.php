@@ -81,12 +81,12 @@ class CompanyController extends Controller
         $rules = [
             'copmany_name' => 'required|string|max:191',
             'admin_name'   => 'required|string|max:191',
-            'email'        => 'nullable|email|max:191|unique:companies,email',
-            'phone'        => 'nullable|numeric|digits_between:10,12|unique:companies,phone',
-            'address'      => 'nullable|string|max:255',
-            'city'         => 'nullable|string|max:100',
-            'state'        => 'nullable|string|max:100',
-            'country'      => 'nullable|string|max:100',
+            'email'        => 'required|email|max:191|unique:companies,email',
+            'phone'        => 'required|numeric|digits_between:10,12|unique:companies,phone',
+            'address'      => 'required|string|max:255',
+            'city'         => 'required|string|max:100',
+            'state'        => 'required|string|max:100',
+            'country'      => 'required|string|max:100',
             'logo'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
 
@@ -148,21 +148,21 @@ class CompanyController extends Controller
             'copmany_name' => 'required|string|max:191',
             'admin_name'   => 'required|string|max:191',
             'email'        => [
-                'nullable',
+                'required',
                 'email',
                 'max:191',
                 Rule::unique('companies', 'email')->ignore($request->id),
             ],
             'phone'        => [
-                'nullable',
+                'required',
                 'numeric',
                 'digits_between:10,12',
                 Rule::unique('companies', 'phone')->ignore($request->id),
             ],
-            'address'      => 'nullable|string|max:255',
-            'city'         => 'nullable|string|max:100',
-            'state'        => 'nullable|string|max:100',
-            'country'      => 'nullable|string|max:100',
+            'address'      => 'required|string|max:255',
+            'city'         => 'required|string|max:100',
+            'state'        => 'required|string|max:100',
+            'country'      => 'required|string|max:100',
             'logo'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
 

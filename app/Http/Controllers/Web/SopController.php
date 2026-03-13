@@ -23,12 +23,12 @@ class SopController extends Controller
     {
         $departmentid = auth()->user()->department_id;
         $companyId = auth()->user()->company_id;
-
+        
         $sops = Sop::with('department')
             ->where('party_id', $companyId)
-            ->where('department_id', $departmentid)
+            ->whereRaw("FIND_IN_SET(?, department_id)", [$departmentid]) // comma separated check
             ->where('is_suggestion', '0')
-            ->whereHas('sopQuesAns') // 🔥 sirf wahi SOP jisme ques_ans ho
+            ->whereHas('sopQuesAns') // sirf wahi SOP jisme ques_ans ho
             ->latest()
             ->get();
 

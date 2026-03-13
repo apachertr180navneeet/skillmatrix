@@ -7,7 +7,7 @@
     </td>
 
     <td>
-        {{ $sop->department->department_name ?? '-' }}
+        {{ $sop->department_names ?? '-' }}
     </td>
 
     <td>

@@ -20,22 +20,53 @@ class VideoController extends Controller
     public function index()
     {
         $companyId = auth()->user()->company_id;
-        
-        $departments = Department::where('company_id', $companyId)->where('status', 'active')->get();
-        
+
+        $departments = Department::where('company_id', $companyId)
+            ->where('status', 'active')
+            ->get()
+            ->keyBy('id'); // important
+
+
         $videosuggestions = Video::where('party_id', $companyId)
             ->where('is_suggestion', '1')
             ->latest()
             ->get();
 
 
-        $videos = Video::with('department')
-            ->where('party_id', $companyId)
+        $videos = Video::where('party_id', $companyId)
             ->where('is_suggestion', '0')
             ->latest()
             ->get();
 
-        return view('admin.video.index' , compact('videos', 'departments', 'videosuggestions'));
+
+        /* -------- Convert department ids to names -------- */
+
+        foreach ($videos as $video) {
+
+            $deptNames = [];
+
+            if (!empty($video->department_id)) {
+
+                $ids = explode(',', $video->department_id);
+
+                foreach ($ids as $id) {
+
+                    if (isset($departments[$id])) {
+                        $deptNames[] = $departments[$id]->department_name;
+                    }
+
+                }
+            }
+
+            $video->department_names = implode(', ', $deptNames);
+        }
+
+
+        return view('admin.video.index', compact(
+            'videosuggestions',
+            'videos',
+            'departments'
+        ));
     }
 
     /**
@@ -53,20 +84,20 @@ class VideoController extends Controller
      */
     public function store(Request $request)
     {
-
-        
         try {
-            
+
             $companyId = auth()->user()->company_id;
+
             // ---------------- VALIDATION ----------------
             $request->validate([
-                'title'         => 'required|string|max:255',
-                'department_id' => 'nullable|exists:departments,id',
-                'is_link'       => 'required|in:yes,no',
-                'video_link'    => 'required_if:is_link,yes|nullable|url',
-                'video_upload'  => 'required_if:is_link,no|nullable|file',
-                'description'   => 'nullable|string',
-                'is_suggestion' => 'required|boolean',
+                'title'            => 'required|string|max:255',
+                'department_id'    => 'nullable|array',
+                'department_id.*'  => 'exists:departments,id',
+                'is_link'          => 'required|in:yes,no',
+                'video_link'       => 'required_if:is_link,yes|nullable|url',
+                'video_upload'     => 'required_if:is_link,no|nullable|file',
+                'description'      => 'nullable|string',
+                'is_suggestion'    => 'required|boolean',
             ]);
 
             $videoFileUrl = null;
@@ -87,10 +118,17 @@ class VideoController extends Controller
                 $videoLinkUrl = $request->video_link;
             }
 
+            // ---------------- CONVERT ARRAY TO COMMA ----------------
+            $departmentIds = null;
+
+            if ($request->department_id) {
+                $departmentIds = implode(',', $request->department_id);
+            }
+
             // ---------------- CREATE VIDEO ----------------
             Video::create([
                 'title'         => $request->title,
-                'department_id' => $request->department_id ?? 0,
+                'department_id' => $departmentIds,
                 'description'   => $request->description,
                 'video_file'    => $videoFileUrl,
                 'video_link'    => $videoLinkUrl,
@@ -132,40 +170,40 @@ class VideoController extends Controller
         VALIDATION
         ------------------------------------------------- */
         $validated = $request->validate([
-            'title'         => 'required|string|max:255',
-            'department_id' => 'nullable|exists:departments,id',
+            'title'            => 'required|string|max:255',
 
-            'is_link'       => 'required|in:yes,no',
-            'video_link'    => 'required_if:is_link,yes|nullable|url',
-            'video_upload'  => 'required_if:is_link,no|nullable|file|mimes:mp4,mov,avi',
+            'department_id'    => 'nullable|array',
+            'department_id.*'  => 'exists:departments,id',
 
-            'description'   => 'nullable|string',
-            'is_suggestion' => 'required|boolean',
+            'is_link'          => 'required|in:yes,no',
+            'video_link'       => 'required_if:is_link,yes|nullable|url',
+            'video_upload'     => 'required_if:is_link,no|nullable|file|mimes:mp4,mov,avi',
+
+            'description'      => 'nullable|string',
+            'is_suggestion'    => 'required|boolean',
         ]);
 
         try {
 
             /* -------------------------------------------------
-            FETCH VIDEO (SECURITY CHECK)
+            FETCH VIDEO
             ------------------------------------------------- */
             $video = Video::where('id', $id)
                 ->where('party_id', $companyId)
                 ->firstOrFail();
 
-            $videoFileUrl = $video->video_file; // keep old
-            $videoLinkUrl = $video->video_link; // keep old
+            $videoFileUrl = $video->video_file;
+            $videoLinkUrl = $video->video_link;
+
 
             /* -------------------------------------------------
             HANDLE VIDEO SOURCE
             ------------------------------------------------- */
 
-            // ---------- UPLOAD VIDEO ----------
             if ($validated['is_link'] === 'no') {
 
-                // If new file uploaded
                 if ($request->hasFile('video_upload')) {
 
-                    // Delete old file if exists
                     if ($video->video_file) {
                         $oldPath = str_replace(asset('storage/'), '', $video->video_file);
                         Storage::disk('public')->delete($oldPath);
@@ -178,16 +216,14 @@ class VideoController extends Controller
                     $videoFileUrl = asset('storage/' . $filePath);
                 }
 
-                // Clear link
                 $videoLinkUrl = null;
             }
 
-            // ---------- VIDEO LINK ----------
+
             if ($validated['is_link'] === 'yes') {
 
                 $videoLinkUrl = $validated['video_link'];
 
-                // Delete old uploaded file if exists
                 if ($video->video_file) {
                     $oldPath = str_replace(asset('storage/'), '', $video->video_file);
                     Storage::disk('public')->delete($oldPath);
@@ -196,12 +232,25 @@ class VideoController extends Controller
                 $videoFileUrl = null;
             }
 
+
             /* -------------------------------------------------
-            UPDATE VIDEO DATA
+            ARRAY → COMMA SEPARATED
             ------------------------------------------------- */
+
+            $departmentIds = null;
+
+            if ($request->department_id) {
+                $departmentIds = implode(',', $request->department_id);
+            }
+
+
+            /* -------------------------------------------------
+            UPDATE VIDEO
+            ------------------------------------------------- */
+
             $video->update([
                 'title'         => $validated['title'],
-                'department_id' => $validated['department_id'] ?? null,
+                'department_id' => $departmentIds,
                 'description'   => $validated['description'] ?? null,
 
                 'is_link'       => $validated['is_link'],
@@ -250,20 +299,46 @@ class VideoController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        $query = Video::with('department')
-            ->where('party_id', $companyId);
+        // Get departments
+        $departments = Department::where('company_id', $companyId)
+            ->where('status', 'active')
+            ->get()
+            ->keyBy('id');
 
-        // 🔍 Search by title
+        $query = Video::where('party_id', $companyId);
+
+        // Search by title
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        // 🏷️ Filter by department
+        // Filter by department (comma separated)
         if ($request->filled('department_id')) {
-            $query->where('department_id', $request->department_id);
+            $query->whereRaw("FIND_IN_SET(?, department_id)", [$request->department_id]);
         }
 
         $videos = $query->latest()->get();
+
+        // Convert department ids → names
+        foreach ($videos as $video) {
+
+            $deptNames = [];
+
+            if (!empty($video->department_id)) {
+
+                $ids = explode(',', $video->department_id);
+
+                foreach ($ids as $id) {
+
+                    if (isset($departments[$id])) {
+                        $deptNames[] = $departments[$id]->department_name;
+                    }
+
+                }
+            }
+
+            $video->department_names = implode(', ', $deptNames);
+        }
 
         return response()->json([
             'success' => true,

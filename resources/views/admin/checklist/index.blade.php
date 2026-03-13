@@ -160,7 +160,7 @@
                         </td>
 
                         <td>
-                            {{ $checklist->department->department_name ?? '-' }}
+                            {{ $checklist->department_names ?? '-' }}
                         </td>
 
                         <td>
@@ -279,7 +279,7 @@
                                             </td>
 
                                             <td>
-                                            ${checklist.department ? checklist.department.department_name : '-'}
+                                            ${checklist.department_names ? checklist.department_names : '-'}
                                             </td>
 
                                             <td>

@@ -159,7 +159,7 @@
                             </td>
 
                             <td>
-                                {{ $video->department->department_name ?? '-' }}
+                                {{ $video->department_names ?? '-' }}
                             </td>
 
                             <td>
@@ -304,7 +304,7 @@ $(document).ready(function(){
                             </td>
 
                             <td>
-                                ${video.department ? video.department.department_name : '-'}
+                                ${video.department_names ? video.department_names : '-'}
                             </td>
 
                             <td>
@@ -323,15 +323,15 @@ $(document).ready(function(){
 
                                 <div class="action-btns">
 
-                                    <a href="/admin/video/qa/create/${video.id}" class="btn btn-qa btn-sm">
+                                    <a href="/admin/videos/qa/create/${video.id}" class="btn btn-qa btn-sm">
                                         Q&A
                                     </a>
 
-                                    <a href="/admin/video/edit/${video.id}" class="btn btn-edit btn-sm">
+                                    <a href="/admin/videos/${video.id}/edit" class="btn btn-edit btn-sm">
                                         Edit
                                     </a>
 
-                                    <form action="/admin/video/${video.id}" method="POST">
+                                    <form action="/admin/videos/${video.id}" method="POST">
                                         <button class="btn btn-delete btn-sm">
                                             Delete
                                         </button>

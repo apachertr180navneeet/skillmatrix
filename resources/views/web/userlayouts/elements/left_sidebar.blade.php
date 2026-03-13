@@ -13,8 +13,8 @@
 	<div class="menu-inner-shadow"></div>
 
 	<ul class="menu-inner py-1">
-		<li class="menu-item {{ request()->is('admin/dashboard') ? 'active' : ''}}">
-			<a href="{{route('admin.dashboard')}}" class="menu-link">
+		<li class="menu-item {{ request()->is('user/dashboard') ? 'active' : ''}}">
+			<a href="{{route('user.dashboard')}}" class="menu-link">
 				<i class="menu-icon tf-icons bx bx-home-circle"></i>
 				<div data-i18n="Dashboard">Dashboard</div>
 			</a>

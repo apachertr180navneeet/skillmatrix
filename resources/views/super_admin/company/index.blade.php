@@ -134,7 +134,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label>Company Name</label>
-                        <input type="text" id="editcompanyname" class="form-control">
+                        <input type="text" id="editcopmany_name" class="form-control">
                         <small class="error-text text-danger"></small>
                     </div>
 
@@ -323,7 +323,7 @@ $(document).ready(function () {
         $.get("{{ url('super-admin/company/get') }}/" + id, function (data) {
 
             $('#editid').val(data.id);
-            $('#editcompanyname').val(data.copmany_name);
+            $('#editcopmany_name').val(data.copmany_name);
             $('#editadmin_name').val(data.admin_name);
             $('#editemail').val(data.email);
             $('#editphone').val(data.phone);
@@ -353,7 +353,7 @@ $(document).ready(function () {
 
         formData.append('_token', "{{ csrf_token() }}");
         formData.append('id', $('#editid').val());
-        formData.append('copmany_name', $('#editcompanyname').val());
+        formData.append('copmany_name', $('#editcopmany_name').val());
         formData.append('admin_name', $('#editadmin_name').val());
         formData.append('email', $('#editemail').val());
         formData.append('phone', $('#editphone').val());

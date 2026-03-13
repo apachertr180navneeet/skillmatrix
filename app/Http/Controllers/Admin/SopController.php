@@ -24,18 +24,36 @@ class SopController extends Controller
             ->where('status', 'active')
             ->get();
 
-        $sopsuggestions = Sop::where('party_id', $companyId)
-            ->where('is_suggestion', 1)
-            ->latest()
-            ->get();
+        $departmentList = $departments->pluck('department_name','id')->toArray();
 
-        $sops = Sop::with('department')
-            ->where('party_id', $companyId)
+        $sops = Sop::where('party_id', $companyId)
             ->where('is_suggestion', '0')
             ->latest()
             ->get();
 
-        return view('admin.sop.index', compact('sops', 'departments', 'sopsuggestions'));
+        foreach ($sops as $sop) {
+
+            $deptNames = [];
+
+            if (!empty($sop->department_id)) {
+
+                $ids = explode(',', $sop->department_id);
+
+                foreach ($ids as $id) {
+
+                    $id = trim($id);
+
+                    if(isset($departmentList[$id])){
+                        $deptNames[] = $departmentList[$id];
+                    }
+                }
+            }
+
+            $sop->department_names = implode(', ', $deptNames);
+        }
+
+
+        return view('admin.sop.index', compact('sops','departments'));
     }
 
     /**
@@ -61,7 +79,8 @@ class SopController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title'          => 'required|string|max:255',
-            'department_id'  => 'nullable|exists:departments,id',
+            'department_id'  => 'nullable|array',
+            'department_id.*'=> 'exists:departments,id',
             'sop_upload'     => 'required|file|mimes:pdf|max:10240',
             'description'    => 'nullable|string',
             'is_suggestion'  => 'required|boolean',
@@ -72,21 +91,31 @@ class SopController extends Controller
         }
 
         try {
+
             $filePath = null;
 
             if ($request->hasFile('sop_upload')) {
+
                 $file = $request->file('sop_upload');
+
                 $fileName = 'sop_' . time() . '.' . $file->getClientOriginalExtension();
 
-                // ✅ PRIVATE STORAGE
+                // private storage
                 $filePath = $file->storeAs('sop', $fileName, 'local');
+            }
+
+            // Convert department array to comma separated
+            $departmentIds = null;
+
+            if ($request->department_id) {
+                $departmentIds = implode(',', $request->department_id);
             }
 
             Sop::create([
                 'title'          => $request->title,
-                'department_id'  => $request->department_id ?? 0,
+                'department_id'  => $departmentIds,
                 'description'    => $request->description,
-                'sop_upload'     => $filePath, // ONLY RELATIVE PATH
+                'sop_upload'     => $filePath,
                 'is_suggestion'  => $request->is_suggestion,
                 'party_id'       => $companyId,
             ]);
@@ -95,6 +124,7 @@ class SopController extends Controller
                 ->with('success', 'SOP created successfully.');
 
         } catch (Exception $e) {
+
             return redirect()->back()
                 ->with('error', 'Something went wrong.')
                 ->withInput();
@@ -127,11 +157,12 @@ class SopController extends Controller
         $companyId = auth()->user()->company_id;
 
         $validator = Validator::make($request->all(), [
-            'title'          => 'required|string|max:255',
-            'department_id'  => 'nullable|exists:departments,id',
-            'sop_upload'     => 'nullable|file|mimes:pdf|max:10240',
-            'description'    => 'nullable|string',
-            'is_suggestion'  => 'required|boolean',
+            'title'           => 'required|string|max:255',
+            'department_id'   => 'nullable|array',
+            'department_id.*' => 'exists:departments,id',
+            'sop_upload'      => 'nullable|file|mimes:pdf|max:10240',
+            'description'     => 'nullable|string',
+            'is_suggestion'   => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -139,34 +170,47 @@ class SopController extends Controller
         }
 
         try {
+
             $sop = Sop::where('id', $id)
                 ->where('party_id', $companyId)
                 ->firstOrFail();
 
+            // Convert department array to comma separated
+            $departmentIds = null;
+
+            if ($request->department_id) {
+                $departmentIds = implode(',', $request->department_id);
+            }
+
+            // File Upload
             if ($request->hasFile('sop_upload')) {
+
                 $file = $request->file('sop_upload');
+
                 $fileName = 'sop_' . time() . '.' . $file->getClientOriginalExtension();
 
-                // DELETE OLD FILE (OPTIONAL)
+                // Delete old file
                 if ($sop->sop_upload && Storage::exists($sop->sop_upload)) {
                     Storage::delete($sop->sop_upload);
                 }
 
-                // PRIVATE STORAGE
-                $filePath = $file->storeAs('sop', $fileName);
+                $filePath = $file->storeAs('sop', $fileName, 'local');
+
                 $sop->sop_upload = $filePath;
             }
 
             $sop->title = $request->title;
-            $sop->department_id = $request->department_id ?? 0;
+            $sop->department_id = $departmentIds;
             $sop->description = $request->description;
             $sop->is_suggestion = $request->is_suggestion;
+
             $sop->save();
 
             return redirect()->route('admin.sop.index')
                 ->with('success', 'SOP updated successfully.');
 
         } catch (Exception $e) {
+
             return redirect()->back()
                 ->with('error', 'Something went wrong.')
                 ->withInput();
@@ -195,18 +239,43 @@ class SopController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        $query = Sop::with('department')
-            ->where('party_id', $companyId);
+        $query = Sop::where('party_id', $companyId);
 
-        if ($request->search) {
+        /* 🔍 Search by title */
+        if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->department_id) {
-            $query->where('department_id', $request->department_id);
+        /* 🏷️ Department filter (comma separated ids) */
+        if ($request->filled('department_id')) {
+            $query->whereRaw("FIND_IN_SET(?, department_id)", [$request->department_id]);
         }
 
         $sops = $query->latest()->get();
+
+        /* -------- Get Departments -------- */
+        $departments = Department::where('company_id', $companyId)
+            ->get()
+            ->keyBy('id');
+
+        /* -------- Convert department ids to names -------- */
+        foreach ($sops as $sop) {
+
+            $deptNames = [];
+
+            if (!empty($sop->department_id)) {
+
+                $ids = explode(',', $sop->department_id);
+
+                foreach ($ids as $id) {
+                    if (isset($departments[$id])) {
+                        $deptNames[] = $departments[$id]->department_name;
+                    }
+                }
+            }
+
+            $sop->department_names = implode(', ', $deptNames);
+        }
 
         return view('admin.sop.table_rows', compact('sops'))->render();
     }
