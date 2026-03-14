@@ -305,7 +305,7 @@ class VideoController extends Controller
             ->get()
             ->keyBy('id');
 
-        $query = Video::where('party_id', $companyId);
+        $query = Video::where('party_id', $companyId)->where('is_suggestion', '0');
 
         // Search by title
         if ($request->filled('search')) {

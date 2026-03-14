@@ -15,14 +15,6 @@
         padding: 14px;
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         height: 100%;
-        transition: transform 0.2s ease;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .sop-card:hover {
-        transform: translateY(-3px);
     }
 
     .sop-preview {
@@ -33,31 +25,28 @@
     }
 
     .sop-footer {
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .sop-title {
         font-size: 13px;
         font-weight: 600;
-        margin-bottom: 10px;
-        word-break: break-word;
+        margin: 0;
     }
 
     .qa-btn {
-        display: inline-block;
-        padding: 6px 14px;
-        font-size: 12px;
-        font-weight: 600;
+        background: #ff0000;
         color: #fff;
-        background: #28a745;
-        border-radius: 20px;
-        text-decoration: none;
-        transition: background 0.2s ease;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: none;
     }
 
     .qa-btn:hover {
-        background: #218838;
-        color: #fff;
+        background: #d90000;
     }
 </style>
 @endsection
@@ -79,7 +68,7 @@
     <div class="row g-4">
 
         @forelse ($checklists as $checklist)
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+            {{--  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
 
                 <div class="sop-card">
 
@@ -101,6 +90,28 @@
 
                 </div>
 
+            </div>  --}}
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                <a href="{{ $checklist->file}}" target="_blank" class="text-decoration-none text-dark">
+                    <div class="sop-card">
+
+                        <!-- Preview -->
+                        <div class="sop-preview"></div>
+
+                        <!-- Footer -->
+                        <div class="sop-footer">
+                            <p class="sop-title">
+                                {{ $checklist->title ?? 'SOP' }}
+                            </p>
+
+                            <a href="{{ route('user.checklist.qa', $checklist->id) }}"
+                            class="qa-btn text-decoration-none">
+                                Q&amp;A
+                            </a>
+                        </div>
+
+                    </div>
+                </a>
             </div>
         @empty
             <div class="col-12">

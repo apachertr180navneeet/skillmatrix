@@ -4,135 +4,139 @@
 @endphp
 @section('style')
 <style>
-/* ================= PAGE ================= */
-.container-p-y {
-    background: #f6f7fb;
-}
+    .table th {
+        font-size: 13px;
+        font-weight: 600;
+        background: #f8f9fa;
+    }
 
-/* ================= TOOLBAR ================= */
-.page-toolbar {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 16px 20px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-}
+    .table td {
+        font-size: 13px;
+        vertical-align: middle;
+    }
 
-.search-box {
-    max-width: 260px;
-}
+    /* VIEW BUTTON */
+    .btn-view {
+        background: #0ea5e9;
+        color: #fff;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 12px;
+    }
 
-/* ================= TABLE CARD ================= */
-.table-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 20px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-}
+    /* STATUS BADGE */
+    .badge-active {
+        background: #22c55e;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+    }
 
-/* ================= TABLE ================= */
-.table {
-    margin-bottom: 0;
-}
+    /* ACTION BUTTON GROUP */
+    .action-btns {
+        display: flex;
+        gap: 8px;
+    }
 
-.table thead th {
-    background: #f9fafc;
-    font-size: 13px;
-    font-weight: 600;
-    color: #6b7280;
-    border-bottom: 1px solid #e5e7eb;
-    white-space: nowrap;
-}
+    /* Q&A BUTTON */
+    .btn-qa {
+        background: #ef4444;
+        color: #fff;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 12px;
+    }
 
-.table tbody td {
-    font-size: 14px;
-    color: #374151;
-    vertical-align: middle;
-    white-space: nowrap;
-}
+    /* EDIT BUTTON */
+    .btn-edit {
+        background: #f59e0b;
+        color: #fff;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 12px;
+    }
 
-.table tbody tr:hover {
-    background: #f9fafb;
-}
+    /* DELETE BUTTON */
+    .btn-delete {
+        background: #9ca3af;
+        color: #fff;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 12px;
+    }
 
-/* ================= BADGE ================= */
-.badge-active {
-    background: #22c55e;
-    color: #fff;
-    font-size: 11px;
-    padding: 6px 12px;
-    border-radius: 999px;
-}
+    .top-actions {
+        display: flex;
+        gap: 10px;
+    }
 
-/* ================= BUTTONS ================= */
-.btn-soft {
-    border-radius: 8px;
-    font-size: 12px;
-    padding: 5px 12px;
-}
+    .table-bordered {
+        border-collapse: separate;
+    }
 
-.btn-view {
-    background: #0ea5e9;
-    color: #fff;
-}
+    .table-bordered td,
+    .table-bordered th {
+        border-top: none !important;
+        border-bottom: none !important;
+    }
 
-.btn-qa {
-    background: #ef4444;
-    color: #fff;
-}
+    .table-bordered tbody tr td,
+    .table-bordered tbody tr th {
+        border-top: none !important;
+        border-bottom: none !important;
+    }
 
-.btn-edit {
-    background: #f59e0b;
-    color: #fff;
-}
-
-.btn-delete {
-    background: #9ca3af;
-    color: #fff;
-}
-
-/* ================= ACTIONS ================= */
-.action-btns {
-    display: flex;
-    gap: 6px;
-}
+    .table-bordered thead th {
+        border-bottom: none !important;
+    }
 </style>
 @endsection
 
 @section('content')
+
 <div class="container-fluid flex-grow-1 container-p-y">
 
-    <!-- ================= TOOLBAR ================= -->
-    <div class="page-toolbar d-flex justify-content-between align-items-center">
+    <!-- ================= TOP BAR ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
         <div class="d-flex gap-2">
-            <input type="text"
-                   id="search"
-                   class="form-control search-box"
-                   placeholder="Search SOP title...">
+            <input type="text" class="form-control" id="search" placeholder="Search here..." style="width:220px;">
         </div>
 
-        <div class="d-flex gap-2">
-            <select id="department" class="form-select">
-                <option value="">All Departments</option>
-                @foreach ($departments as $department)
-                    <option value="{{ $department->id }}">
-                        {{ $department->department_name }}
-                    </option>
-                @endforeach
-            </select>
-
-            <a href="{{ route('admin.sop.create') }}"
-               class="btn btn-primary px-4">
-                + Create SOP
+        <div class="top-actions">
+            <a href="{{ route('admin.sop.create') }}" class="btn btn-primary">
+                + Create
             </a>
         </div>
 
     </div>
 
-    <!-- ================= SOP TABLE ================= -->
-    <div class="table-card">
-        <div class="table-responsive">
+
+    <!-- ================= FILTER ================= -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h5 class="mb-0">SOP</h5>
+
+        <select class="form-select w-auto" id="department">
+            <option value="">Department</option>
+
+            @foreach ($departments as $department)
+            <option value="{{ $department->id }}">
+                {{ $department->department_name }}
+            </option>
+            @endforeach
+
+        </select>
+
+    </div>
+
+
+
+    <!-- ================= TABLE ================= -->
+    <div class="card">
+        <div class="card-body table-responsive">
+
             <table class="table align-middle">
                 <thead>
                     <tr>
@@ -149,10 +153,13 @@
                     @include('admin.sop.table_rows', ['sops' => $sops])
                 </tbody>
             </table>
+
         </div>
     </div>
 
 </div>
+
+
 @endsection
 
 @section('script')

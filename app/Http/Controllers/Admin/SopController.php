@@ -92,7 +92,7 @@ class SopController extends Controller
 
         try {
 
-            $filePath = null;
+            $fileUrl = null;
 
             if ($request->hasFile('sop_upload')) {
 
@@ -100,8 +100,11 @@ class SopController extends Controller
 
                 $fileName = 'sop_' . time() . '.' . $file->getClientOriginalExtension();
 
-                // private storage
-                $filePath = $file->storeAs('sop', $fileName, 'local');
+                // Store file
+                $filePath = $file->storeAs('sop', $fileName, 'public');
+
+                // Generate full URL
+                $fileUrl = url(Storage::url($filePath));
             }
 
             // Convert department array to comma separated
@@ -115,7 +118,7 @@ class SopController extends Controller
                 'title'          => $request->title,
                 'department_id'  => $departmentIds,
                 'description'    => $request->description,
-                'sop_upload'     => $filePath,
+                'sop_upload'     => $fileUrl, // full URL stored
                 'is_suggestion'  => $request->is_suggestion,
                 'party_id'       => $companyId,
             ]);
@@ -238,8 +241,7 @@ class SopController extends Controller
     public function filter(Request $request)
     {
         $companyId = auth()->user()->company_id;
-
-        $query = Sop::where('party_id', $companyId);
+        $query = Sop::where('party_id', $companyId)->where('is_suggestion', '0');
 
         /* 🔍 Search by title */
         if ($request->filled('search')) {
@@ -252,6 +254,7 @@ class SopController extends Controller
         }
 
         $sops = $query->latest()->get();
+
 
         /* -------- Get Departments -------- */
         $departments = Department::where('company_id', $companyId)

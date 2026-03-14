@@ -26,7 +26,7 @@ class VideoController extends Controller
 
         $videos = Video::with('department')
             ->where('party_id', $companyId)
-            ->where('department_id', $departmentid)
+            ->whereRaw("FIND_IN_SET(?, department_id)", [$departmentid])
             ->where('is_suggestion', '0')
             ->whereHas('videoQuesAns') // 🔥 sirf wahi video jisme ques_ans ho
             ->latest()

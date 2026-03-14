@@ -246,7 +246,7 @@ class ChecklistController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        $query = Checklist::where('party_id', $companyId);
+        $query = Checklist::where('party_id', $companyId)->where('is_suggestion', '0');
 
         /* 🔍 Search by title */
         if ($request->filled('search')) {

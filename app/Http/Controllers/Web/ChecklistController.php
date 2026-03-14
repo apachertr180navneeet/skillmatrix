@@ -20,9 +20,9 @@ class ChecklistController extends Controller
     {
         $companyId    = auth()->user()->company_id;
         $departmentId = auth()->user()->department_id;
-
+        
         $checklists = Checklist::where('party_id', $companyId)
-            ->where('department_id', $departmentId)
+            ->whereRaw("FIND_IN_SET(?, department_id)", [$departmentId]) // corrected variable
             ->where('is_suggestion', '0')
             ->whereHas('checklistQuesAns')
             ->latest()
