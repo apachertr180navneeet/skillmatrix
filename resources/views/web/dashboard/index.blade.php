@@ -70,7 +70,7 @@
                 <div class="stat-icon"><i class="bx bx-user"></i></div>
                 <div class="stat-content">
                     <h6>Total Exam Applied</h6>
-                    <p>18</p>
+                    <p>{{ $totalTest }}</p>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@
                 <div class="stat-icon"><i class="bx bx-buildings"></i></div>
                 <div class="stat-content">
                     <h6>Total SOP Check</h6>
-                    <p>18</p>
+                    <p>{{ $sopResultTotal }}</p>
                 </div>
             </div>
         </div>
@@ -92,7 +92,7 @@
                 <div class="stat-icon"><i class="bx bx-buildings"></i></div>
                 <div class="stat-content">
                     <h6>Total Checklist</h6>
-                    <p>18</p>
+                    <p>{{ $checklistResultTotal }}</p>
                 </div>
             </div>
         </div>
@@ -102,7 +102,7 @@
                 <div class="stat-icon"><i class="bx bx-buildings"></i></div>
                 <div class="stat-content">
                     <h6>Total Video Check</h6>
-                    <p>18</p>
+                    <p>{{ $vedioResultTotal }}</p>
                 </div>
             </div>
         </div>

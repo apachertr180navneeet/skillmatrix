@@ -5,7 +5,18 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\{
+    User,
+    Department,
+    Sop,
+    Video,
+    Checklist,
+    SopQuesAns,
+    VedioQuesans,
+    SopUserResult,
+    VideoUserResult,
+    ChecklistUserResult
+};
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
@@ -227,7 +238,19 @@ class AuthController extends Controller
 
     public function dashboard()
     {
-        return view("web.dashboard.index");
+        $user = Auth::user();
+
+        $userID = $user->id;
+
+        $sopResultTotal = SopUserResult::where('user_id', $userID)->count();
+
+        $vedioResultTotal = VideoUserResult::where('user_id', $userID)->count();
+
+        $checklistResultTotal = ChecklistUserResult::where('user_id', $userID)->count();
+
+        $totalTest = $sopResultTotal + $vedioResultTotal + $checklistResultTotal;
+
+        return view("web.dashboard.index", compact("totalTest","sopResultTotal","vedioResultTotal","checklistResultTotal"));
     }
 
 
