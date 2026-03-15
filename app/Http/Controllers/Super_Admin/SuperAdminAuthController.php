@@ -193,7 +193,9 @@ class SuperAdminAuthController extends Controller
         try{
             $request->validate([
                 "old_password" => "required",
-                "new_password" => "required|confirmed",
+                "new_password" => "required|confirmed|min:6",
+            ], [
+                "new_password.min" => "New password must be at least 6 characters.",
             ]);
             #Match The Old Password
             if (!Hash::check($request->old_password, auth()->user()->password)) {

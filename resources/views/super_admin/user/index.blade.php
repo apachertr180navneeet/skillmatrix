@@ -221,7 +221,7 @@ $(function(){
             { data: 'full_name' },
             { data: 'email' },
             { data: 'phone' },
-            { data: 'company.name', defaultContent:'-' },
+            { data: 'company.copmany_name', defaultContent:'-' },
             {
                 data:'status',
                 render:function(data,row,type){

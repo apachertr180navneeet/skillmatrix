@@ -15,26 +15,26 @@
 	<ul class="menu-inner py-1">
 		<li class="menu-item {{ request()->is('super.admin/dashboard') ? 'active' : ''}}">
 			<a href="{{route('super.admin.dashboard')}}" class="menu-link">
-				<i class="menu-icon tf-icons bx bx-home-circle"></i>
+				<i class="menu-icon tf-icons bx bx-home-alt"></i>
 				<div data-i18n="Dashboard">Dashboard</div>
 			</a>
 		</li>
 		
 		@foreach([
-			['route' => 'super.admin.company.index', 'text' => 'Party Management'],
-			['route' => 'super.admin.user.index', 'text' => 'User Management'],
-			['route' => 'super.admin.departments.index', 'text' => 'Department Management'],
-			['route' => 'super.admin.sop.index', 'text' => 'SOP Management'],
-			['route' => 'super.admin.checklist.index', 'text' => 'Checklist Management'],
-			['route' => 'super.admin.video.index', 'text' => 'Video Management'],
-			['route' => 'super.admin.payment.index', 'text' => 'Payment Management'],
-			['route' => 'super.admin.subscriptionPlan.index', 'text' => 'Subscription Management'],
-			['route' => 'super.admin.cms.index', 'text' => 'CMS Management'],
-			['route' => 'super.admin.setting.index', 'text' => 'Settings'],
+			['route' => 'super.admin.company.index', 'text' => 'Party Management', 'icon' => 'bx-buildings'],
+			['route' => 'super.admin.user.index', 'text' => 'User Management', 'icon' => 'bx-user'],
+			['route' => 'super.admin.departments.index', 'text' => 'Department Management', 'icon' => 'bx-sitemap'],
+			['route' => 'super.admin.sop.index', 'text' => 'SOP Management', 'icon' => 'bx-file'],
+			['route' => 'super.admin.checklist.index', 'text' => 'Checklist Management', 'icon' => 'bx-list-check'],
+			['route' => 'super.admin.video.index', 'text' => 'Video Management', 'icon' => 'bx-video'],
+			['route' => 'super.admin.payment.index', 'text' => 'Payment Management', 'icon' => 'bx-credit-card'],
+			['route' => 'super.admin.subscriptionPlan.index', 'text' => 'Subscription Management', 'icon' => 'bx-package'],
+			['route' => 'super.admin.cms.index', 'text' => 'CMS Management', 'icon' => 'bx-book-content'],
+			['route' => 'super.admin.setting.index', 'text' => 'Settings', 'icon' => 'bx-cog'],
 		] as $mastermenu)
 			<li class="menu-item {{ request()->routeIs($mastermenu['route']) ? 'active' : '' }}">
 				<a href="{{ route($mastermenu['route']) }}" class="menu-link">
-					<i class="menu-icon tf-icons bx bx-home-circle"></i>
+					<i class="menu-icon tf-icons bx {{ $mastermenu['icon'] }}"></i>
 					<div data-i18n="{{ $mastermenu['text'] }}">{{ $mastermenu['text'] }}</div>
 				</a>
 			</li>

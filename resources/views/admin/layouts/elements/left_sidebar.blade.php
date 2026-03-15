@@ -34,19 +34,19 @@
 		@if($hasActiveSubscription)
 
 			@foreach([
-				['route' => 'admin.departments.index', 'text' => 'Departments'],
-				['route' => 'admin.user.index', 'text' => 'User Management'],
-				['route' => 'admin.sop.index', 'text' => 'SOP Management'],
-				['route' => 'admin.checklist.index', 'text' => 'Checklist Management'],
-				['route' => 'admin.video.index', 'text' => 'Video Management'],
-				['route' => 'admin.sop.result.index', 'text' => 'SOP Results'],
-				['route' => 'admin.video.result.index', 'text' => 'Video Results'],
-				['route' => 'admin.checklist.result.index', 'text' => 'Checklist Results'],
+				['route' => 'admin.departments.index', 'text' => 'Departments', 'icon' => 'bx-sitemap'],
+				['route' => 'admin.user.index', 'text' => 'User Management', 'icon' => 'bx-user'],
+				['route' => 'admin.sop.index', 'text' => 'SOP Management', 'icon' => 'bx-file'],
+				['route' => 'admin.checklist.index', 'text' => 'Checklist Management', 'icon' => 'bx-list-check'],
+				['route' => 'admin.video.index', 'text' => 'Video Management', 'icon' => 'bx-video'],
+				['route' => 'admin.sop.result.index', 'text' => 'SOP Results', 'icon' => 'bx-bar-chart-square'],
+				['route' => 'admin.video.result.index', 'text' => 'Video Results', 'icon' => 'bx-bar-chart-alt-2'],
+				['route' => 'admin.checklist.result.index', 'text' => 'Checklist Results', 'icon' => 'bx-task'],
 			] as $menu)
 
 				<li class="menu-item {{ request()->routeIs($menu['route']) ? 'active' : '' }}">
 					<a href="{{ route($menu['route']) }}" class="menu-link">
-						<i class="menu-icon tf-icons bx bx-layer"></i>
+						<i class="menu-icon tf-icons bx {{ $menu['icon'] }}"></i>
 						<div>{{ $menu['text'] }}</div>
 					</a>
 				</li>

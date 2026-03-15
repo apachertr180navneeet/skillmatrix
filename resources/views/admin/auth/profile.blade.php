@@ -1,4 +1,4 @@
-@extends('super_admin.layouts.app')
+@extends('admin.layouts.app')
 @section('style')
 <style>
  .user-image{

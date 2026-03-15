@@ -21,16 +21,16 @@
 		</li>
 		
 		@foreach([
-			['route' => 'user.sop', 'text' => 'SOP'],
-			['route' => 'user.checklist', 'text' => 'Checklist'],
-			['route' => 'user.video', 'text' => 'Video'],
-			['route' => 'user.sop.results', 'text' => 'SOP Results'],
-			['route' => 'user.video.results', 'text' => 'Video Results'],
-			['route' => 'user.checklist.results', 'text' => 'Checklist Results'],
+			['route' => 'user.sop', 'text' => 'SOP', 'icon' => 'bx-file'],
+			['route' => 'user.checklist', 'text' => 'Checklist', 'icon' => 'bx-list-check'],
+			['route' => 'user.video', 'text' => 'Video', 'icon' => 'bx-video'],
+			['route' => 'user.sop.results', 'text' => 'SOP Results', 'icon' => 'bx-bar-chart-square'],
+			['route' => 'user.video.results', 'text' => 'Video Results', 'icon' => 'bx-bar-chart-alt-2'],
+			['route' => 'user.checklist.results', 'text' => 'Checklist Results', 'icon' => 'bx-task'],
 		] as $mastermenu)
 			<li class="menu-item {{ request()->routeIs($mastermenu['route']) ? 'active' : '' }}">
 				<a href="{{ route($mastermenu['route']) }}" class="menu-link">
-					<i class="menu-icon tf-icons bx bx-home-circle"></i>
+					<i class="menu-icon tf-icons bx {{ $mastermenu['icon'] }}"></i>
 					<div data-i18n="{{ $mastermenu['text'] }}">{{ $mastermenu['text'] }}</div>
 				</a>
 			</li>

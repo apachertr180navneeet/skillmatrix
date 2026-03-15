@@ -21,12 +21,12 @@ class PaymentController extends Controller
      */
     public function getall(Request $request)
     {
-        $payments = Payment::with(['company'])
+        $payments = Payment::with('company')
             ->latest()
             ->get();
 
         return response()->json([
-            'data' => $payments,
+            'data' => $payments
         ]);
     }
 }
