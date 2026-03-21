@@ -36,6 +36,76 @@
     border-radius: 8px;
     color: #fff;
 }
+.import-toolbar {
+    max-width: 900px;
+    margin: 0 auto 18px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #f7fbff 0%, #eef6ff 100%);
+    border: 1px solid #d7e7fb;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.import-toolbar__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.import-toolbar__label {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #163a63;
+}
+.import-toolbar__hint {
+    margin: 0;
+    font-size: 13px;
+    color: #5f6f82;
+}
+.import-toolbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.sample-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid #c7daf3;
+    border-radius: 10px;
+    background: #fff;
+    color: #1e5ea8;
+    font-weight: 600;
+    text-decoration: none;
+}
+.sample-link:hover {
+    color: #174b86;
+    background: #f7fbff;
+    text-decoration: none;
+}
+.import-btn {
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(25, 135, 84, 0.18);
+}
+@media (max-width: 576px) {
+    .import-toolbar,
+    .import-toolbar__actions {
+        align-items: stretch;
+    }
+    .sample-link,
+    .import-btn {
+        width: 100%;
+    }
+}
 </style>
 @endsection
 
@@ -43,12 +113,24 @@
 <div class="container-fluid container-p-y">
 
 <!-- IMPORT EXCEL -->
-<div class="d-flex justify-content-end mb-3">
-    <button type="button"
-            class="btn btn-success btn-sm"
-            onclick="document.getElementById('excelInput').click()">
-        📥 Import Excel
-    </button>
+<div class="import-toolbar">
+    <div class="import-toolbar__text">
+        <p class="import-toolbar__label">Bulk upload video questions</p>
+        <p class="import-toolbar__hint">Import an Excel file to add video questions in one step.</p>
+    </div>
+    <div class="import-toolbar__actions">
+        <a href="{{ asset('assets/sop_sample_questions.xlsx') }}"
+           class="sample-link"
+           target="_blank"
+           rel="noopener">
+            Download Sample
+        </a>
+        <button type="button"
+                class="btn btn-success import-btn"
+                onclick="document.getElementById('excelInput').click()">
+            &#128229; Import Excel
+        </button>
+    </div>
 </div>
 
 <input type="file" id="excelInput" accept=".xls,.xlsx" hidden>

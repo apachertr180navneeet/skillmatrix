@@ -30,58 +30,6 @@ class SopQuesAnsController extends Controller
 
 
         $topic = $sopdetails->title;
-        $apiKey = env('OPENAI_API_KEY');
-
-
-        $prompt = "Generate 20 multiple choice questions about {$topic}. 
-        Each question must have 4 options and one correct answer.
-        Return response in JSON format like:
-        [
-            {
-                question:'',
-                option_a:'',
-                option_b:'',
-                option_c:'',
-                option_d:'',
-                answer:''
-            }
-        ]
-        Return only JSON.";
-
-        $data = [
-            "model" => "gpt-4o-mini",
-            "messages" => [
-                [
-                    "role" => "user",
-                    "content" => $prompt
-                ]
-            ],
-            "temperature" => 0.7
-        ];
-
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, "https://api.openai.com/v1/chat/completions");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Content-Type: application/json",
-            "Authorization: Bearer " . $apiKey
-        ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-        $response = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            return curl_error($ch);
-        }
-
-        curl_close($ch);
-
-        $result = json_decode($response, true);
-
-
-        dd($result);
 
 
         return view('admin.sop_quesans.create', compact('departments', 'sopdetails', 'sopquesans'));

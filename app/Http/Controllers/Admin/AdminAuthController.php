@@ -12,6 +12,7 @@ use App\Models\{
     Video,
     Checklist,
     SopQuesAns,
+    ChecklistQuesAns,
     VedioQuesans,
     SopUserResult,
     VideoUserResult
@@ -262,58 +263,63 @@ class AdminAuthController extends Controller
 
     public function adminDashboard()
     {
-        $companyid = Auth::user()->company_id;
+        $companyId = Auth::user()->company_id;
 
-        $userCount = User::where('role','user')->where('status', 'active')->where('company_id', $companyid)->count();
+        $userCount = User::where('role', 'user')
+            ->where('status', 'active')
+            ->where('company_id', $companyId)
+            ->count();
 
-        $departmentCount = Department::where('company_id', $companyid)->where('status', 'active')->count();
+        $departmentCount = Department::where('company_id', $companyId)
+            ->where('status', 'active')
+            ->count();
 
-        $sopCount = Sop::where('party_id', $companyid)->where('status', 'active')->count();
+        $sopIds = Sop::where('party_id', $companyId)
+            ->where('status', 'active')
+            ->pluck('id');
 
-        $checklistCount = Checklist::where('party_id', $companyid)->where('status', 'active')->count();
+        $checklistIds = Checklist::where('party_id', $companyId)
+            ->where('status', 'active')
+            ->pluck('id');
 
-        $videoCount = Video::where('party_id', $companyid)->where('status', 'active')->count();
+        $videoIds = Video::where('party_id', $companyId)
+            ->where('status', 'active')
+            ->pluck('id');
 
-        // ✅ SOP Question Count
-        $sopQuestionCount = SopQuesAns::whereIn(
-            'sop_id',
-            Sop::where('party_id', $companyid)
-                ->where('status', 'active')
-                ->pluck('id')
-        )->count();
+        $sopCount = $sopIds->count();
+        $checklistCount = $checklistIds->count();
+        $videoCount = $videoIds->count();
 
-        // ✅ Video Question Count
-        $videoQuestionCount = VedioQuesans::whereIn(
-            'vedio_id',
-            Video::where('party_id', $companyid)
-                ->where('status', 'active')
-                ->pluck('id')
-        )->count();
+        $sopQuestionCount = SopQuesAns::whereIn('sop_id', $sopIds)->count();
+        $checklistQuestionCount = ChecklistQuesAns::whereIn('checklist_id', $checklistIds)->count();
+        $videoQuestionCount = VedioQuesans::whereIn('vedio_id', $videoIds)->count();
 
+        $sopResultQuery = SopUserResult::where('company_id', $companyId);
+        $sopResultTotal = (clone $sopResultQuery)->count();
+        $sopResultPass = (clone $sopResultQuery)->where('result_status', 'pass')->count();
+        $sopResultFail = (clone $sopResultQuery)->where('result_status', 'fail')->count();
 
-        // ---------------- SOP RESULT COUNTS ----------------
-            $sopResultTotal = SopUserResult::where('company_id', $companyid)->count();
+        $videoResultQuery = VideoUserResult::where('company_id', $companyId);
+        $videoResultTotal = (clone $videoResultQuery)->count();
+        $videoResultPass = (clone $videoResultQuery)->where('result_status', 'pass')->count();
+        $videoResultFail = (clone $videoResultQuery)->where('result_status', 'fail')->count();
 
-            $sopResultPass = SopUserResult::where('company_id', $companyid)
-                ->where('result_status', 'pass')
-                ->count();
-
-            $sopResultFail = SopUserResult::where('company_id', $companyid)
-                ->where('result_status', 'fail')
-                ->count();
-
-            // ---------------- VIDEO RESULT COUNTS ----------------
-            $videoResultTotal = VideoUserResult::where('company_id', $companyid)->count();
-
-            $videoResultPass = VideoUserResult::where('company_id', $companyid)
-                ->where('result_status', 'pass')
-                ->count();
-
-            $videoResultFail = VideoUserResult::where('company_id', $companyid)
-                ->where('result_status', 'fail')
-                ->count();
-
-        return view("admin.dashboard.index", compact("userCount", "departmentCount", "sopCount", "checklistCount", "videoCount", "sopQuestionCount", "videoQuestionCount", "sopResultTotal", "sopResultPass", "sopResultFail", "videoResultTotal", "videoResultPass", "videoResultFail"));
+        return view('admin.dashboard.index', compact(
+            'userCount',
+            'departmentCount',
+            'sopCount',
+            'checklistCount',
+            'videoCount',
+            'sopQuestionCount',
+            'videoQuestionCount',
+            'checklistQuestionCount',
+            'sopResultTotal',
+            'sopResultPass',
+            'sopResultFail',
+            'videoResultTotal',
+            'videoResultPass',
+            'videoResultFail'
+        ));
     }
 
 
