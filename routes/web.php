@@ -111,6 +111,9 @@ Route::prefix('super-admin')->name('super.admin.')->group(function () {
                     Route::get('show/{id}', [$controller, 'show'])->name('show');
                     Route::get('{id}/qa', [$controller, 'showQA'])->name('show.qa');
                 }
+                if($resource === 'sop'){
+                    Route::get('view/{id}', [$controller, 'view'])->name('view');
+                }
             });
         }
 
@@ -457,6 +460,7 @@ Route::prefix('user')
             Route::get('profile', [AuthController::class, 'adminProfile'])->name('profile');
             Route::post('profile', [AuthController::class, 'updateAdminProfile'])->name('update.profile');
             Route::get('sop', [WebSopController::class, 'sop'])->name('sop');
+            Route::get('/sop/view/{id}', [WebSopController::class, 'view'])->name('sop.view');
             Route::get('/sop/{id}/qa', [WebSopController::class, 'qa'])->name('sop.qa');
             Route::post('/sop/qa', [WebSopController::class, 'qaSubmit'])->name('sop.qa.submit');
             Route::get('checklist', [WebChecklistController::class, 'index'])->name('checklist');

@@ -22,20 +22,11 @@
                     <form action="{{ route('user.update.profile') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row g-3">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    <label class="form-label">First Name*</label>
-                                    <input type="text" id="" name="first_name" class="form-control" placeholder="Enter First Name" value="{{old('first_name',$user->first_name)}}" required>
-                                    @error('first_name')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-label">Last Name*</label>
-                                    <input type="text" name="last_name" class="form-control" placeholder="Enter Last Name" value="{{ old('last_name',$user->last_name)}}" required>
-                                    @error('last_name')
+                                    <label class="form-label">Full Name*</label>
+                                    <input type="text" name="full_name" class="form-control" placeholder="Enter Full Name" value="{{ old('full_name', $user->full_name) }}" required>
+                                    @error('full_name')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -56,6 +47,12 @@
                                     @error('email')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Department</label>
+                                    <input type="text" class="form-control" value="{{ $user->department->department_name ?? '-' }}" readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">

@@ -187,7 +187,7 @@ class AuthController extends Controller
     public function adminProfile()
     {
         try{
-            $user = Auth::user();
+            $user = Auth::user()->load('department');
             return view("web.auth.profile", compact("user"));
 
         }
@@ -203,8 +203,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $data = $request->all();
             $validator = Validator::make($data,[
-                "first_name" => "required",
-                "last_name" => "required",
+                "full_name" => "required|string|max:255",
                 "phone" => "required|min:9|unique:users,phone," .$user->id,
                 "email" => "required|email|unique:users,email," . $user->id,
                 "avatar" => "sometimes|image|mimes:jpeg,jpg,png|max:5000"
@@ -225,9 +224,7 @@ class AuthController extends Controller
                 $file->move($path, $filename);
                 $user->avatar = $folder . $filename;
             }
-            $user->first_name = $request->first_name;
-            $user->last_name = $request->last_name;
-            $user->full_name = $request->first_name . " " . $request->last_name;
+            $user->full_name = $request->full_name;
             $user->phone = $request->phone;
             $user->email = $request->email;
             $user->save();

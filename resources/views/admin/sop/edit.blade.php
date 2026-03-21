@@ -144,7 +144,7 @@
 
                 <p class="mt-2">
                     Current File :
-                    <a href="{{ asset('storage/'.$sop->sop_upload) }}" target="_blank">
+                    <a href="{{ route('admin.sop.view', Crypt::encryptString($sop->id)) }}" target="_blank">
                         View SOP
                     </a>
                 </p>

@@ -91,8 +91,7 @@ class SopController extends Controller
         }
 
         try {
-
-            $fileUrl = null;
+            $filePath = null;
 
             if ($request->hasFile('sop_upload')) {
 
@@ -100,11 +99,7 @@ class SopController extends Controller
 
                 $fileName = 'sop_' . time() . '.' . $file->getClientOriginalExtension();
 
-                // Store file
-                $filePath = $file->storeAs('sop', $fileName, 'public');
-
-                // Generate full URL
-                $fileUrl = url(Storage::url($filePath));
+                $filePath = $file->storeAs('sop', $fileName, 'local');
             }
 
             // Convert department array to comma separated
@@ -118,7 +113,7 @@ class SopController extends Controller
                 'title'          => $request->title,
                 'department_id'  => $departmentIds,
                 'description'    => $request->description,
-                'sop_upload'     => $fileUrl, // full URL stored
+                'sop_upload'     => $filePath,
                 'is_suggestion'  => $request->is_suggestion,
                 'party_id'       => $companyId,
             ]);
@@ -192,10 +187,7 @@ class SopController extends Controller
 
                 $fileName = 'sop_' . time() . '.' . $file->getClientOriginalExtension();
 
-                // Delete old file
-                if ($sop->sop_upload && Storage::exists($sop->sop_upload)) {
-                    Storage::delete($sop->sop_upload);
-                }
+                $this->deleteSopFile($sop->sop_upload);
 
                 $filePath = $file->storeAs('sop', $fileName, 'local');
 
@@ -298,6 +290,57 @@ class SopController extends Controller
             ->where('party_id', auth()->user()->company_id)
             ->firstOrFail();
 
-        return redirect($sop->sop_upload);
+        $absolutePath = $this->resolveSopAbsolutePath($sop->sop_upload);
+
+        abort_if(!$absolutePath, 404, 'SOP file not found');
+
+        return response()->file($absolutePath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . basename($absolutePath) . '"',
+        ]);
+    }
+
+    private function resolveSopAbsolutePath(?string $storedValue): ?string
+    {
+        if (!$storedValue) {
+            return null;
+        }
+
+        $candidates = [];
+
+        if (filter_var($storedValue, FILTER_VALIDATE_URL)) {
+            $urlPath = ltrim((string) parse_url($storedValue, PHP_URL_PATH), '/');
+
+            if ($urlPath !== '') {
+                $candidates[] = public_path($urlPath);
+
+                if (str_starts_with($urlPath, 'storage/')) {
+                    $candidates[] = storage_path('app/public/' . substr($urlPath, 8));
+                }
+            }
+        } else {
+            $normalizedPath = ltrim(str_replace('\\', '/', $storedValue), '/');
+
+            $candidates[] = storage_path('app/' . $normalizedPath);
+            $candidates[] = storage_path('app/public/' . $normalizedPath);
+            $candidates[] = public_path($normalizedPath);
+        }
+
+        foreach ($candidates as $candidate) {
+            if (is_file($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private function deleteSopFile(?string $storedValue): void
+    {
+        $absolutePath = $this->resolveSopAbsolutePath($storedValue);
+
+        if ($absolutePath && is_file($absolutePath)) {
+            @unlink($absolutePath);
+        }
     }
 }

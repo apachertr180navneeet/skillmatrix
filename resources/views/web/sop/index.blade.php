@@ -69,7 +69,7 @@
 
         @forelse ($sops as $sop)
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                <a href="{{ $sop->sop_upload}}" target="_blank" class="text-decoration-none text-dark">
+                <a href="{{ route('user.sop.view', Crypt::encryptString($sop->id)) }}" target="_blank" class="text-decoration-none text-dark">
                     <div class="sop-card">
 
                         <!-- Preview -->

@@ -14,6 +14,7 @@ use App\Models\{
     SopUserResult
 };
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
 
@@ -45,6 +46,28 @@ class SopController extends Controller
             ->get();
 
         return view('web.sop.qa', compact('sopquesans', 'sopdetails'));
+    }
+
+    public function view($encryptedId)
+    {
+        try {
+            $sopId = Crypt::decryptString($encryptedId);
+        } catch (Exception $e) {
+            abort(403, 'Invalid link');
+        }
+
+        $sop = Sop::where('id', $sopId)
+            ->where('party_id', auth()->user()->company_id)
+            ->firstOrFail();
+
+        $absolutePath = $this->resolveSopAbsolutePath($sop->sop_upload);
+
+        abort_if(!$absolutePath, 404, 'SOP file not found');
+
+        return response()->file($absolutePath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . basename($absolutePath) . '"',
+        ]);
     }
 
 
@@ -129,5 +152,40 @@ class SopController extends Controller
                 'success',
                 "SOP submitted successfully. Result: {$percentage}% ({$resultStatus})"
             );
+    }
+
+    private function resolveSopAbsolutePath(?string $storedValue): ?string
+    {
+        if (!$storedValue) {
+            return null;
+        }
+
+        $candidates = [];
+
+        if (filter_var($storedValue, FILTER_VALIDATE_URL)) {
+            $urlPath = ltrim((string) parse_url($storedValue, PHP_URL_PATH), '/');
+
+            if ($urlPath !== '') {
+                $candidates[] = public_path($urlPath);
+
+                if (str_starts_with($urlPath, 'storage/')) {
+                    $candidates[] = storage_path('app/public/' . substr($urlPath, 8));
+                }
+            }
+        } else {
+            $normalizedPath = ltrim(str_replace('\\', '/', $storedValue), '/');
+
+            $candidates[] = storage_path('app/' . $normalizedPath);
+            $candidates[] = storage_path('app/public/' . $normalizedPath);
+            $candidates[] = public_path($normalizedPath);
+        }
+
+        foreach ($candidates as $candidate) {
+            if (is_file($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
     }
 }

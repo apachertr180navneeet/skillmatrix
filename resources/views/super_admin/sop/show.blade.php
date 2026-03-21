@@ -60,7 +60,7 @@
                         @if($sop->sop_upload)
                             <div class="border p-2 rounded bg-light">
                                 <div class="mt-1">
-                                    <a href="{{ $sop->sop_upload }}"
+                                    <a href="{{ route('super.admin.sop.view', Crypt::encryptString($sop->id)) }}"
                                     target="_blank"
                                     class="text-primary">
                                         Uploaded sop - view
