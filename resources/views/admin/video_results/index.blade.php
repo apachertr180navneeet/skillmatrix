@@ -72,7 +72,7 @@
             <table class="table table-borderless align-middle mb-0">
                 <thead>
                     <tr>
-                        <th>SR. No.</th>
+                        <th>Date</th>
                         <th>User Name</th>
                         <th>Department</th>
                         <th>Video Title</th>
@@ -85,7 +85,7 @@
                 <tbody>
                     @forelse($videoUserResults as $index => $row)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $row->created_at->format('d M Y, h:i A') }}</td>
 
                             <td>
                                 {{ $row->user->full_name ?? '-' }}
