@@ -320,7 +320,7 @@ $(document).ready(function () {
 
     // Expose functions
     window.editCompany = function (id) {
-        $.get("{{ url('super-admin/company/get') }}/" + id, function (data) {
+        $.get("{{ url('master/company/get') }}/" + id, function (data) {
 
             $('#editid').val(data.id);
             $('#editcopmany_name').val(data.copmany_name);
@@ -417,7 +417,7 @@ $(document).ready(function () {
     window.deleteCompany = function (id) {
         if (confirm('Are you sure?')) {
             $.ajax({
-                url: "{{ url('super-admin/company/delete') }}/" + id,
+                url: "{{ url('master/company/delete') }}/" + id,
                 method: "DELETE",
                 data: { _token: "{{ csrf_token() }}" },
                 success: function (res) {

@@ -36,7 +36,7 @@
 				</a>
 				<ul class="dropdown-menu dropdown-menu-end">
 					<li>
-						<a class="dropdown-item" href="{{route('admin.profile')}}">
+						<a class="dropdown-item" href="{{route('super.admin.profile')}}">
 							<div class="d-flex">
 								<div class="flex-shrink-0 me-3">
 									<div class="avatar avatar-online">

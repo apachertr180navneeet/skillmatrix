@@ -225,7 +225,7 @@ $(document).ready(function () {
 
     // ================= EDIT CMS =================
     window.editCms = function (id) {
-        $.get("{{ url('super-admin/cms/get') }}/" + id, function (data) {
+        $.get("{{ url('master/cms/get') }}/" + id, function (data) {
             $('#edit_id').val(data.id);
             $('#edit_title').val(data.title);
             editEditor.setData(data.description ?? '');
@@ -288,7 +288,7 @@ $(document).ready(function () {
     window.deleteCms = function (id) {
         if (confirm('Are you sure?')) {
             $.ajax({
-                url: "{{ url('super-admin/cms/delete') }}/" + id,
+                url: "{{ url('master/cms/delete') }}/" + id,
                 method: "DELETE",
                 data: { _token: "{{ csrf_token() }}" },
                 success: function (res) {

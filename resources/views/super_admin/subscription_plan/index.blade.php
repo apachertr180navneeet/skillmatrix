@@ -232,7 +232,7 @@ $(document).ready(function () {
     });
 
     window.editPlan = function (id) {
-        $.get("{{ url('super-admin/subscriptionPlan/get') }}/" + id, function (data) {
+        $.get("{{ url('master/subscriptionPlan/get') }}/" + id, function (data) {
             $('#editid').val(data.id);
             $('#edit_plan_name').val(data.plan_name);
             $('#edit_amount').val(data.amount);
@@ -302,7 +302,7 @@ $(document).ready(function () {
     window.deletePlan = function (id) {
         if (confirm('Are you sure?')) {
             $.ajax({
-                url: "{{ url('super-admin/subscriptionPlan/delete') }}/" + id,
+                url: "{{ url('master/subscriptionPlan/delete') }}/" + id,
                 method: "DELETE",
                 data: { _token: "{{ csrf_token() }}" },
                 success: function (res) {

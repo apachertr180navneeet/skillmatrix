@@ -105,13 +105,13 @@ $(document).ready(function () {
                 searchable: false,
                 render: function (id) {
                     return `
-                        <a href="/super-admin/checklist/show/${id}"
+                        <a href="/master/checklist/show/${id}"
                         class="btn btn-sm btn-info">
                         View
                         </a>
 
 
-                        <a href="/super-admin/checklist/${id}/qa" class="btn btn-sm btn-secondary">
+                        <a href="/master/checklist/${id}/qa" class="btn btn-sm btn-secondary">
                             Q&A
                         </a>
                     `;

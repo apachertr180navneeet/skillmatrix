@@ -120,11 +120,11 @@ $(document).ready(function () {
                 searchable: false,
                 render: function (id) {
                     return `
-                        <a href="/super-admin/sop/show/${id}" class="btn btn-sm btn-info me-1">
+                        <a href="/master/sop/show/${id}" class="btn btn-sm btn-info me-1">
                             View
                         </a>
 
-                        <a href="/super-admin/sop/${id}/qa" class="btn btn-sm btn-secondary">
+                        <a href="/master/sop/${id}/qa" class="btn btn-sm btn-secondary">
                             Q&A
                         </a>
                     `;

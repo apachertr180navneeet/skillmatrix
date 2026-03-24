@@ -284,7 +284,7 @@ $(function(){
     //================ GET USER ==================
     window.editUser=function(id){
         $("small.text-danger").text(""); // clear old errors
-        $.get("{{ url('super-admin/user/get') }}/"+id,function(d){
+        $.get("{{ url('master/user/get') }}/"+id,function(d){
             $("#editid").val(d.id);
             $("#editname").val(d.full_name);
             $("#editemail").val(d.email);
@@ -340,7 +340,7 @@ $(function(){
     window.deleteUser=function(id){
         if(confirm("Are you sure?")){
             $.ajax({
-                url:"{{ url('super-admin/user/delete') }}/"+id,
+                url:"{{ url('master/user/delete') }}/"+id,
                 method:"DELETE",
                 data:{_token:"{{ csrf_token() }}"},
                 success:function(r){
