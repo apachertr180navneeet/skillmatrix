@@ -69,9 +69,9 @@ $(document).ready(function () {
 
             // Department
             {
-                data: 'department',
+                data: 'department_names',
                 render: function (data) {
-                    return data ? data.department_name : '-';
+                    return data ? data : '-';
                 }
             },
 

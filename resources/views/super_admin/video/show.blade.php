@@ -38,7 +38,7 @@
                         <label class="form-label">Department</label>
                         <input type="text"
                                class="form-control"
-                               value="{{ $video->department->department_name ?? '-' }}"
+                               value="{{ $video->department_names ?? '-' }}"
                                readonly>
                     </div>
 

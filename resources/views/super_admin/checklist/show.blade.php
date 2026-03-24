@@ -38,7 +38,7 @@
                         <label class="form-label">Department</label>
                         <input type="text"
                                class="form-control"
-                               value="{{ $checklist->department->department_name ?? '-' }}"
+                               value="{{ $checklist->department_names ?? '-' }}"
                                readonly>
                     </div>
 

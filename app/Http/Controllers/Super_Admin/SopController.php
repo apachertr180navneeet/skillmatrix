@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Super_Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Sop,SopQuesAns};
+use App\Models\{Sop,SopQuesAns,Department};
 use Exception;
 use Illuminate\Support\Facades\Crypt;
 
@@ -27,6 +27,24 @@ class SopController extends Controller
            ->latest()
            ->get();
 
+        $departments = Department::get()->keyBy('id');
+
+        foreach ($sops as $sop) {
+            $deptNames = [];
+
+            if (!empty($sop->department_id)) {
+                $ids = explode(',', $sop->department_id);
+
+                foreach ($ids as $id) {
+                    if (isset($departments[$id])) {
+                        $deptNames[] = $departments[$id]->department_name;
+                    }
+                }
+            }
+
+            $sop->department_names = implode(', ', $deptNames);
+        }
+
         return response()->json([
             'data' => $sops,
         ]);
@@ -42,6 +60,18 @@ class SopController extends Controller
         if (!$sop) {
             abort(404, 'SOP not found');
         }
+
+        $deptNames = [];
+
+        if (!empty($sop->department_id)) {
+            $departmentIds = explode(',', $sop->department_id);
+
+            $deptNames = Department::whereIn('id', $departmentIds)
+                ->pluck('department_name')
+                ->toArray();
+        }
+
+        $sop->department_names = implode(', ', $deptNames);
 
         return view('super_admin.sop.show', compact('sop'));
     }

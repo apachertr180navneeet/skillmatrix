@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Super_Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Checklist, ChecklistQuesAns};
+use App\Models\{Checklist, ChecklistQuesAns, Department};
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,6 +30,24 @@ class ChecklistController extends Controller
            ->latest()
            ->get();
 
+        $departments = Department::get()->keyBy('id');
+
+        foreach ($checklists as $checklist) {
+            $deptNames = [];
+
+            if (!empty($checklist->department_id)) {
+                $ids = explode(',', $checklist->department_id);
+
+                foreach ($ids as $id) {
+                    if (isset($departments[$id])) {
+                        $deptNames[] = $departments[$id]->department_name;
+                    }
+                }
+            }
+
+            $checklist->department_names = implode(', ', $deptNames);
+        }
+
         return response()->json([
             'data' => $checklists,
         ]);
@@ -44,6 +62,18 @@ class ChecklistController extends Controller
         if (!$checklist) {
             abort(404, 'Checklist not found');
         }
+
+        $deptNames = [];
+
+        if (!empty($checklist->department_id)) {
+            $departmentIds = explode(',', $checklist->department_id);
+
+            $deptNames = Department::whereIn('id', $departmentIds)
+                ->pluck('department_name')
+                ->toArray();
+        }
+
+        $checklist->department_names = implode(', ', $deptNames);
 
         return view('super_admin.checklist.show', compact('checklist'));
     }

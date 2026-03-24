@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Super_Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Video, VedioQuesans};
+use App\Models\{Video, VedioQuesans, Department};
 use Illuminate\Http\Request;
 
 class VideoController extends Controller
@@ -25,6 +25,24 @@ class VideoController extends Controller
             ->latest()
             ->get();
 
+        $departments = Department::get()->keyBy('id');
+
+        foreach ($videos as $video) {
+            $deptNames = [];
+
+            if (!empty($video->department_id)) {
+                $ids = explode(',', $video->department_id);
+
+                foreach ($ids as $id) {
+                    if (isset($departments[$id])) {
+                        $deptNames[] = $departments[$id]->department_name;
+                    }
+                }
+            }
+
+            $video->department_names = implode(', ', $deptNames);
+        }
+
         return response()->json([
             'data' => $videos,
         ]);
@@ -40,6 +58,18 @@ class VideoController extends Controller
         if (!$video) {
             abort(404, 'Video not found');
         }
+
+        $deptNames = [];
+
+        if (!empty($video->department_id)) {
+            $departmentIds = explode(',', $video->department_id);
+
+            $deptNames = Department::whereIn('id', $departmentIds)
+                ->pluck('department_name')
+                ->toArray();
+        }
+
+        $video->department_names = implode(', ', $deptNames);
 
         return view('super_admin.video.show', compact('video'));
     }
