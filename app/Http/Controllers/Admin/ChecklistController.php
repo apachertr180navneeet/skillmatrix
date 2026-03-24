@@ -131,7 +131,7 @@ class ChecklistController extends Controller
                 'party_id'      => $companyId,
             ]);
 
-            return redirect()->route('admin.checklist.index')
+            return redirect()->route('company.checklist.index')
                 ->with('success', 'Checklist created successfully.');
 
         } catch (\Exception $e) {
@@ -215,7 +215,7 @@ class ChecklistController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.checklist.index')
+            ->route('company.checklist.index')
             ->with('success', 'Checklist updated successfully');
     }
 

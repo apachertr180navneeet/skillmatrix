@@ -102,7 +102,7 @@ textarea.form-control {
 
     <div class="form-card">
 
-        <form action="{{ route('admin.checklist.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('company.checklist.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <!-- CHECKLIST TITLE -->

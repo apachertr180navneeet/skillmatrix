@@ -84,7 +84,7 @@ class VideoQuesAnsController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('admin.video.index')
+                ->route('company.video.index')
                 ->with('success', 'Video Questions saved successfully');
 
         } catch (Exception $e) {

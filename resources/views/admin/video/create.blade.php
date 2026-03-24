@@ -92,7 +92,7 @@
 
     <div class="form-card">
 
-        <form action="{{ route('admin.video.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('company.video.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <!-- VIDEO TITLE -->

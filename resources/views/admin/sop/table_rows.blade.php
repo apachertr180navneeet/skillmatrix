@@ -11,7 +11,7 @@
     </td>
 
     <td>
-        <a href="{{ route('admin.sop.view', Crypt::encryptString($sop->id)) }}" target="_blank" class="btn btn-soft btn-view">
+        <a href="{{ route('company.sop.view', Crypt::encryptString($sop->id)) }}" target="_blank" class="btn btn-soft btn-view">
             View
         </a>
     </td>
@@ -25,17 +25,17 @@
     <td>
         <div class="action-btns">
 
-            <a href="{{ route('admin.sop.qa.create', $sop->id) }}"
+            <a href="{{ route('company.sop.qa.create', $sop->id) }}"
                class="btn btn-soft btn-qa">
                 Q&amp;A
             </a>
 
-            <a href="{{ route('admin.sop.edit', $sop->id) }}"
+            <a href="{{ route('company.sop.edit', $sop->id) }}"
                class="btn btn-soft btn-edit">
                 Edit
             </a>
 
-            <form action="{{ route('admin.sop.destroy', $sop->id) }}"
+            <form action="{{ route('company.sop.destroy', $sop->id) }}"
                   method="POST"
                   onsubmit="return confirm('Delete this SOP?')">
                 @csrf

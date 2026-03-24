@@ -76,7 +76,7 @@ class ChecklistQuesAnsController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('admin.checklist.index')
+                ->route('company.checklist.index')
                 ->with('success', 'Checklist Questions saved successfully');
 
         } catch (\Exception $e) {

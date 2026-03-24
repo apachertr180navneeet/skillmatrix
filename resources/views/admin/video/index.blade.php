@@ -93,7 +93,7 @@
             >
         </div>
 
-        <a href="{{ route('admin.video.create') }}" class="btn btn-primary">
+        <a href="{{ route('company.video.create') }}" class="btn btn-primary">
             + Create Video
         </a>
 
@@ -187,21 +187,21 @@
                                 <div class="action-btns">
 
                                     <a
-                                        href="{{ route('admin.video.qa.create',$video->id) }}"
+                                        href="{{ route('company.video.qa.create',$video->id) }}"
                                         class="btn btn-qa btn-sm"
                                     >
                                         Q&A
                                     </a>
 
                                     <a
-                                        href="{{ route('admin.video.edit',$video->id) }}"
+                                        href="{{ route('company.video.edit',$video->id) }}"
                                         class="btn btn-edit btn-sm"
                                     >
                                         Edit
                                     </a>
 
                                     <form
-                                        action="{{ route('admin.video.destroy',$video->id) }}"
+                                        action="{{ route('company.video.destroy',$video->id) }}"
                                         method="POST"
                                         onsubmit="return confirm('Delete this video?')"
                                     >
@@ -261,7 +261,7 @@ $(document).ready(function(){
 
         $.ajax({
 
-            url:"{{ route('admin.video.filter') }}",
+            url:"{{ route('company.video.filter') }}",
             type:"GET",
 
             data:{

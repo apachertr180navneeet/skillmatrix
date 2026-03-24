@@ -139,7 +139,7 @@
     <input type="file" id="excelInput" accept=".xls,.xlsx" hidden>
 
     <div class="form-card">
-        <form action="{{ route('admin.sop.qa.store') }}" method="POST">
+        <form action="{{ route('company.sop.qa.store') }}" method="POST">
             @csrf
 
             <!-- SOP TITLE -->

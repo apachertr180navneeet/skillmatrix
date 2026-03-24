@@ -105,7 +105,7 @@
         </div>
 
         <div class="top-actions">
-            <a href="{{ route('admin.sop.create') }}" class="btn btn-primary">
+            <a href="{{ route('company.sop.create') }}" class="btn btn-primary">
                 + Create
             </a>
         </div>
@@ -171,7 +171,7 @@ $(document).ready(function () {
         let department = $('#department').val();
 
         $.ajax({
-            url: "{{ route('admin.sop.filter') }}",
+            url: "{{ route('company.sop.filter') }}",
             type: "GET",
             data: {
                 search: search,

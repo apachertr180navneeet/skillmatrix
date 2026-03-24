@@ -217,7 +217,7 @@
     </div>
 
     <!-- ================= BACK ================= -->
-    <a href="{{ route('admin.video.result.index') }}" class="btn btn-secondary mt-3">
+    <a href="{{ route('company.video.result.index') }}" class="btn btn-secondary mt-3">
         Back to Results
     </a>
 

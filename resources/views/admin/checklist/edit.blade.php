@@ -61,7 +61,7 @@
 <div class="container-fluid container-p-y">
 
     <div class="form-card">
-        <form action="{{ route('admin.checklist.update', $checklist->id) }}"
+        <form action="{{ route('company.checklist.update', $checklist->id) }}"
               method="POST"
               enctype="multipart/form-data">
             @csrf

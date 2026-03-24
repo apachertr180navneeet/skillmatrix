@@ -30,12 +30,12 @@ class AdminAuthController extends Controller
             if(Auth::user()) {
                 $user = Auth::user();
                 if($user->role == "admin") {
-                    return redirect()->route('admin.dashboard');
+                    return redirect()->route('company.dashboard');
                 }else{
                     return back()->with("error","Opps! You do not have access this");
                 }
             }else{
-                return redirect()->route('admin.login');
+                return redirect()->route('company.login');
             }
 
         }
@@ -69,7 +69,7 @@ class AdminAuthController extends Controller
                         }
                     ]))
                 {
-                    return redirect()->route("admin.dashboard")->with("success", "Welcome to your dashboard.");
+                    return redirect()->route("company.dashboard")->with("success", "Welcome to your dashboard.");
                 }
                 return back()->with("error","Invalid credentials");
             }else{
@@ -118,7 +118,7 @@ class AdminAuthController extends Controller
                     $message->subject("Reset Password");
                 }
             );
-            return redirect()->route("admin.login")->with("success","We have e-mailed your password reset link!");
+            return redirect()->route("company.login")->with("success","We have e-mailed your password reset link!");
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
@@ -200,7 +200,7 @@ class AdminAuthController extends Controller
         try{
             Session::flush();
             Auth::logout();
-            return redirect()->route("admin.login")->withSuccess('Logout Successful!');
+            return redirect()->route("company.login")->withSuccess('Logout Successful!');
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());

@@ -171,7 +171,7 @@
             document.getElementById('modalPlanName').innerText = btn.dataset.planName;
             document.getElementById('modalPlanAmount').innerText = basePrice.toFixed(2);
             document.getElementById('buyPlanForm').action =
-                "{{ url('admin/subscription/buy') }}/" + btn.dataset.planId;
+                "{{ url('company/subscription/buy') }}/" + btn.dataset.planId;
 
             document.getElementById('userCountInput').value = 1;
         };

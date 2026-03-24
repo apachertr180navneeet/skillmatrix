@@ -54,7 +54,7 @@
 
     <div class="form-card">
 
-        <form action="{{ route('admin.video.update',$video->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('company.video.update',$video->id) }}" method="POST" enctype="multipart/form-data">
 
             @csrf
             @method('PUT')

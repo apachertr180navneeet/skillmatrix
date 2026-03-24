@@ -116,7 +116,7 @@
                             </td>
 
                             <td class="text-center">
-                                <a href="{{ route('admin.checklist.result.view', $row->id) }}"
+                                <a href="{{ route('company.checklist.result.view', $row->id) }}"
                                    class="btn btn-view">
                                     View
                                 </a>

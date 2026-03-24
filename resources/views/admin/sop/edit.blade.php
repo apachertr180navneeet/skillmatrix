@@ -78,7 +78,7 @@
 
     <div class="form-card">
 
-        <form action="{{ route('admin.sop.update',$sop->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('company.sop.update',$sop->id) }}" method="POST" enctype="multipart/form-data">
 
             @csrf
             @method('PUT')
@@ -144,7 +144,7 @@
 
                 <p class="mt-2">
                     Current File :
-                    <a href="{{ route('admin.sop.view', Crypt::encryptString($sop->id)) }}" target="_blank">
+                    <a href="{{ route('company.sop.view', Crypt::encryptString($sop->id)) }}" target="_blank">
                         View SOP
                     </a>
                 </p>

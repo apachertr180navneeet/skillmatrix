@@ -118,7 +118,7 @@ class SopController extends Controller
                 'party_id'       => $companyId,
             ]);
 
-            return redirect()->route('admin.sop.index')
+            return redirect()->route('company.sop.index')
                 ->with('success', 'SOP created successfully.');
 
         } catch (Exception $e) {
@@ -201,7 +201,7 @@ class SopController extends Controller
 
             $sop->save();
 
-            return redirect()->route('admin.sop.index')
+            return redirect()->route('company.sop.index')
                 ->with('success', 'SOP updated successfully.');
 
         } catch (Exception $e) {

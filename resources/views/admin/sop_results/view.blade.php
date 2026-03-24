@@ -215,7 +215,7 @@
     </div>
 
     <!-- ================= BACK ================= -->
-    <a href="{{ route('admin.sop.result.index') }}" class="btn btn-secondary mt-3">
+    <a href="{{ route('company.sop.result.index') }}" class="btn btn-secondary mt-3">
         Back to Results
     </a>
 

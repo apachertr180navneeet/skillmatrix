@@ -136,7 +136,7 @@
 <input type="file" id="excelInput" accept=".xls,.xlsx" hidden>
 
 <div class="form-card">
-<form action="{{ route('admin.video.qa.store') }}" method="POST">
+<form action="{{ route('company.video.qa.store') }}" method="POST">
 @csrf
 
 <!-- VIDEO TITLE -->

@@ -255,7 +255,7 @@ Route::prefix('master')->name('super.admin.')->group(function () {
 
 
 Route::prefix('company')
-    ->name('admin.')
+    ->name('company.')
     ->controller(AdminAuthController::class)
     ->group(function () {
 

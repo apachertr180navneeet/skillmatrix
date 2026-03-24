@@ -103,7 +103,7 @@
         </div>
 
         <div class="top-actions">
-            <a href="{{ route('admin.checklist.create') }}" class="btn btn-primary">
+            <a href="{{ route('company.checklist.create') }}" class="btn btn-primary">
                 + Create
             </a>
         </div>
@@ -164,7 +164,7 @@
                         </td>
 
                         <td>
-                            <a href="{{ route('admin.checklist.view', Crypt::encryptString($checklist->id)) }}"
+                            <a href="{{ route('company.checklist.view', Crypt::encryptString($checklist->id)) }}"
                                 target="_blank" class="btn btn-view btn-sm">
                                 View
                             </a>
@@ -180,17 +180,17 @@
 
                             <div class="action-btns">
 
-                                <a href="{{ route('admin.checklist.qa.create', $checklist->id) }}"
+                                <a href="{{ route('company.checklist.qa.create', $checklist->id) }}"
                                     class="btn btn-qa btn-sm">
                                     Q&A
                                 </a>
 
-                                <a href="{{ route('admin.checklist.edit', $checklist->id) }}"
+                                <a href="{{ route('company.checklist.edit', $checklist->id) }}"
                                     class="btn btn-edit btn-sm">
                                     Edit
                                 </a>
 
-                                <form action="{{ route('admin.checklist.destroy', $checklist->id) }}" method="POST"
+                                <form action="{{ route('company.checklist.destroy', $checklist->id) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this checklist?')">
 
                                     @csrf
@@ -240,7 +240,7 @@
 
                 $.ajax({
 
-                    url: "{{ route('admin.checklist.filter') }}",
+                    url: "{{ route('company.checklist.filter') }}",
                     type: "GET",
 
                     data: {

@@ -138,7 +138,7 @@ class VideoController extends Controller
                 'party_id'      => $companyId,
             ]);
 
-            return redirect()->route('admin.video.index')
+            return redirect()->route('company.video.index')
                 ->with('success', 'Video created successfully.');
 
         } catch (\Exception $e) {
@@ -262,7 +262,7 @@ class VideoController extends Controller
             ]);
 
             return redirect()
-                ->route('admin.video.index')
+                ->route('company.video.index')
                 ->with('success', 'Video updated successfully.');
 
         } catch (\Throwable $e) {

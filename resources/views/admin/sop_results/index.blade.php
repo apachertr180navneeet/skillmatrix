@@ -121,7 +121,7 @@
                             </td>
 
                             <td class="text-center">
-                                <a href="{{ route('admin.sop.result.view', $row->id) }}"
+                                <a href="{{ route('company.sop.result.view', $row->id) }}"
                                    class="btn btn-view">
                                     View
                                 </a>

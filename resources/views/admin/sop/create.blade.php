@@ -99,7 +99,7 @@
 
         <div class="form-card">
 
-            <form action="{{ route('admin.sop.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('company.sop.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- SOP TITLE -->

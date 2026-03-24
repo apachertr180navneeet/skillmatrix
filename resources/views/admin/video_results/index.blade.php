@@ -122,7 +122,7 @@
                             </td>
 
                             <td class="text-center">
-                                <a href="{{ route('admin.video.result.view', $row->id) }}"
+                                <a href="{{ route('company.video.result.view', $row->id) }}"
                                    class="btn btn-view">
                                     View
                                 </a>

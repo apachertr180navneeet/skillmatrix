@@ -260,7 +260,7 @@ $(document).ready(function () {
 
     /* ================= DATATABLE ================= */
     const table = $('#userTable').DataTable({
-        ajax: "{{ route('admin.user.getall') }}",
+        ajax: "{{ route('company.user.getall') }}",
         columns: [
             { data:'id', render:id=>`<input type="checkbox" class="rowCheckbox" value="${id}">`, orderable:false },
             { data:'full_name' },
@@ -293,7 +293,7 @@ $(document).ready(function () {
     }
 
     function loadDepartments(select){
-        $.get("{{ route('admin.departments.getall') }}",res=>{
+        $.get("{{ route('company.departments.getall') }}",res=>{
             select.empty().append('<option value="">Select</option>');
             res.data.forEach(d=>{
                 select.append(`<option value="${d.id}">${d.department_name}</option>`);
@@ -307,7 +307,7 @@ $(document).ready(function () {
     /* ================= ADD USER ================= */
     $('#AddUser').click(function(){
         clearErrors();
-        $.post("{{ route('admin.user.store') }}",{
+        $.post("{{ route('company.user.store') }}",{
             _token:"{{ csrf_token() }}",
             name:$('#name').val(),
             user_plan_id:$('#user_plan_id').val(),
@@ -332,7 +332,7 @@ $(document).ready(function () {
 
     /* ================= EDIT USER ================= */
     window.editUser=function(id){
-        $.get("{{ url('admin/users/get') }}/"+id,data=>{
+        $.get("{{ url('company/users/get') }}/"+id,data=>{
             $('#editid').val(data.id);
             $('#edit_name').val(data.full_name);
             $('#edit_user_plan_id').val(data.user_plan_id);
@@ -346,7 +346,7 @@ $(document).ready(function () {
 
     $('#EditUser').click(function(){
         clearErrors();
-        $.post("{{ route('admin.user.update') }}",{
+        $.post("{{ route('company.user.update') }}",{
             _token:"{{ csrf_token() }}",
             id:$('#editid').val(),
             name:$('#edit_name').val(),
@@ -375,7 +375,7 @@ $(document).ready(function () {
     window.deleteUser = function(id){
         if(confirm('Are you sure?')){
             $.ajax({
-                url: "{{ url('admin/users/delete') }}/"+id,
+                url: "{{ url('company/users/delete') }}/"+id,
                 method: "DELETE",
                 data: { _token: "{{ csrf_token() }}" },
                 success: res => {
@@ -389,7 +389,7 @@ $(document).ready(function () {
     /* ================= STATUS ================= */
     $(document).on('change', '.changeStatus', function () {
 
-        $.post("{{ route('admin.user.status') }}", {
+        $.post("{{ route('company.user.status') }}", {
             _token: "{{ csrf_token() }}",
             userId: $(this).data('id'),
             status: $(this).is(':checked') ? 'active' : 'inactive'
@@ -431,7 +431,7 @@ $(document).ready(function () {
 
         if (!confirm('Are you sure you want to delete selected users?')) return;
 
-        $.post("{{ route('admin.user.bulkDelete') }}", {
+        $.post("{{ route('company.user.bulkDelete') }}", {
             _token: "{{ csrf_token() }}",
             ids: ids
         }, function (res) {
@@ -452,7 +452,7 @@ $(document).ready(function () {
             return;
         }
 
-        $.post("{{ route('admin.user.bulkStatus') }}", {
+        $.post("{{ route('company.user.bulkStatus') }}", {
             _token: "{{ csrf_token() }}",
             ids: ids,
             status: status

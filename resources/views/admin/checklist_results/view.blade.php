@@ -216,7 +216,7 @@
     </div>
 
     <!-- ================= BACK ================= -->
-    <a href="{{ route('admin.checklist.result.index') }}" class="btn btn-secondary mt-3">
+    <a href="{{ route('company.checklist.result.index') }}" class="btn btn-secondary mt-3">
         ← Back to Results
     </a>
 

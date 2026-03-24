@@ -79,7 +79,7 @@ class SopQuesAnsController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('admin.sop.index')
+                ->route('company.sop.index')
                 ->with('success', 'SOP Questions saved successfully');
 
         } catch (\Exception $e) {

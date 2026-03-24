@@ -110,7 +110,7 @@ $(document).ready(function () {
 
     const table = $('#departmentTable').DataTable({
         processing: true,
-        ajax: "{{ route('admin.departments.getall') }}",
+        ajax: "{{ route('company.departments.getall') }}",
         columns: [
             {
                 data: 'id',
@@ -150,7 +150,7 @@ $(document).ready(function () {
     /* ================= ADD ================= */
     $('#AddDepartment').click(function () {
 
-        $.post("{{ route('admin.departments.store') }}", {
+        $.post("{{ route('company.departments.store') }}", {
             _token: "{{ csrf_token() }}",
             department_name: $('#department_name').val()
         }, function (res) {
@@ -168,7 +168,7 @@ $(document).ready(function () {
 
     /* ================= EDIT ================= */
     window.editDepartment = function (id) {
-        $.get("{{ url('admin/departments/get') }}/" + id, function (data) {
+        $.get("{{ url('company/departments/get') }}/" + id, function (data) {
             $('#editid').val(data.id);
             $('#edit_department_name').val(data.department_name);
             $('#editModal').modal('show');
@@ -178,7 +178,7 @@ $(document).ready(function () {
     /* ================= UPDATE ================= */
     $('#EditDepartment').click(function () {
 
-        $.post("{{ route('admin.departments.update') }}", {
+        $.post("{{ route('company.departments.update') }}", {
             _token: "{{ csrf_token() }}",
             id: $('#editid').val(),
             department_name: $('#edit_department_name').val()
@@ -198,7 +198,7 @@ $(document).ready(function () {
     window.deleteDepartment = function (id) {
         if (confirm('Are you sure?')) {
             $.ajax({
-                url: "{{ url('admin/departments/delete') }}/" + id,
+                url: "{{ url('company/departments/delete') }}/" + id,
                 method: "DELETE",
                 data: { _token: "{{ csrf_token() }}" },
                 success: function (res) {
@@ -214,7 +214,7 @@ $(document).ready(function () {
     /* ================= STATUS ================= */
     $(document).on('change', '.changeStatus', function () {
 
-        $.post("{{ route('admin.departments.status') }}", {
+        $.post("{{ route('company.departments.status') }}", {
             _token: "{{ csrf_token() }}",
             departmentId: $(this).data('id'),
             status: $(this).is(':checked') ? 'active' : 'inactive'
@@ -256,7 +256,7 @@ $(document).ready(function () {
 
         if (!confirm('Are you sure you want to delete selected departments?')) return;
 
-        $.post("{{ route('admin.departments.bulkDelete') }}", {
+        $.post("{{ route('company.departments.bulkDelete') }}", {
             _token: "{{ csrf_token() }}",
             ids: ids
         }, function (res) {
@@ -277,7 +277,7 @@ $(document).ready(function () {
             return;
         }
 
-        $.post("{{ route('admin.departments.bulkStatus') }}", {
+        $.post("{{ route('company.departments.bulkStatus') }}", {
             _token: "{{ csrf_token() }}",
             ids: ids,
             status: status
