@@ -1,7 +1,15 @@
+<style>
+	span.app-brand-text.demo.menu-text.fw-bold.ms-2.text-capitalize {
+		font-size: 20px;
+	}
+</style>
+
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
 	<div class="app-brand demo">
 		<a href="{{ route('admin.dashboard') }}" class="app-brand-link">
-			<span class="app-brand-text demo menu-text fw-bold ms-2 text-capitalize">Admin</span>
+			<span class="app-brand-text demo menu-text fw-bold ms-2 text-capitalize">
+				{{ auth()->user()->company->copmany_name ?? 'Admin' }}
+			</span>
 		</a>
 
 		<a href="javascript:void(0);"

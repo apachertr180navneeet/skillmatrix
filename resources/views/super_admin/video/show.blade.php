@@ -57,22 +57,29 @@
                     <div class="col-md-12">
                         <label class="form-label">Video</label>
 
+                        @if($video->video_link)
+                            <div class="border p-2 rounded bg-light mb-2">
+                                <a href="{{ $video->video_link }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="text-primary">
+                                    Open Video Link
+                                </a>
+                            </div>
+                        @endif
+
                         @if($video->video_file)
-                            @if(Str::contains($video->video_file, 'youtube'))
-                                {{-- YouTube Embed --}}
-                                <div class="ratio ratio-16x9">
-                                    <iframe
-                                        src="https://www.youtube.com/embed/{{ \Illuminate\Support\Str::after($video->video_file, 'v=') }}"
-                                        allowfullscreen>
-                                    </iframe>
-                                </div>
-                            @else
-                                {{-- Uploaded Video --}}
-                                <video width="100%" controls>
-                                    <source src="{{ asset('storage/'.$video->video_file) }}" type="video/mp4">
-                                </video>
-                            @endif
-                        @else
+                            <div class="border p-2 rounded bg-light">
+                                <a href="{{ $video->video_file }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="text-primary">
+                                    Open Uploaded Video
+                                </a>
+                            </div>
+                        @endif
+
+                        @if(!$video->video_link && !$video->video_file)
                             <p class="text-muted">No video available</p>
                         @endif
                     </div>

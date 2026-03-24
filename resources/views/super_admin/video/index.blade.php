@@ -94,12 +94,12 @@ $(document).ready(function () {
                 searchable: false,
                 render: function (id) {
                     return `
-                        <a href="/super-admin/video/show/${id}"
+                        <a href="/master/video/show/${id}"
                            class="btn btn-sm btn-info">
                            View
                         </a>
 
-                        <a href="/super-admin/video/${id}/qa" class="btn btn-sm btn-secondary">
+                        <a href="/master/video/${id}/qa" class="btn btn-sm btn-secondary">
                             Q&A
                         </a>
                     `;
