@@ -19,7 +19,7 @@
         <div class="col-xl-6 col-lg-6">
             <div class="card profile-card">
                 <div class="card-body  pb-5">
-                    <form action="{{ route('admin.update.profile') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('company.update.profile') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row g-3">
                             <div class="col-md-6">

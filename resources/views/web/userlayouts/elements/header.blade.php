@@ -15,7 +15,11 @@
 		<div class="navbar-nav align-items-center">
 			<div class="nav-item d-flex align-items-center text-primary">
 				<i class="bx bx-calendar fs-4 lh-0"></i>&nbsp;
-				<span class="">{{ date('D') }} {{ date('d M Y') }}</span>
+				<span>
+					{{ date('D') }} {{ date('d M Y') }}
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					Name :- {{ Auth::user()->full_name }}
+				</span>
 			</div>
 		</div>
 		<!-- /Search -->

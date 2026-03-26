@@ -30,10 +30,10 @@
         gap: 10px;
     }
 
-    .option-selected {
-        background: #e7f1ff;
-        border-color: #1e78d6;
-        color: #1e78d6;
+    .option-correct {
+        background: #e6f4ea;
+        border-color: #198754;
+        color: #198754;
         font-weight: 600;
     }
 
@@ -57,8 +57,8 @@
         flex-shrink: 0;
     }
 
-    .option-selected .option-label { background: #1e78d6; color: #fff; }
-    .option-wrong .option-label    { background: #dc3545; color: #fff; }
+    .option-correct .option-label { background: #198754; color: #fff; }
+    .option-wrong .option-label   { background: #dc3545; color: #fff; }
 
     /* ================= HEADER ================= */
     .result-header {
@@ -87,7 +87,7 @@
 
     <!-- ================= HEADER ================= -->
     <div class="result-header">
-        <h5 class="mb-0 fw-semibold">Result Details</h5>
+        <h5 class="mb-0 fw-semibold">Checklist Result Details</h5>
 
         <div>
             <span class="badge {{ $result->result_status === 'pass' ? 'badge-pass' : 'badge-fail' }}">
@@ -104,8 +104,8 @@
         <div class="row g-3">
 
             <div class="col-md-4">
-                <strong>SOP Title</strong><br>
-                <span class="text-muted">{{ $result->sop->title ?? '-' }}</span>
+                <strong>Checklist Title</strong><br>
+                <span class="text-muted">{{ $result->checklist->title ?? '-' }}</span>
             </div>
 
             <div class="col-md-4">
@@ -120,52 +120,42 @@
 
             <div class="col-md-3">
                 <strong>Total Questions</strong><br>
-                <span class="fw-semibold">
-                    {{ $result->total_questions }}
-                </span>
+                <span class="fw-semibold">{{ $result->total_questions }}</span>
             </div>
 
             <div class="col-md-3">
                 <strong>Correct</strong><br>
-                <span class="fw-semibold text-success">
-                    {{ $result->correct_answers }}
-                </span>
+                <span class="fw-semibold text-success">{{ $result->correct_answers }}</span>
             </div>
 
             <div class="col-md-3">
                 <strong>Wrong</strong><br>
-                <span class="fw-semibold text-danger">
-                    {{ $result->wrong_answers }}
-                </span>
+                <span class="fw-semibold text-danger">{{ $result->wrong_answers }}</span>
             </div>
 
             <div class="col-md-3">
                 <strong>Score</strong><br>
-                <span class="fw-semibold">
-                    {{ $result->result }}%
+                <span class="fw-semibold">{{ $result->result }}%</span>
+            </div>
+
+            <div class="col-md-3">
+                <strong>Status</strong><br>
+                <span class="badge {{ $result->result_status === 'pass' ? 'badge-pass' : 'badge-fail' }}">
+                    {{ ucfirst($result->result_status) }}
                 </span>
             </div>
 
-                <div class="col-md-3">
-                    <strong>Status</strong><br>
-                    <span class="badge {{ $result->result_status === 'pass' ? 'badge-pass' : 'badge-fail' }}">
-                        {{ ucfirst($result->result_status) }}
-                    </span>
-                </div>
-
-                <div class="col-md-3">
-                    <strong>Attempt Date</strong><br>
-                    <span class="text-muted">
-                        {{ $result->created_at->format('d M Y, h:i A') }}
-                    </span>
-                </div>
-
+            <div class="col-md-3">
+                <strong>Attempt Date</strong><br>
+                <span class="text-muted">
+                    {{ $result->created_at->format('d M Y, h:i A') }}
+                </span>
             </div>
+
         </div>
     </div>
 
-
-    <!-- ================= QUESTIONS & ANSWERS ================= -->
+    <!-- ================= QUESTIONS ================= -->
     <div class="mt-4">
 
         @forelse($questiondeatil as $index => $question)
@@ -176,43 +166,42 @@
                 </div>
 
                 @php
-                    $correctAnswer = (int) $question['correct_answer'];
-                    $userAnswer    = (int) $question['user_answer'];
+                    $correctAnswer = $question['correct_answer'];
+                    $userAnswer    = $question['user_answer'];
                 @endphp
 
                 @foreach($question['options'] as $key => $option)
                     @php
-                        $optionNumber = $key + 1;
                         $class = '';
 
-                        // ONLY user-selected option highlighted
-                        if ($optionNumber === $userAnswer && $userAnswer === $correctAnswer) {
-                            $class = 'option-selected';
+                        if ($key == $correctAnswer) {
+                            $class = 'option-correct';
                         }
 
-                        if ($optionNumber === $userAnswer && $userAnswer !== $correctAnswer) {
+                        if ($key == $userAnswer && $userAnswer != $correctAnswer) {
                             $class = 'option-wrong';
                         }
                     @endphp
 
-                    <div class="option-box">
+                    <div class="option-box {{ $class }}">
+                        <div class="option-label">{{ $key }}</div>
                         <div>{{ $option }}</div>
                     </div>
                 @endforeach
 
-                <!-- Answer summary -->
+                <!-- ================= ANSWER SUMMARY ================= -->
                 <div class="mt-3 d-flex gap-4">
                     <div>
                         <strong>Correct Answer:</strong>
                         <span class="text-success fw-semibold">
-                            {{ $correctAnswer }}
+                            Option {{ $correctAnswer }}
                         </span>
                     </div>
 
                     <div>
                         <strong>User Answer:</strong>
                         <span class="{{ $userAnswer == $correctAnswer ? 'text-success' : 'text-danger' }} fw-semibold">
-                            {{ $userAnswer ?? '-' }}
+                            {{ $userAnswer ? 'Option '.$userAnswer : '-' }}
                         </span>
                     </div>
                 </div>
@@ -227,7 +216,7 @@
     </div>
 
     <!-- ================= BACK ================= -->
-    <a href="{{ route('user.video.results') }}" class="btn btn-secondary mt-3">
+    <a href="{{ route('company.checklist.result.index') }}" class="btn btn-secondary mt-3">
         ← Back to Results
     </a>
 
@@ -236,9 +225,9 @@
 
 @section('script')
 <script>
-    // Future:
+    // Future Enhancements:
     // - Explanation toggle
-    // - Print result
-    // - Export PDF
+    // - Print / PDF export
+    // - Answer filtering
 </script>
 @endsection

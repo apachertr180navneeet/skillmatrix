@@ -89,12 +89,12 @@
                             <th width="30"><input type="checkbox" id="selectAll"></th>
                             <th>User Name</th>
                             <th>Department</th>
-                            <th>HOD Name</th>
-                            <th>HOD Email</th>
+                            {{--  <th>HOD Name</th>
+                            <th>HOD Email</th>  --}}
                             <th>Plan</th>
                             <th>Phone</th>
                             <th>Status</th>
-                            <th width="150">Action</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                 </table>
@@ -265,8 +265,8 @@ $(document).ready(function () {
             { data:'id', render:id=>`<input type="checkbox" class="rowCheckbox" value="${id}">`, orderable:false },
             { data:'full_name' },
             { data:'department.department_name' },
-            { data:'hod_name' },
-            { data:'hod_email' },
+            //{ data:'hod_name' },
+            //{ data:'hod_email' },
             { data:'usersubscription.plan.plan_name' },
             { data:'phone' },
             {

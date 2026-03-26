@@ -39,7 +39,7 @@
                             </th>
                             <th>Department Name</th>
                             <th>Status</th>
-                            <th width="150">Action</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                 </table>
