@@ -38,7 +38,7 @@
                         <label class="form-label">Department</label>
                         <input type="text"
                                class="form-control"
-                               value="{{ $sop->department_names ?? '-' }}"
+                               value="{{ $sop->department->department_name ?? '-' }}"
                                readonly>
                     </div>
 
