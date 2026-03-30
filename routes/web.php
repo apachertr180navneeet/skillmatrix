@@ -59,6 +59,10 @@ use App\Http\Controllers\Admin\{
 */
 Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('about.us');
+Route::get('/service', [HomeController::class, 'service'])->name('service');
+Route::get('/plan', [HomeController::class, 'plan'])->name('plan');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 /*
 |--------------------------------------------------------------------------
