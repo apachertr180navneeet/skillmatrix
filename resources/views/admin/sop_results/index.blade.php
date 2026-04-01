@@ -11,18 +11,26 @@
     }
 
     /* ================= TABLE ================= */
+    .table thead {
+        background: #f3f5f7;
+    }
+
     .table thead th {
-        font-size: 13px;
-        font-weight: 600;
-        color: #555;
-        border-bottom: 1px solid #eaeaea;
+        font-size: 14px;
+        font-weight: 700;
+        color: #6f8197;
+        letter-spacing: 0.04em;
+        border-bottom: 0;
         white-space: nowrap;
+        padding: 14px 18px;
     }
 
     .table tbody td {
         font-size: 14px;
         vertical-align: middle;
         white-space: nowrap;
+        padding: 16px 18px;
+        border-bottom: 1px solid #eaeaea;
     }
 
     /* ================= RESULT ================= */
@@ -58,7 +66,7 @@
 
     <!-- ================= HEADER ================= -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0 fw-semibold">Results</h5>
+        <h5 class="mb-0 fw-semibold">SOP Results</h5>
 
         <div class="d-flex gap-2">
             <input type="text" class="form-control search-box" placeholder="Search here...">
@@ -74,8 +82,8 @@
                     <tr>
                         <th>Date</th>
                         <th>User Name</th>
-                        <th>Department Name</th>
-                        <th>Title</th>
+                        <th>Department</th>
+                        <th>SOP Title</th>
                         <th>Result Status</th>
                         <th>Result</th>
                         <th class="text-center">View</th>
@@ -101,15 +109,15 @@
                             <td>
                                 @if($row->result_status === 'pass')
                                     <span class="badge bg-success">
-                                        {{ ucfirst($row->result_status) }}
+                                        Pass
                                     </span>
                                 @elseif($row->result_status === 'fail')
                                     <span class="badge bg-danger">
-                                        {{ ucfirst($row->result_status) }}
+                                        Fail
                                     </span>
                                 @else
                                     <span class="badge bg-secondary">
-                                        {{ ucfirst($row->result_status) }}
+                                        Pending
                                     </span>
                                 @endif
                             </td>
@@ -129,7 +137,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
+                            <td colspan="7" class="text-center text-muted py-4">
                                 No results found
                             </td>
                         </tr>

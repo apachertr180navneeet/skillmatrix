@@ -235,6 +235,12 @@
 
             </div>
 
+            <button type="button"
+                    class="btn btn-primary btn-sm mb-3"
+                    id="addQuestion">
+                + Add Question
+            </button>
+
             <div class="text-end">
                 <button type="submit" class="submit-btn">
                     Save Checklist Q&A
@@ -256,13 +262,54 @@ let questionIndex = {{ $checklistquesans->count() > 0 ? $checklistquesans->count
 /* UPDATE REMOVE BUTTON */
 function updateRemoveButtons() {
     const cards = document.querySelectorAll('.question-card');
-    cards.forEach((card, index) => {
+    cards.forEach(card => {
         const btn = card.querySelector('.remove-question');
-        if (btn) {
-            btn.style.display = cards.length > 1 ? 'inline-block' : 'none';
-        }
+        if (btn) btn.style.display = cards.length > 1 ? 'inline-block' : 'none';
     });
 }
+
+/* ADD QUESTION */
+document.getElementById('addQuestion').addEventListener('click', function () {
+
+    let html = `
+    <div class="question-card">
+        <div class="d-flex justify-content-between mb-3">
+            <label class="form-label">Question ${questionIndex + 1}</label>
+            <button type="button" class="btn btn-danger btn-sm remove-question">
+                Remove
+            </button>
+        </div>
+
+        <input type="text"
+               name="questions[${questionIndex}][question]"
+               class="form-control mb-3"
+               required>
+    `;
+
+    [1,2,3,4].forEach(i => {
+        html += `
+        <div class="option-row">
+            <input type="radio"
+                   name="questions[${questionIndex}][correct]"
+                   value="${i}"
+                   required>
+
+            <input type="text"
+                   name="questions[${questionIndex}][options][${i}]"
+                   class="form-control"
+                   required>
+        </div>
+        `;
+    });
+
+    html += `</div>`;
+
+    document.getElementById('questionWrapper')
+        .insertAdjacentHTML('beforeend', html);
+
+    questionIndex++;
+    updateRemoveButtons();
+});
 
 /* REMOVE QUESTION */
 document.addEventListener('click', function (e) {
@@ -372,5 +419,7 @@ document.getElementById('excelInput').addEventListener('change', function (e) {
 
     reader.readAsBinaryString(file);
 });
+
+updateRemoveButtons();
 </script>
 @endsection

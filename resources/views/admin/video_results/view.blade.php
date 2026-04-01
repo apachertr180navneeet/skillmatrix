@@ -5,10 +5,61 @@
     /* ================= RESULT CARD ================= */
     .result-card {
         background: #fff;
-        border-radius: 18px;
-        padding: 22px;
+        border-radius: 22px;
+        padding: 22px 28px;
         box-shadow: 0 4px 14px rgba(0,0,0,0.06);
         margin-bottom: 20px;
+    }
+
+    .summary-card {
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px 60px;
+    }
+
+    .summary-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+    }
+
+    .summary-item {
+        min-width: 0;
+    }
+
+    .summary-label {
+        margin-bottom: 6px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #667d99;
+        line-height: 1.2;
+    }
+
+    .summary-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #a5b0bf;
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    .summary-value--strong {
+        color: #5c6d82;
+        font-size: 15px;
+    }
+
+    .summary-value--success {
+        color: #6bd14b;
+    }
+
+    .summary-value--danger {
+        color: #ff5838;
     }
 
     /* ================= QUESTION ================= */
@@ -79,6 +130,23 @@
         color: #dc3545;
         font-weight: 600;
     }
+
+    @media (max-width: 991.98px) {
+        .summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px 24px;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .result-card {
+            padding: 20px;
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 @endsection
 
@@ -100,58 +168,62 @@
     </div>
 
     <!-- ================= SUMMARY ================= -->
-    <div class="result-card mb-4">
-        <div class="row g-3">
+    <div class="result-card summary-card mb-4">
+        <div class="summary-grid">
+            <div class="summary-column">
+                <div class="summary-item">
+                    <div class="summary-label">Video Title</div>
+                    <div class="summary-value">{{ $result->video->title ?? '-' }}</div>
+                </div>
 
-            <div class="col-md-4">
-                <strong>Video Title</strong><br>
-                <span class="text-muted">{{ $result->video->title ?? '-' }}</span>
+                <div class="summary-item">
+                    <div class="summary-label">Total Questions</div>
+                    <div class="summary-value summary-value--strong">{{ $result->total_questions }}</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-label">Status</div>
+                    <div>
+                        <span class="badge {{ $result->result_status === 'pass' ? 'badge-pass' : 'badge-fail' }}">
+                            {{ strtoupper($result->result_status) }}
+                        </span>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-4">
-                <strong>User Name</strong><br>
-                <span class="text-muted">{{ $result->user->full_name ?? '-' }}</span>
+            <div class="summary-column">
+                <div class="summary-item">
+                    <div class="summary-label">User Name</div>
+                    <div class="summary-value">{{ $result->user->full_name ?? '-' }}</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-label">Correct</div>
+                    <div class="summary-value summary-value--strong summary-value--success">{{ $result->correct_answers }}</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-label">Attempt Date</div>
+                    <div class="summary-value">{{ $result->created_at->format('d M Y, h:i A') }}</div>
+                </div>
             </div>
 
-            <div class="col-md-4">
-                <strong>Email</strong><br>
-                <span class="text-muted">{{ $result->user->email ?? '-' }}</span>
-            </div>
+            <div class="summary-column">
+                <div class="summary-item">
+                    <div class="summary-label">Email</div>
+                    <div class="summary-value">{{ $result->user->email ?? '-' }}</div>
+                </div>
 
-            <div class="col-md-3">
-                <strong>Total Questions</strong><br>
-                <span class="fw-semibold">{{ $result->total_questions }}</span>
-            </div>
+                <div class="summary-item">
+                    <div class="summary-label">Wrong</div>
+                    <div class="summary-value summary-value--strong summary-value--danger">{{ $result->wrong_answers }}</div>
+                </div>
 
-            <div class="col-md-3">
-                <strong>Correct</strong><br>
-                <span class="fw-semibold text-success">{{ $result->correct_answers }}</span>
+                <div class="summary-item">
+                    <div class="summary-label">Score</div>
+                    <div class="summary-value summary-value--strong">{{ $result->result }}%</div>
+                </div>
             </div>
-
-            <div class="col-md-3">
-                <strong>Wrong</strong><br>
-                <span class="fw-semibold text-danger">{{ $result->wrong_answers }}</span>
-            </div>
-
-            <div class="col-md-3">
-                <strong>Score</strong><br>
-                <span class="fw-semibold">{{ $result->result }}%</span>
-            </div>
-
-            <div class="col-md-3">
-                <strong>Status</strong><br>
-                <span class="badge {{ $result->result_status === 'pass' ? 'badge-pass' : 'badge-fail' }}">
-                    {{ ucfirst($result->result_status) }}
-                </span>
-            </div>
-
-            <div class="col-md-3">
-                <strong>Attempt Date</strong><br>
-                <span class="text-muted">
-                    {{ $result->created_at->format('d M Y, h:i A') }}
-                </span>
-            </div>
-
         </div>
     </div>
 
