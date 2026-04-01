@@ -63,7 +63,7 @@
                                 </div>
                                 <!-- navbar collapse -->
                                 <div class="button">
-                                    <a href="{{ route('contact') }}" class="btn">Get Started</a>
+                                    <a href="{{ route('user.login') }}" class="btn">Get Started</a>
                                 </div>
                             </nav>
                             <!-- navbar -->

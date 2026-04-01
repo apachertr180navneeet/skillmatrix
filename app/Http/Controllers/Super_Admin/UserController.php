@@ -128,7 +128,7 @@ class UserController extends Controller
         ]);
 
         // Admin login link (route based)
-        $loginUrl = route('admin.login');
+        $loginUrl = route('company.login');
 
         // ✅ SEND EMAIL (FIXED)
         Mail::send([], [], function ($message) use ($user, $plainPassword, $loginUrl) {

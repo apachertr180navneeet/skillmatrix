@@ -18,7 +18,7 @@
 				<span>
 					{{ date('D') }} {{ date('d M Y') }}
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					Name :- {{ Auth::user()->full_name }}
+					User Name :- {{ Auth::user()->full_name }}
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					Department :- {{ $user->department->department_name ?? '' }}
 				</span>

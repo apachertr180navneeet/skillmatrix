@@ -9,11 +9,11 @@
                 <!-- Logo -->
                 <div class="app-brand justify-content-center">
                     <a href="index.html" class="app-brand-link gap-2">
-                        <span class="app-brand-text demo text-body fw-bolder text-capitalize">Skill Matrix</span>
+                        <span class="app-brand-text demo text-body fw-bolder text-capitalize">Precureskill</span>
                     </a>
                 </div>
                 <!-- /Logo -->
-                <h4 class="mb-2">Welcome to Skill Matrix! 👋</h4>
+                <h4 class="mb-2">Welcome to Master! 👋</h4>
                 <p class="mb-4">Please sign-in to your admin account</p>
                 <form action="{{ route('super.admin.login.post') }}" id="" class="mb-3" method="POST">
                     @csrf

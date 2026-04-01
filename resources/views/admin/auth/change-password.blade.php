@@ -9,7 +9,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('admin.update.password') }}" method="POST">
+                    <form action="{{ route('company.update.password') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="mb-3">
