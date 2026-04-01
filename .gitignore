@@ -19,3 +19,7 @@ yarn-error.log
 /.vscode
 
 .early.coverage
+
+
+bootstrap.zip
+*.zip
