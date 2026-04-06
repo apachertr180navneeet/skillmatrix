@@ -137,177 +137,163 @@ Route::prefix('company')
     ->controller(AdminAuthController::class)
     ->group(function () {
 
-        /* ================= AUTH ================= */
-        Route::get('/', 'index')->name('index');
-        Route::get('login', 'login')->name('login');
-        Route::post('login', 'postLogin')->name('login.post');
+    /* ================= AUTH ================= */
+    Route::get('/', 'index')->name('index');
+    Route::get('login', 'login')->name('login');
+    Route::post('login', 'postLogin')->name('login.post');
 
-        /* ================= PASSWORD ================= */
-        Route::get('forget-password', 'showForgetPasswordForm')->name('forget.password.get');
-        Route::post('forget-password', 'submitForgetPasswordForm')->name('forget.password.post');
-        Route::get('reset-password/{token}', 'showResetPasswordForm')->name('reset.password.get');
-        Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
+    /* ================= PASSWORD ================= */
+    Route::get('forget-password', 'showForgetPasswordForm')->name('forget.password.get');
+    Route::post('forget-password', 'submitForgetPasswordForm')->name('forget.password.post');
+    Route::get('reset-password/{token}', 'showResetPasswordForm')->name('reset.password.get');
+    Route::post('reset-password', 'submitResetPasswordForm')->name('reset.password.post');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN AUTH PROTECTED
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('admin')->group(function () {
+
+        /* ===== ALLOWED WITHOUT SUBSCRIPTION ===== */
+        Route::get('dashboard', 'adminDashboard')->name('dashboard');
+        Route::get('change-password', 'changePassword')->name('change.password');
+        Route::post('update-password', 'updatePassword')->name('update.password');
+        Route::get('logout', 'logout')->name('logout');
+        Route::get('profile', 'adminProfile')->name('profile');
+        Route::post('profile', 'updateAdminProfile')->name('update.profile');
+
+        /* ===== SUBSCRIPTION (NO CHECK) ===== */
+        Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])->name('subscription');
+        Route::post('subscription/buy/{plan}', [SubscriptionController::class, 'buy'])->name('subscription.buy');
+        Route::post('subscription/add-users/{subscription}', [SubscriptionController::class, 'addUsers'])->name('subscription.add.users');
+
 
         /*
         |--------------------------------------------------------------------------
-        | ADMIN AUTH PROTECTED
+        | SUBSCRIPTION REQUIRED (IMPORTANT)
         |--------------------------------------------------------------------------
         */
-        Route::middleware('admin')->group(function () {
+        Route::middleware('subscription')->group(function () {
 
-            /* ===== ALLOWED WITHOUT SUBSCRIPTION ===== */
-            Route::get('dashboard', 'adminDashboard')->name('dashboard');
-            Route::get('change-password', 'changePassword')->name('change.password');
-            Route::post('update-password', 'updatePassword')->name('update.password');
-            Route::get('logout', 'logout')->name('logout');
-            Route::get('profile', 'adminProfile')->name('profile');
-            Route::post('profile', 'updateAdminProfile')->name('update.profile');
+            /* ================= DEPARTMENTS ================= */
+            Route::prefix('departments')->name('departments.')
+                ->controller(DepartmentController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('getall', 'getall')->name('getall');
+                    Route::post('store', 'store')->name('store');
+                    Route::get('get/{id}', 'get')->name('get');
+                    Route::post('update', 'update')->name('update');
+                    Route::post('status', 'status')->name('status');
+                    Route::delete('delete/{id}', 'destroy')->name('delete');
+                    Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
+                    Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
+                });
 
-            /* ===== SUBSCRIPTION (NO CHECK) ===== */
-            Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])->name('subscription');
-            Route::post('subscription/buy/{plan}', [SubscriptionController::class, 'buy'])->name('subscription.buy');
-            Route::post('subscription/add-users/{subscription}', [SubscriptionController::class, 'addUsers'])->name('subscription.add.users');
+            /* ================= USERS ================= */
+            Route::prefix('users')->name('user.')
+                ->controller(AdminUserController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('getall', 'getall')->name('getall');
+                    Route::post('store', 'store')->name('store');
+                    Route::get('get/{id}', 'get')->name('get');
+                    Route::post('update', 'update')->name('update');
+                    Route::post('status', 'status')->name('status');
+                    Route::delete('delete/{id}', 'destroy')->name('delete');
+                    Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
+                    Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
+                });
 
+            /* ================= SOP ================= */
+            Route::prefix('sops')->name('sop.')
+                ->controller(AdminSopController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('create', 'create')->name('create');
+                    Route::get('filter', 'filter')->name('filter');
+                    Route::post('store', 'store')->name('store');
+                    Route::get('{id}/edit', 'edit')->name('edit');
+                    Route::put('{id}', 'update')->name('update');
+                    Route::delete('{id}', 'destroy')->name('destroy');
+                    Route::get('view/{id}', 'view')->name('view');
+                });
 
-            /*
-            |--------------------------------------------------------------------------
-            | SUBSCRIPTION REQUIRED (IMPORTANT)
-            |--------------------------------------------------------------------------
-            */
-            Route::middleware('subscription')->group(function () {
+            Route::prefix('sops')->name('sop.')
+                ->controller(AdminSopQuesAnsController::class)
+                ->group(function () {
+                    Route::get('{id}/qa/create', 'create')->name('qa.create');
+                    Route::post('qa/store', 'store')->name('qa.store');
+                });
 
-                /* ================= DEPARTMENTS ================= */
-                Route::prefix('departments')->name('departments.')
-                    ->controller(DepartmentController::class)
-                    ->group(function () {
-                        Route::get('/', 'index')->name('index');
-                        Route::get('getall', 'getall')->name('getall');
-                        Route::post('store', 'store')->name('store');
-                        Route::get('get/{id}', 'get')->name('get');
-                        Route::post('update', 'update')->name('update');
-                        Route::post('status', 'status')->name('status');
-                        Route::delete('delete/{id}', 'destroy')->name('delete');
-                        Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
-                        Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
-                    });
+            /* ================= CHECKLIST ================= */
+            Route::prefix('checklists')->name('checklist.')
+                ->controller(AdminChecklistController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('create', 'create')->name('create');
+                    Route::post('store', 'store')->name('store');
+                    Route::get('{id}/edit', 'edit')->name('edit');
+                    Route::put('{id}', 'update')->name('update');
+                    Route::delete('{id}', 'destroy')->name('destroy');
+                    Route::get('filter', 'filter')->name('filter');
+                    Route::get('view/{id}', 'view')->name('view');
+                });
 
-                /* ================= USERS ================= */
-                Route::prefix('users')->name('user.')
-                    ->controller(AdminUserController::class)
-                    ->group(function () {
-                        Route::get('/', 'index')->name('index');
-                        Route::get('getall', 'getall')->name('getall');
-                        Route::post('store', 'store')->name('store');
-                        Route::get('get/{id}', 'get')->name('get');
-                        Route::post('update', 'update')->name('update');
-                        Route::post('status', 'status')->name('status');
-                        Route::delete('delete/{id}', 'destroy')->name('delete');
-                        Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
-                        Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
-                    });
+            Route::prefix('checklists')->name('checklist.')
+                ->controller(AdminChecklistQuesAnsController::class)
+                ->group(function () {
+                    Route::get('{id}/qa/create', 'create')->name('qa.create');
+                    Route::post('qa/store', 'store')->name('qa.store');
+                });
 
-                /* ================= SOP ================= */
-                Route::prefix('sops')->name('sop.')
-                    ->controller(AdminSopController::class)
-                    ->group(function () {
-                        Route::get('/', 'index')->name('index');
-                        Route::get('create', 'create')->name('create');
-                        Route::get('filter', 'filter')->name('filter');
-                        Route::post('store', 'store')->name('store');
-                        Route::get('{id}/edit', 'edit')->name('edit');
-                        Route::put('{id}', 'update')->name('update');
-                        Route::delete('{id}', 'destroy')->name('destroy');
-                        Route::get('view/{id}', 'view')->name('view');
-                    });
+            /* ================= VIDEOS ================= */
+            Route::prefix('videos')->name('video.')
+                ->controller(AdminVideoController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('create', 'create')->name('create');
+                    Route::post('store', 'store')->name('store');
+                    Route::get('{id}/edit', 'edit')->name('edit');
+                    Route::put('{id}', 'update')->name('update');
+                    Route::delete('{id}', 'destroy')->name('destroy');
+                    Route::get('filter', 'filter')->name('filter');
+                });
 
-                Route::prefix('sops')->name('sop.')
-                    ->controller(AdminSopQuesAnsController::class)
-                    ->group(function () {
-                        Route::get('{id}/qa/create', 'create')->name('qa.create');
-                        Route::post('qa/store', 'store')->name('qa.store');
-                    });
+            Route::prefix('videos')->name('video.')
+                ->controller(AdminVideoQuesAnsController::class)
+                ->group(function () {
+                    Route::get('{id}/qa/create', 'create')->name('qa.create');
+                    Route::post('qa/store', 'store')->name('qa.store');
+                });
 
-                /* ================= CHECKLIST ================= */
-                Route::prefix('checklists')->name('checklist.')
-                    ->controller(AdminChecklistController::class)
-                    ->group(function () {
-                        Route::get('/', 'index')->name('index');
-                        Route::get('create', 'create')->name('create');
-                        Route::post('store', 'store')->name('store');
-                        Route::get('{id}/edit', 'edit')->name('edit');
-                        Route::put('{id}', 'update')->name('update');
-                        Route::delete('{id}', 'destroy')->name('destroy');
-                        Route::get('filter', 'filter')->name('filter');
-                        Route::get('view/{id}', 'view')->name('view');
-                    });
+            /* ================= RESULTS ================= */
+            Route::prefix('sop-results')->name('sop.result.')
+                ->controller(AdminSopResultController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('{id}/view', 'view')->name('view');
+                });
 
-                Route::prefix('checklists')->name('checklist.')
-                    ->controller(AdminChecklistQuesAnsController::class)
-                    ->group(function () {
-                        Route::get('{id}/qa/create', 'create')->name('qa.create');
-                        Route::post('qa/store', 'store')->name('qa.store');
-                    });
+            Route::prefix('video-results')->name('video.result.')
+                ->controller(AdminVideoResultController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('{id}/view', 'view')->name('view');
+                });
 
-                /* ================= VIDEOS ================= */
-                Route::prefix('videos')->name('video.')
-                    ->controller(AdminVideoController::class)
-                    ->group(function () {
-                        Route::get('/', 'index')->name('index');
-                        Route::get('create', 'create')->name('create');
-                        Route::post('store', 'store')->name('store');
-                        Route::get('{id}/edit', 'edit')->name('edit');
-                        Route::put('{id}', 'update')->name('update');
-                        Route::delete('{id}', 'destroy')->name('destroy');
-                        Route::get('filter', 'filter')->name('filter');
-                    });
+            Route::prefix('checklist-results')->name('checklist.result.')
+                ->controller(AdminChecklistResultController::class)
+                ->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::get('{id}/view', 'view')->name('view');
+                });
 
-                Route::prefix('videos')->name('video.')
-                    ->controller(AdminVideoQuesAnsController::class)
-                    ->group(function () {
-                        Route::get('{id}/qa/create', 'create')->name('qa.create');
-                        Route::post('qa/store', 'store')->name('qa.store');
-                    });
+        }); // subscription middleware
 
-                /* ================= RESULTS ================= */
-                Route::prefix('sop-results')->name('sop.result.')
-                    ->controller(AdminSopResultController::class)
-                    ->group(function () {
-                        Route::get('/', 'index')->name('index');
-                        Route::get('{id}/view', 'view')->name('view');
-                    });
-
-                Route::prefix('video-results')->name('video.result.')
-                    ->controller(AdminVideoResultController::class)
-                    ->group(function () {
-                        Route::get('/', 'index')->name('index');
-                        Route::get('{id}/view', 'view')->name('view');
-                    });
-
-                Route::prefix('checklist-results')->name('checklist.result.')
-                    ->controller(AdminChecklistResultController::class)
-                    ->group(function () {
-                        Route::get('/', 'index')->name('index');
-                        Route::get('{id}/view', 'view')->name('view');
-                    });
-
-            }); // subscription middleware
-
-        }); // admin middleware
-    });
-
-/*
-| Authenticated Frontend Users
-|--------------------------------------------------------------------------
-*/
-
-/*
-|--------------------------------------------------------------------------
-| Frontend User Routes
-|--------------------------------------------------------------------------
-| URL Prefix: /user
-| Route Name Prefix: user.
-|--------------------------------------------------------------------------
-*/
+    }); // admin middleware
+});
 
 Route::prefix('user')
     ->name('user.')
