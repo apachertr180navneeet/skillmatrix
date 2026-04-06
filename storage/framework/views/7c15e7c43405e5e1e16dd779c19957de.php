@@ -8,7 +8,7 @@
                             <div class="f-about single-footer">
                                 <div class="logo">
                                     <a href="index.html"
-                                        ><img src="{{ asset('assets/web/assets/images/logo/precure-skill3-white.svg') }}" alt="Logo"
+                                        ><img src="<?php echo e(asset('assets/web/assets/images/logo/precure-skill3-white.svg')); ?>" alt="Logo"
                                     /></a>
                                 </div>
                                 <p>Precureskill (a unit of system polygon) is a professional industrial training platform designed to bridge the gap between education and real industry requirements.</p>
@@ -38,10 +38,10 @@
                                     <div class="single-footer sm-custom-border f-link">
                                         <h3>About Us</h3>
                                         <ul>
-                                            <li><a href="{{ route('home') }}">Home</a></li>
-                                            <li><a href="{{ route('about.us') }}">About Us</a></li>
-                                            <li><a href="{{ route('service') }}">Services</a></li>
-                                            <li><a href="{{ route('contact') }}">Contact Us</a></li>
+                                            <li><a href="<?php echo e(route('home')); ?>">Home</a></li>
+                                            <li><a href="<?php echo e(route('about.us')); ?>">About Us</a></li>
+                                            <li><a href="<?php echo e(route('service')); ?>">Services</a></li>
+                                            <li><a href="<?php echo e(route('contact')); ?>">Contact Us</a></li>
                                         </ul>
                                     </div>
                                     <!-- End Single Widget -->
@@ -108,4 +108,4 @@
         <!-- ========================= scroll-top ========================= -->
         <a href="#" class="scroll-top style3 btn-hover" style="display: flex">
             <i class="lni lni-chevron-up"></i>
-        </a>
+        </a><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/web/layouts/elements/footer.blade.php ENDPATH**/ ?>

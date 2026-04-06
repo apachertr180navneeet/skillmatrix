@@ -10,7 +10,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('web.home.index');
+        $plans = SubscriptionPlan::where('status', 'active')
+            ->orderBy('amount', 'asc')
+            ->get();
+        return view('web.home.index', compact('plans'));
     }
 
     public function aboutUs()

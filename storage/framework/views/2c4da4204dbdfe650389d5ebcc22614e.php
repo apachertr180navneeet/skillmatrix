@@ -1,8 +1,8 @@
-@extends('web.layouts.app')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <!-- Start Hero Area -->
     <section id="hero-area" class="hero-area style3">
-        <img src="{{ asset('assets/web/assets/images/startup-shape.png') }}" alt="#" class="custom-shape" />
+        <img src="<?php echo e(asset('assets/web/assets/images/startup-shape.png')); ?>" alt="#" class="custom-shape" />
         <!-- Single Slider -->
         <div class="hero-inner">
             <div class="container">
@@ -66,7 +66,7 @@
                     <div class="col-lg-6 col-12">
                         <div class="hero-image wow fadeInRight" data-wow-delay=".4s"
                             style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInRight">
-                            <img src="{{ asset('assets/web/assets/images/style3.png') }}" alt="#" />
+                            <img src="<?php echo e(asset('assets/web/assets/images/style3.png')); ?>" alt="#" />
                         </div>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                 <div class="col-lg-6 col-12">
                     <div class="right wow fadeInRight" data-wow-delay=".6s"
                         style="visibility: hidden; animation-delay: 0.6s; animation-name: none">
-                        <img src="{{ asset('assets/web/assets/images/img_9.png') }}" alt="#" />
+                        <img src="<?php echo e(asset('assets/web/assets/images/img_9.png')); ?>" alt="#" />
                     </div>
                 </div>
             </div>
@@ -378,7 +378,7 @@
                 <div class="col-lg-6 col-12">
                     <div class="right wow fadeInRight" data-wow-delay=".6s"
                         style="visibility: hidden; animation-delay: 0.6s; animation-name: none">
-                        <img src="{{ asset('assets/web/assets/images/precuresteps.png') }}" alt="#"
+                        <img src="<?php echo e(asset('assets/web/assets/images/precuresteps.png')); ?>" alt="#"
                             class="img-fluid" />
                     </div>
                 </div>
@@ -538,7 +538,7 @@
                                         <div class="single-testimonial tns-item tns-slide-cloned" aria-hidden="true"
                                             tabindex="-1">
                                             <div class="top-section">
-                                                <img src="{{ asset('assets/web/assets/images/testi3.jpg') }}"
+                                                <img src="<?php echo e(asset('assets/web/assets/images/testi3.jpg')); ?>"
                                                     alt="#" />
                                                 <h3>
                                                     Phet Putrie
@@ -555,7 +555,7 @@
                                         <!-- Start Single Testimonial -->
                                         <div class="single-testimonial tns-item tns-slide-active" id="tns1-item0">
                                             <div class="top-section">
-                                                <img src="{{ asset('assets/web/assets/images/testi2.jpg') }}"
+                                                <img src="<?php echo e(asset('assets/web/assets/images/testi2.jpg')); ?>"
                                                     alt="#" />
                                                 <h3>
                                                     Aaron Almaraz
@@ -574,7 +574,7 @@
                                         <div class="single-testimonial tns-item" id="tns1-item1" aria-hidden="true"
                                             tabindex="-1">
                                             <div class="top-section">
-                                                <img src="{{ asset('assets/web/assets/images/testi5.jpg') }}assets/images/testi5.jpg"
+                                                <img src="<?php echo e(asset('assets/web/assets/images/testi5.jpg')); ?>assets/images/testi5.jpg"
                                                     alt="#" />
                                                 <h3>
                                                     Marleah Eagleston
@@ -593,7 +593,7 @@
                                         <div class="single-testimonial tns-item" id="tns1-item2" aria-hidden="true"
                                             tabindex="-1">
                                             <div class="top-section">
-                                                <img src="{{ asset('assets/web/assets/images/testi3.jpg') }}"
+                                                <img src="<?php echo e(asset('assets/web/assets/images/testi3.jpg')); ?>"
                                                     alt="#" />
                                                 <h3>
                                                     Phet Putrie
@@ -611,7 +611,7 @@
                                         <div class="single-testimonial tns-item tns-slide-cloned" aria-hidden="true"
                                             tabindex="-1">
                                             <div class="top-section">
-                                                <img src="{{ asset('assets/web/assets/images/testi2.jpg') }}"
+                                                <img src="<?php echo e(asset('assets/web/assets/images/testi2.jpg')); ?>"
                                                     alt="#" />
                                                 <h3>
                                                     Aaron Almaraz
@@ -657,7 +657,7 @@
                 </div>
             </div>
             <div class="row g-4">
-                @foreach($plans as $plan)
+                <?php $__currentLoopData = $plans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $plan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="col-lg-4 col-md-6 col-12">
                         <!-- Single Table -->
                         <div class="single-table wow fadeInUp" data-wow-delay=".2s"
@@ -665,16 +665,17 @@
                             <!-- Table Head -->
                             <div class="table-head">
                                 <div class="price">
-                                    <p class="amount">₹{{ number_format($plan->amount, 2) }}</p>
+                                    <p class="amount">₹<?php echo e(number_format($plan->amount, 2)); ?></p>
                                 </div>
                                 <div class="title">
-                                    <h4>{{ $plan->plan_name }}</h4>
+                                    <h4><?php echo e($plan->plan_name); ?></h4>
                                 </div>
                             </div>
                             <!-- End Table Head -->
                             <!-- Table List -->
                             <p class="text-center">
-                                {{ $plan->description ?? '-' }}
+                                <?php echo e($plan->description ?? '-'); ?>
+
                             </p>
                             <!-- End Table List -->
                             <!-- Table Bottom -->
@@ -685,7 +686,7 @@
                         </div>
                         <!-- End Single Table-->
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
     </section>
@@ -926,6 +927,8 @@
         </div>
     </section>
     <!--/ End Contact Area -->
-@endsection
-@section('script')
-@endsection
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('web.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/web/home/index.blade.php ENDPATH**/ ?>

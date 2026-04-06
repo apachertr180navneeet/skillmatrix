@@ -1,8 +1,8 @@
-@extends('web.layouts.app')
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <!-- Start Hero Area -->
     <section id="hero-area" class="hero-area style3">
-        <!-- <img src="{{ asset('assets/web/assets/images/startup-shape.png') }}" alt="#" class="custom-shape"> -->
+        <!-- <img src="<?php echo e(asset('assets/web/assets/images/startup-shape.png')); ?>" alt="#" class="custom-shape"> -->
         <!-- Single Slider -->
         <div class="hero-inner hero-inner2">
             <div class="container">
@@ -46,7 +46,7 @@
                 <div class="col-lg-6 col-12">
                     <div class="right wow fadeInRight" data-wow-delay=".6s"
                         style="visibility: hidden; animation-delay: 0.6s; animation-name: none">
-                        <img src="{{ asset('assets/web/assets/images/img_9.png') }}" alt="#" />
+                        <img src="<?php echo e(asset('assets/web/assets/images/img_9.png')); ?>" alt="#" />
                     </div>
                 </div>
             </div>
@@ -260,12 +260,14 @@
                 <div class="col-lg-6 col-12">
                     <div class="right wow fadeInRight" data-wow-delay=".6s"
                         style="visibility: hidden; animation-delay: 0.6s; animation-name: none">
-                        <img src="{{ asset('assets/web/assets/images/img_9.png') }}" alt="#" />
+                        <img src="<?php echo e(asset('assets/web/assets/images/img_9.png')); ?>" alt="#" />
                     </div>
                 </div>
             </div>
         </div>
     </section>
-@endsection
-@section('script')
-@endsection
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('web.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/web/home/about.blade.php ENDPATH**/ ?>
