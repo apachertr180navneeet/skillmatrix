@@ -1,5 +1,5 @@
-@extends('admin.layouts.login_layout') 
-@section('content') 
+ 
+<?php $__env->startSection('content'); ?> 
 
 <div class="authentication-wrapper authentication-basic container-p-y">
     <div class="authentication-inner">
@@ -8,15 +8,15 @@
             <div class="card-body">
                 <!-- Logo -->
                 <div class="app-brand justify-content-center">
-                    <a href="{{ route('home') }}" class="app-brand-link gap-2">
+                    <a href="<?php echo e(route('home')); ?>" class="app-brand-link gap-2">
                         <span class="app-brand-text demo text-body fw-bolder text-capitalize">precureskill</span>
                     </a>
                 </div>
                 <!-- /Logo -->
                 <h4 class="mb-2">Welcome to Admin! 👋</h4>
                 <p class="mb-4">Please sign-in to your admin account</p>
-                <form action="{{ route('company.login.post') }}" id="" class="mb-3" method="POST">
-                    @csrf
+                <form action="<?php echo e(route('company.login.post')); ?>" id="" class="mb-3" method="POST">
+                    <?php echo csrf_field(); ?>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email or Username</label>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email or username" required />
@@ -24,7 +24,7 @@
                     <div class="mb-3 form-password-toggle">
                         <div class="d-flex justify-content-between">
                             <label class="form-label" for="password">Password</label>
-                            <a href="{{route('company.forget.password.get')}}"><small>Forgot Password?</small></a>
+                            <a href="<?php echo e(route('company.forget.password.get')); ?>"><small>Forgot Password?</small></a>
                         </div>
                         <div class="input-group input-group-merge">
                             <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />
@@ -44,7 +44,7 @@
 
                 <p class="text-center">
                     <span>New on our platform?</span>
-                    <a href="{{ route('company.register') }}">
+                    <a href="<?php echo e(route('company.register')); ?>">
                     <span>Create an account</span>
                     </a>
                 </p>
@@ -54,4 +54,6 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.login_layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/admin/auth/login.blade.php ENDPATH**/ ?>

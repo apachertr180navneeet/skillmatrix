@@ -15,11 +15,17 @@ use App\Models\{
     ChecklistQuesAns,
     VedioQuesans,
     SopUserResult,
-    VideoUserResult
+    VideoUserResult,
+    Company,
+    SubscriptionPlan,
+    UserSubscription
 };
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Mail, DB, Hash, Validator, Session, File,Exception;
+
+use Illuminate\Support\Facades\Log;
+
 
 class AdminAuthController extends Controller
 {
@@ -79,6 +85,123 @@ class AdminAuthController extends Controller
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());
+        }
+    }
+
+
+    public function register()
+    {
+        return view("admin.auth.register");
+    }
+
+    public function postRegister(Request $request)
+    {
+        // Validation
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'company_name' => 'required|string|max:100',
+            'email' => 'required|email|unique:companies,email',
+            'mobile' => 'required|digits:10',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:50',
+            'state' => 'required|string|max:50',
+            'country' => 'required|string|max:50',
+            'password' => 'required|confirmed|min:6',
+            'hod_name'  => 'nullable|string|max:100',
+            'hod_email' => 'nullable|email',
+        ], [
+            // Name
+            'name.required' => 'Full name is required',
+            'name.max' => 'Name must not exceed 50 characters',
+
+            // Company
+            'company_name.required' => 'Company name is required',
+            'company_name.max' => 'Company name max 100 characters',
+
+            // Email
+            'email.required' => 'Email is required',
+            'email.email' => 'Enter valid email address',
+            'email.unique' => 'Email already registered',
+
+            // Mobile
+            'mobile.required' => 'Mobile number is required',
+            'mobile.digits' => 'Mobile must be 10 digits',
+
+            // Address
+            'address.required' => 'Address is required',
+
+            // City
+            'city.required' => 'City is required',
+
+            // State
+            'state.required' => 'State is required',
+
+            // Country
+            'country.required' => 'Country is required',
+
+            // Password
+            'password.required' => 'Password is required',
+            'password.min' => 'Password minimum 6 characters',
+            'password.confirmed' => 'Password confirmation does not match',
+        ]);
+        try {
+
+            $data = [
+                'copmany_name' => $request->company_name,
+                'admin_name'   => $request->name,
+                'email'        => $request->email,
+                'phone'        => $request->mobile,
+                'address'      => $request->address,
+                'city'         => $request->city,
+                'state'        => $request->state,
+                'country'      => $request->country,
+                'status'       => 'active',
+            ];
+
+            $company = Company::create($data);
+
+            $companyId = $company->id;
+
+
+            $user = User::create([
+                'full_name'  => $request->name,
+                'email'      => $request->email,
+                'phone'      => $request->mobile,
+                'city'       => $request->city,
+                'hod_name'   => $request->hod_name,
+                'hod_email'  => $request->hod_email,
+                'role'       => 'admin',
+                'company_id' => $companyId ?? 0,
+                'status'     => 'active',
+                'password'   => Hash::make($request->password),
+            ]);
+
+            $planId = 7;
+
+            $plan = SubscriptionPlan::findOrFail($planId);
+
+            UserSubscription::create([
+                'user_id' => $user->id,
+                'company_id' => $user->company_id,
+                'subscription_plan_id' => $plan->id,
+                'start_date' => now(),
+                'end_date' => now()->addDays($plan->duration),
+                'user_count' => 1,
+                'used_users' => 0,
+                'status' => 'active',
+                'is_locked' => '0',
+            ]);
+
+            return redirect()->route('company.login')
+                ->with('success', 'Registered Successfully!');
+
+        } catch (\Exception $e) {
+            dd($e);
+            Log::error('Registration Error: '.$e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Something went wrong! Please try again.');
         }
     }
 
@@ -303,6 +426,32 @@ class AdminAuthController extends Controller
         $videoResultTotal = (clone $videoResultQuery)->count();
         $videoResultPass = (clone $videoResultQuery)->where('result_status', 'pass')->count();
         $videoResultFail = (clone $videoResultQuery)->where('result_status', 'fail')->count();
+        $subscription = UserSubscription::where('status','active')
+            ->where('company_id',$companyId)
+            ->first();
+
+        $remainingDays = 0;
+
+        if ($subscription) {
+
+            $today = Carbon::today();
+            $endDate = Carbon::parse($subscription->end_date);
+
+            // ✅ Expire condition
+            if ($today->gte($endDate)) {
+
+                // Update status to expired
+                $subscription->update([
+                    'status' => 'expired'
+                ]);
+
+                $remainingDays = 0;
+
+            } else {
+                // Remaining days
+                $remainingDays = $today->diffInDays($endDate);
+            }
+        }
 
         return view('admin.dashboard.index', compact(
             'userCount',
@@ -318,7 +467,8 @@ class AdminAuthController extends Controller
             'sopResultFail',
             'videoResultTotal',
             'videoResultPass',
-            'videoResultFail'
+            'videoResultFail',
+            'remainingDays'
         ));
     }
 

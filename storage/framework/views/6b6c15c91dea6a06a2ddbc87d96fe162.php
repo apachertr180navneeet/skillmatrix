@@ -1,6 +1,4 @@
-@extends('admin.layouts.app')
-
-@section('style')
+<?php $__env->startSection('style'); ?>
 <style>
     :root {
         --dashboard-ink: #17324d;
@@ -443,9 +441,9 @@
         border-radius: 10px;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid flex-grow-1 container-p-y">
     <div class="dashboard-shell">
         <div class="dashboard-hero">
@@ -455,28 +453,28 @@
                         <i class="bx bx-shield-quarter"></i>
                         Admin Command Center
                     </span>
-                    <h1 class="hero-title">Welcome back, {{ Auth::user()->full_name }}</h1>
+                    <h1 class="hero-title">Welcome back, <?php echo e(Auth::user()->full_name); ?></h1>
 
-                    @if($remainingDays > 0)
+                    <?php if($remainingDays > 0): ?>
                         <span class="badge bg-success ms-2">
-                            {{ $remainingDays }} days left
+                            <?php echo e($remainingDays); ?> days left
                         </span>
-                    @else
+                    <?php else: ?>
                         <span class="badge bg-danger ms-2">
                             Expired
                         </span>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
                 <div class="hero-metrics">
                     <div class="hero-metric">
                         <span>People</span>
-                        <strong>{{ $userCount }}</strong>
+                        <strong><?php echo e($userCount); ?></strong>
                         <small>Active users in your company</small>
                     </div>
                     <div class="hero-metric">
                         <span>Content</span>
-                        <strong>{{ $sopCount + $checklistCount + $videoCount }}</strong>
+                        <strong><?php echo e($sopCount + $checklistCount + $videoCount); ?></strong>
                         <small>Total active learning modules</small>
                     </div>
                 </div>
@@ -484,7 +482,7 @@
 
             <div class="focus-panel">
                 <div class="focus-label">Today at a glance</div>
-                <div class="focus-number">{{ $sopQuestionCount + $checklistQuestionCount + $videoQuestionCount }}</div>
+                <div class="focus-number"><?php echo e($sopQuestionCount + $checklistQuestionCount + $videoQuestionCount); ?></div>
                 <div class="focus-title">Total Question Bank</div>
                 <p class="focus-text">
                     Your active SOP, checklist, and video modules currently contain this many published question and answer items.
@@ -493,15 +491,15 @@
                 <div class="focus-list">
                     <div class="focus-item">
                         <span>SOP results logged</span>
-                        <strong>{{ $sopResultTotal }}</strong>
+                        <strong><?php echo e($sopResultTotal); ?></strong>
                     </div>
                     <div class="focus-item">
                         <span>Video results logged</span>
-                        <strong>{{ $videoResultTotal }}</strong>
+                        <strong><?php echo e($videoResultTotal); ?></strong>
                     </div>
                     <div class="focus-item">
                         <span>Departments running</span>
-                        <strong>{{ $departmentCount }}</strong>
+                        <strong><?php echo e($departmentCount); ?></strong>
                     </div>
                 </div>
             </div>
@@ -524,7 +522,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>User</h6>
-                            <strong class="stat-number">{{ $userCount }}</strong>
+                            <strong class="stat-number"><?php echo e($userCount); ?></strong>
                             <p>Currently active user accounts inside your company workspace.</p>
                         </div>
                     </div>
@@ -538,7 +536,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>Department</h6>
-                            <strong class="stat-number">{{ $departmentCount }}</strong>
+                            <strong class="stat-number"><?php echo e($departmentCount); ?></strong>
                             <p>Departments enabled and available for assignments.</p>
                         </div>
                     </div>
@@ -552,7 +550,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>SOP</h6>
-                            <strong class="stat-number">{{ $sopCount }}</strong>
+                            <strong class="stat-number"><?php echo e($sopCount); ?></strong>
                             <p>Active SOP modules available to your training program.</p>
                         </div>
                     </div>
@@ -566,7 +564,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>Checklist</h6>
-                            <strong class="stat-number">{{ $checklistCount }}</strong>
+                            <strong class="stat-number"><?php echo e($checklistCount); ?></strong>
                             <p>Active checklist modules being used for step-based reviews.</p>
                         </div>
                     </div>
@@ -580,7 +578,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>Video</h6>
-                            <strong class="stat-number">{{ $videoCount }}</strong>
+                            <strong class="stat-number"><?php echo e($videoCount); ?></strong>
                             <p>Video modules published and marked active for your company.</p>
                         </div>
                     </div>
@@ -594,7 +592,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>SOP Q &amp; A</h6>
-                            <strong class="stat-number">{{ $sopQuestionCount }}</strong>
+                            <strong class="stat-number"><?php echo e($sopQuestionCount); ?></strong>
                             <p>Question records attached to active SOP learning modules.</p>
                         </div>
                     </div>
@@ -608,7 +606,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>Vedio Q &amp; A</h6>
-                            <strong class="stat-number">{{ $videoQuestionCount }}</strong>
+                            <strong class="stat-number"><?php echo e($videoQuestionCount); ?></strong>
                             <p>Question records linked to active video-based assessments.</p>
                         </div>
                     </div>
@@ -622,7 +620,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>Check list Q &amp; A</h6>
-                            <strong class="stat-number">{{ $checklistQuestionCount }}</strong>
+                            <strong class="stat-number"><?php echo e($checklistQuestionCount); ?></strong>
                             <p>Question records mapped to active checklist modules.</p>
                         </div>
                     </div>
@@ -636,7 +634,7 @@
                         </div>
                         <div class="stat-content">
                             <h6>Result</h6>
-                            <strong class="stat-number">{{ $sopResultTotal + $videoResultTotal }}</strong>
+                            <strong class="stat-number"><?php echo e($sopResultTotal + $videoResultTotal); ?></strong>
                             <p>Total assessment results collected from SOP and video modules.</p>
                         </div>
                     </div>
@@ -645,4 +643,6 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\laravel_project\skillmatrixl10\resources\views/admin/dashboard/index.blade.php ENDPATH**/ ?>

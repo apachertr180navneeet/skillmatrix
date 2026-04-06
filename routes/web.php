@@ -147,6 +147,10 @@ Route::prefix('company')
     Route::get('login', 'login')->name('login');
     Route::post('login', 'postLogin')->name('login.post');
 
+    /*================== Register ==============*/
+    Route::get('register', 'register')->name('register');
+    Route::post('register', 'postRegister')->name('register.post');
+
     /* ================= PASSWORD ================= */
     Route::get('forget-password', 'showForgetPasswordForm')->name('forget.password.get');
     Route::post('forget-password', 'submitForgetPasswordForm')->name('forget.password.post');
