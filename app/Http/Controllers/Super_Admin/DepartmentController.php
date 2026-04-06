@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Super_Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Department;
+use App\Models\MasterDepartment;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,12 +26,79 @@ class DepartmentController extends Controller
      */
     public function getall(Request $request)
     {
-        $departments = Department::with(['company'])
-           ->latest()
+        $departments = MasterDepartment::latest()
            ->get();
 
         return response()->json([
             'data' => $departments,
         ]);
+    }
+
+    /**
+     * Store new subscription plan.
+     */
+    public function store(Request $request)
+    {
+        $rules = [
+            'name' => 'required|string|max:191|unique:master_departments,name,NULL,id,deleted_at,NULL',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        MasterDepartment::create([
+            'name'   => $request->name,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Department saved successfully!',
+        ]);
+    }
+
+    /**
+     * Update status (active / inactive).
+     */
+    public function status(Request $request)
+    {
+        try {
+            $plan = MasterDepartment::findOrFail($request->id);
+            $plan->status = $request->status;
+            $plan->save();
+
+            return response()->json(['success' => true]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+
+     /**
+     * Delete departments plan (Soft Delete).
+     */
+    public function destroy($id)
+    {
+        try {
+            MasterDepartment::where('id', $id)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Subscription plan deleted successfully',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }
