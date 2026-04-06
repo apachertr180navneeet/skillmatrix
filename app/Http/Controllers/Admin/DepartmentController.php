@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Department;
+use App\Models\{
+    Department,
+    MasterDepartment
+    };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
@@ -15,7 +18,17 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        return view('admin.department.index');
+        $companyId = auth()->user()->company_id;
+
+        $departments = MasterDepartment::where('status', 'active')
+            ->latest()
+            ->get();
+
+        $departmentcompany = Department::where('company_id', $companyId)
+            ->pluck('department_name') // 👈 important (only ids)
+            ->toArray();
+
+        return view('admin.department.index', compact('departments', 'departmentcompany'));
     }
 
     /**
@@ -61,6 +74,28 @@ class DepartmentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Department added successfully!'
+        ]);
+    }
+
+    public function saveChecklist(Request $request)
+    {
+        $request->validate([
+            'departments' => 'required|array'
+        ]);
+
+
+        // Example: Save in DB (customize as per your table)
+        foreach ($request->departments as $deptId) {
+            Department::create([
+                'company_id'      => auth()->user()->company_id,
+                'department_name' => $deptId,
+                'status'          => 1,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Checklist saved successfully'
         ]);
     }
 

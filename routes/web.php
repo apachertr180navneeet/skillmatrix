@@ -198,6 +198,7 @@ Route::prefix('company')
                     Route::delete('delete/{id}', 'destroy')->name('delete');
                     Route::post('bulk-delete', 'bulkDelete')->name('bulkDelete');
                     Route::post('bulk-status', 'bulkStatus')->name('bulkStatus');
+                    Route::post('checklist/save', 'saveChecklist')->name('checklist.save');
                 });
 
             /* ================= USERS ================= */
