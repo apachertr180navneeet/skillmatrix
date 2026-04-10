@@ -193,6 +193,43 @@ $(document).ready(function () {
 
     });
 
+    $(document).on('click', '.editBtn', function () {
+        editDepartment($(this).data('id'));
+    });
+
+    $('#UpdateDepartment').click(function () {
+        $('.error-text').text('');
+
+        $.ajax({
+            url: "{{ route('super.admin.departments.update') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: $('#edit_id').val(),
+                name: $('#edit_name').val(),
+            },
+            success: function (res) {
+                if (res.success) {
+                    $('#editModal').modal('hide');
+                    table.ajax.reload();
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: res.message
+                    });
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    if (errors.name) {
+                        $('.edit_name_error').text(errors.name[0]);
+                    }
+                }
+            }
+        });
+    });
+
     $(document).on('change', '.changeStatus', function () {
         $.post("{{ route('super.admin.departments.status') }}", {
             _token: "{{ csrf_token() }}",

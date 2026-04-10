@@ -101,4 +101,51 @@ class DepartmentController extends Controller
             ]);
         }
     }
+
+    /**
+     * Fetch single department
+     */
+    public function get($id)
+    {
+        $department = MasterDepartment::findOrFail($id);
+
+        return response()->json($department);
+    }
+
+    /**
+     * Update department
+     */
+    public function update(Request $request)
+    {
+        $rules = [
+            'id'   => 'required|exists:master_departments,id',
+            'name' => [
+                'required',
+                'string',
+                'max:191',
+                Rule::unique('master_departments', 'name')
+                    ->ignore($request->id)
+                    ->whereNull('deleted_at'),
+            ],
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        $department = MasterDepartment::findOrFail($request->id);
+        $department->update([
+            'name' => $request->name,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Department updated successfully!',
+        ]);
+    }
 }
