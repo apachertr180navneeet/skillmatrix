@@ -42,6 +42,8 @@
                     <tr>
                         <th>Used / Total</th>
                         <th>Remaining</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -50,6 +52,8 @@
                         <tr>
                             <td>{{ $sub->used_users }} / {{ $sub->user_count }}</td>
                             <td>{{ $sub->user_count - $sub->used_users }}</td>
+                            <td>{{ $sub->start_date ? \Carbon\Carbon::parse($sub->start_date)->format('d/m/Y') : '-' }}</td>
+                            <td>{{ $sub->end_date ? \Carbon\Carbon::parse($sub->end_date)->format('d/m/Y') : '-' }}</td>
                             <td>
                                 @if($sub->is_locked)
                                     <span class="badge bg-danger">Locked</span>

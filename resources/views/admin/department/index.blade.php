@@ -151,6 +151,9 @@
 @section('script')
 <script>
     $(document).ready(function () {
+        const masterDepartmentNames = @json(
+            collect($departments ?? [])->pluck('name')->map(fn ($name) => strtolower(trim($name)))->values()
+        );
 
         const table = $('#departmentTable').DataTable({
             processing: true,
@@ -180,9 +183,17 @@
                 },
                 {
                     data: 'id',
-                    render: function (id) {
+                    render: function (id, type, row) {
+                        const isMasterDepartment = masterDepartmentNames.includes(
+                            String(row.department_name || '').trim().toLowerCase()
+                        );
+
+                        const editButton = isMasterDepartment
+                            ? `<button class="btn btn-sm btn-secondary" disabled title="Master department cannot be edited">Edit</button>`
+                            : `<button class="btn btn-sm btn-warning" onclick="editDepartment(${id})">Edit</button>`;
+
                         return `
-                            <button class="btn btn-sm btn-warning" onclick="editDepartment(${id})">Edit</button>
+                            ${editButton}
                             <button class="btn btn-sm btn-danger" onclick="deleteDepartment(${id})">Delete</button>
                         `;
                     }

@@ -58,6 +58,15 @@ class DepartmentController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
+        $validator->after(function ($validator) use ($request) {
+            $existsInMaster = MasterDepartment::whereRaw('LOWER(name) = ?', [strtolower(trim($request->department_name))])
+                ->exists();
+
+            if ($existsInMaster) {
+                $validator->errors()->add('department_name', 'Department already exists in master departments.');
+            }
+        });
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -83,19 +92,37 @@ class DepartmentController extends Controller
             'departments' => 'required|array'
         ]);
 
+        $companyId = auth()->user()->company_id;
 
-        // Example: Save in DB (customize as per your table)
-        foreach ($request->departments as $deptId) {
+        // Remove duplicates from request itself
+        $requestedDepartments = collect($request->departments)
+            ->filter(fn ($name) => !empty($name))
+            ->unique()
+            ->values();
+
+        // Fetch already-added department names for this company
+        $existingDepartments = Department::where('company_id', $companyId)
+            ->pluck('department_name')
+            ->toArray();
+
+        // Keep only new department names that are not already present
+        $newDepartments = $requestedDepartments
+            ->reject(fn ($name) => in_array($name, $existingDepartments))
+            ->values();
+
+        foreach ($newDepartments as $departmentName) {
             Department::create([
-                'company_id'      => auth()->user()->company_id,
-                'department_name' => $deptId,
-                'status'          => 1,
+                'company_id'      => $companyId,
+                'department_name' => $departmentName,
+                'status'          => 'active',
             ]);
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Checklist saved successfully'
+            'message' => $newDepartments->count() > 0
+                ? 'Checklist saved successfully'
+                : 'All selected departments are already added for this company'
         ]);
     }
 
@@ -116,6 +143,24 @@ class DepartmentController extends Controller
      */
     public function update(Request $request)
     {
+        $department = Department::where('id', $request->id)
+            ->where('company_id', auth()->user()->company_id)
+            ->firstOrFail();
+
+        $isMasterMappedDepartment = MasterDepartment::whereRaw(
+            'LOWER(name) = ?',
+            [strtolower(trim($department->department_name))]
+        )->exists();
+
+        if ($isMasterMappedDepartment) {
+            return response()->json([
+                'success' => false,
+                'errors'  => [
+                    'department_name' => ['Master department cannot be edited.']
+                ],
+            ], 422);
+        }
+
         $rules = [
             'id'              => 'required|exists:departments,id',
             'department_name' => 'required|string|max:255|unique:departments,department_name,' .
@@ -124,16 +169,21 @@ class DepartmentController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
+        $validator->after(function ($validator) use ($request) {
+            $existsInMaster = MasterDepartment::whereRaw('LOWER(name) = ?', [strtolower(trim($request->department_name))])
+                ->exists();
+
+            if ($existsInMaster) {
+                $validator->errors()->add('department_name', 'Department already exists in master departments.');
+            }
+        });
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors'  => $validator->errors(),
             ], 422);
         }
-
-        $department = Department::where('id', $request->id)
-            ->where('company_id', auth()->user()->company_id)
-            ->firstOrFail();
 
         $department->update([
             'department_name' => $request->department_name,
