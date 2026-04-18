@@ -16,11 +16,7 @@
 			<div class="nav-item d-flex align-items-center text-primary">
 				<i class="bx bx-calendar fs-4 lh-0"></i>&nbsp;
 				<span>
-					{{ date('D') }} {{ date('d M Y') }}
-					&nbsp;&nbsp;&nbsp;&nbsp;
 					User Name :- {{ Auth::user()->full_name }}
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					Department :- {{ $user->department->department_name ?? '' }}
 				</span>
 			</div>
 		</div>

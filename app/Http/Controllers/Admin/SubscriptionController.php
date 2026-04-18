@@ -20,8 +20,11 @@ class SubscriptionController extends Controller
         $companyId = auth()->user()->company_id;
 
         $subcriptions = SubscriptionPlan::where('status', 'active')->get();
+        
+        $userid = auth()->user()->id;
 
         $currentsubscriptions = UserSubscription::where('company_id', $companyId)
+            ->where('user_id', $userid)
             ->where('status', 'active')
             ->get();
             

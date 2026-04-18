@@ -24,7 +24,7 @@ class AdminMiddleware
                 return redirect()->back();
             }
         }else{
-            return redirect()->route('super.admin.login');
+            return redirect()->route('frontend.home');
         }
     }
 }
