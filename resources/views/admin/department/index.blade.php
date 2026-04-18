@@ -61,7 +61,7 @@
                         <!-- ✅ Submit Button -->
                         <div class="mt-3 text-end">
                             <button class="btn btn-success" id="saveChecklist">
-                                Save Checklist
+                                Save Default Department
                             </button>
                         </div>
                     @else

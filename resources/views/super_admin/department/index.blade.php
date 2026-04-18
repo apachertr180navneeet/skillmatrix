@@ -16,7 +16,7 @@
         <div class="col-md-6 text-end">
             <div class="col-md-6 text-end">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                    Add Plan
+                    Add Department
                 </button>
             </div>
         </div>

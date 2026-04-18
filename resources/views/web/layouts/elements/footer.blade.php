@@ -7,7 +7,7 @@
                             <!-- Single Widget -->
                             <div class="f-about single-footer">
                                 <div class="logo">
-                                    <a href="index.html"
+                                    <a href="{{ route('home') }}"
                                         ><img src="{{ asset('assets/web/assets/images/logo/precure-skill3-white.svg') }}" alt="Logo"
                                     /></a>
                                 </div>

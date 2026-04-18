@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="button wow fadeInUp" data-wow-delay="1s"
                                     style="visibility: visible; animation-delay: 0.9s; animation-name: fadeInUp">
-                                    <a href="#" class="btn"> View Training Plans </a>
+                                    <a href="{{ route('plan') }}" class="btn"> View Training Plans </a>
                                 </div>
                             </div>
                         </div>
@@ -100,7 +100,7 @@
                         </div>
                         <p>We don't just train employees — We build complete organizational training ecosystems.</p>
                         <div class="button style3">
-                            <a href="#" class="btn">Read More</a>
+                            <a href="{{ route('about.us') }}" class="btn">Read More</a>
                         </div>
                     </div>
                 </div>
@@ -814,7 +814,7 @@
                         </p>
                         <div class="button style3 wow fadeInUp" data-wow-delay=".6s"
                             style="visibility: hidden; animation-delay: 0.6s; animation-name: none">
-                            <a href="contact-us.html" class="btn">Get Started</a>
+                            <a href="{{ route('contact') }}" class="btn">Get Started</a>
                         </div>
                     </div>
                 </div>
