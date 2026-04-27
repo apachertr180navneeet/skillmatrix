@@ -41,6 +41,9 @@
                                             <li><a href="{{ route('home') }}">Home</a></li>
                                             <li><a href="{{ route('about.us') }}">About Us</a></li>
                                             <li><a href="{{ route('service') }}">Services</a></li>
+                                            <li><a href="{{ route('term.and.conditions') }}">Term And Conditions</a></li>
+                                            <li><a href="{{ route('privacy.policy') }}">Privacy Policy</a></li>
+                                            <li><a href="{{ route('refund.cancellation') }}">Refund & Cancellation</a></li>
                                             <li><a href="{{ route('contact') }}">Contact Us</a></li>
                                         </ul>
                                     </div>

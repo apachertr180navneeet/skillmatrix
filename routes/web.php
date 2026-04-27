@@ -63,7 +63,9 @@ Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('about.us');
 Route::get('/service', [HomeController::class, 'service'])->name('service');
 Route::get('/plan', [HomeController::class, 'plan'])->name('plan');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-
+Route::get('/term-and-conditions', [HomeController::class, 'termAndConditions'])->name('term.and.conditions');
+Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy.policy');
+Route::get('/refund-cancellation', [HomeController::class, 'refundCancellation'])->name('refund.cancellation');
 /*
 |--------------------------------------------------------------------------
 | Supper Admin Routes

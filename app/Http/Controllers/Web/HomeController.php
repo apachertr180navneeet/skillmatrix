@@ -40,4 +40,19 @@ class HomeController extends Controller
     {
         return view('web.home.contact');
     }
+
+    public function termAndConditions()
+    {
+        return view('web.home.terms-condition');
+    }
+
+    public function privacyPolicy()
+    {
+        return view('web.home.privacy-policy');
+    }
+
+    public function refundCancellation()
+    {
+        return view('web.home.refund-cancellation');
+    }
 }
