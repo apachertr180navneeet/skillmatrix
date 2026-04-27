@@ -1,0 +1,1 @@
+<?php /**PATH /opt/bitnami/apache/htdocs/resources/views/super_admin/layouts/elements/right_sidebar.blade.php ENDPATH**/ ?>
