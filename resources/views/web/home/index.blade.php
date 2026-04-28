@@ -85,7 +85,9 @@
                         <div class="icon">
                             <i class="lni lni-grid-alt"></i>
                         </div>
-                        <h2>ABOUT PRECURESKILL <br>(A Unit of SYSTEM POLYGON PRIVATE LIMITED)</h2>
+                        <h3>ABOUT PRECURESKILL </h3>
+                        <h5 class="mb-5">(A Unit of SYSTEM POLYGON PRIVATE LIMITED)</h5>
+
                         <h5>Building Strong Industries Main Power Through Structured Training</h5>
                         <p>
                             Precureskill is a professional industrial training platform designed to bridge the gap
