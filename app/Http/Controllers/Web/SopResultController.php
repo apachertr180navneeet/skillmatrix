@@ -50,10 +50,12 @@ class SopResultController extends Controller
             ->whereNotNull('answere')
             ->get();
 
+
         // ---------------- FETCH QUESTION DETAILS ----------------
         $questionIds = $answeredQuestions->pluck('ques_id');
-
+        
         $sopQuestions = SopQuesAns::whereIn('id', $questionIds)->get()->keyBy('id');
+        
 
         // ---------------- BUILD QUESTION LIST FOR UI ----------------
         $questions = $answeredQuestions->map(function ($answer) use ($sopQuestions) {

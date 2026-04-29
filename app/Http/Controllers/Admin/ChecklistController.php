@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\{
     Checklist,
     Department,
+    ChecklistQuesAns,
+    ChecklistUserQuesAns,
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -231,6 +233,15 @@ class ChecklistController extends Controller
         try {
             $checklist = Checklist::where('id', $id)
                 ->firstOrFail();
+
+            // Check if any user has given answers for this Checklist
+            $hasAnswers = ChecklistUserQuesAns::where('checklist_id', $id)->exists();
+            if ($hasAnswers) {
+                return redirect()->back()->with('error', 'Cannot delete Checklist. Users have already submitted answers for this Checklist.');
+            }
+
+            // Delete related ChecklistQuesAns, ChecklistUserQuesAns, ChecklistUserResult
+            ChecklistQuesAns::where('checklist_id', $id)->delete();
 
             $checklist->delete(); // SOFT DELETE
 

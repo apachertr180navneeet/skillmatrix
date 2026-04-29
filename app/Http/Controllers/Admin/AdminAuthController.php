@@ -234,7 +234,7 @@ class AdminAuthController extends Controller
                 "created_at" => Carbon::now(),
             ]);
 
-            $new_link_token = url("super-admin/reset-password/" . $token);
+            $new_link_token = url("company/reset-password/" . $token);
             Mail::send("admin.email.forgot-password",["token" => $new_link_token, "email" => $request->email],
                 function ($message) use ($request) {
                     $message->to($request->email);
@@ -280,7 +280,7 @@ class AdminAuthController extends Controller
 
             DB::table("password_resets")->where(["email" => $request->email])->delete();
 
-            return redirect()->route("admin.login")->with("success","Your password has been changed successfully!");
+            return redirect()->route("company.login")->with("success","Your password has been changed successfully!");
         }
         catch(Exception $e){
             return back()->with("error",$e->getMessage());

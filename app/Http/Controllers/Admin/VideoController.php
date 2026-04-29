@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\{
     Video,
     Department,
+    VedioQuesans,
+     VideoUserQuesAns,
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -286,6 +288,15 @@ class VideoController extends Controller
             $video = Video::where('id', $id)
                 ->firstOrFail();
 
+            // Check if any user has given answers for this Video
+            $hasAnswers = VideoUserQuesAns::where('vedio_id', $id)->exists();
+            if ($hasAnswers) {
+                return redirect()->back()->with('error', 'Cannot delete Video. Users have already submitted answers for this Video.');
+            }
+
+            // Delete related VedioQuesans, VideoUserQuesAns, VideoUserResult
+            VedioQuesans::where('vedio_id', $id)->delete();
+            
             $video->delete(); // SOFT DELETE
 
             return redirect()->back()

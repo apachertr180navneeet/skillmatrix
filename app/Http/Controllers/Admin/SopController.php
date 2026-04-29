@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Sop;
+use App\Models\SopUserQuesAns;
+use App\Models\SopQuesAns;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -219,6 +221,16 @@ class SopController extends Controller
     {
         try {
             $sop = Sop::where('id', $id)->firstOrFail();
+
+            // Check if any user has given answers for this SOP
+            $hasAnswers = SopUserQuesAns::where('sop_id', $id)->exists();
+            if ($hasAnswers) {
+                return redirect()->back()->with('error', 'Cannot delete SOP. Users have already submitted answers for this SOP.');
+            }
+
+            // Delete related SopQuesAns, SopUserQuesAns, SopUserResult
+            SopQuesAns::where('sop_id', $id)->delete();
+
             $sop->delete();
 
             return redirect()->back()->with('success', 'SOP deleted successfully.');
