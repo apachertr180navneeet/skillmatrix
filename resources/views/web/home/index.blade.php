@@ -806,8 +806,7 @@
             <div class="row">
                 <div class="col-lg-8 offset-lg-2 col-md-12 col-12">
                     <div class="inner-content">
-                        <h2 class="wow fadeInUp" data-wow-delay=".2s"
-                            style="visibility: hidden; animation-delay: 0.2s; animation-name: none">
+                        <h2 class="wow fadeInUp" data-wow-delay=".2s" style="visibility: hidden; animation-delay: 0.2s; animation-name: none">
                             Ready to Build a Skilled & <br />Efficient Workforce?
                         </h2>
                         <p class="wow fadeInUp" data-wow-delay=".4s"

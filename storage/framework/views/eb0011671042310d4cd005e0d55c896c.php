@@ -85,7 +85,9 @@
                         <div class="icon">
                             <i class="lni lni-grid-alt"></i>
                         </div>
-                        <h2>ABOUT PRECURESKILL <br>(A Unit of System Polygon)</h2>
+                        <h3>ABOUT PRECURESKILL </h3>
+                        <h5 class="mb-5">(A Unit of SYSTEM POLYGON PRIVATE LIMITED)</h5>
+
                         <h5>Building Strong Industries Main Power Through Structured Training</h5>
                         <p>
                             Precureskill is a professional industrial training platform designed to bridge the gap
@@ -397,7 +399,7 @@
                             best</span>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s"
                             style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp">
-                            Why Choose Precureskills??
+                            Why Choose Precureskill?
                         </h2>
                         <p class="wow fadeInUp" data-wow-delay=".6s"
                             style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInUp">
@@ -915,7 +917,7 @@
                                         <i class="lni lni-envelope"></i>
                                         <ul>
                                             <li><span>Mail Us</span></li>
-                                            <li><a href="mailto:info@syspoly.com">info@syspoly.com</a></li>
+                                            <li><a href="mailto:precureskill@gmail.com">precureskill@gmail.com</a></li>
                                         </ul>
                                     </div>
                                 </div>
