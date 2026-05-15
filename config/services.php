@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'payu' => [
+        'key' => env('PAYU_MERCHANT_KEY'),
+        'salt' => env('PAYU_MERCHANT_SALT'),
+        'env' => env('PAYU_ENV', 'test'),
+    ],
+
 ];

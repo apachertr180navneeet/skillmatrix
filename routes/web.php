@@ -164,6 +164,9 @@ Route::prefix('company')
     | ADMIN AUTH PROTECTED
     |--------------------------------------------------------------------------
     */
+    Route::post('subscription/success', [SubscriptionController::class, 'paymentSuccess'])->name('subscription.success');
+    Route::post('subscription/failure', [SubscriptionController::class, 'paymentFailure'])->name('subscription.failure');
+
     Route::middleware('admin')->group(function () {
 
         /* ===== ALLOWED WITHOUT SUBSCRIPTION ===== */
@@ -353,9 +356,7 @@ Route::prefix('user')
             Route::get('/checklist-results/{id}/view', [WebChecklistResultController::class, 'view'])->name('checklist.result.view');
         });
     });
-
-
-    Route::prefix('sop-results')->name('sop.result.')->controller(AdminSopResultController::class)->group(function () {
+ Route::prefix('sop-results')->name('sop.result.')->controller(AdminSopResultController::class)->group(function () {
                 /* ================= SOP Results ================= */
                 Route::get('/','index')->name('index');
                 Route::get('/{id}/view','view')->name('view');

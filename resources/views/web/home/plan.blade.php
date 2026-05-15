@@ -74,7 +74,7 @@
 
                         <!-- Button -->
                         <div class="button text-center mt-3">
-                            <a class="btn" href="#">
+                            <a class="btn" href="{{ auth()->check() ? route('company.subscription') : route('company.login') }}">
                                 Choose Plan <i class="lni lni-arrow-right"></i>
                             </a>
                         </div>

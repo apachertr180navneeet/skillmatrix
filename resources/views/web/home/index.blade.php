@@ -681,7 +681,7 @@
                             <!-- End Table List -->
                             <!-- Table Bottom -->
                             <div class="button">
-                                <a class="btn" href="#">Choose Plan <i class="lni lni-arrow-right"></i></a>
+                                <a class="btn" href="{{ auth()->check() ? route('company.subscription') : route('company.login') }}">Choose Plan <i class="lni lni-arrow-right"></i></a>
                             </div>
                             <!-- End Table Bottom -->
                         </div>
