@@ -190,15 +190,15 @@ class UserController extends Controller
             ]);
         }
 
-        /* =====================================================
-        🔒 LOCK CHECK (ENUM: 0 = false, 1 = true)
-        ===================================================== */
-        if ($user->is_locked == 1) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This user is locked and cannot be updated.'
-            ]);
-        }
+        // /* =====================================================
+        // 🔒 LOCK CHECK (ENUM: 0 = false, 1 = true)
+        // ===================================================== */
+        // if ($user->is_locked == 1) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'This user is locked and cannot be updated.'
+        //     ]);
+        // }
 
         /* =====================================================
         UPDATE DATA (only if unlocked)
@@ -210,6 +210,7 @@ class UserController extends Controller
             'hod_email'     => $request->hod_email,
             'phone'         => $request->phone,
             'user_subscription_id'=> $userSubscription->id,
+            'user_plan_id'        => $request->user_plan_id,
             'is_locked'    => 1, // 1 = locked
         ];
 
@@ -217,11 +218,16 @@ class UserController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
+        $oldSubscriptionId = $user->user_subscription_id;
+
         $user->update($data);
 
         /* =====================================================
-        STEP 4: CONSUME SEAT
+        STEP 4: RELEASE OLD SEAT, CONSUME NEW SEAT
         ===================================================== */
+        if ($oldSubscriptionId && $oldSubscriptionId != $userSubscription->id) {
+            UserSubscription::where('id', $oldSubscriptionId)->decrement('used_users');
+        }
         $userSubscription->increment('used_users');
 
         return response()->json([
@@ -255,13 +261,13 @@ class UserController extends Controller
             ], 404);
         }
 
-        // 🔒 LOCK CHECK (0 = false, 1 = true)
-        if ($user->is_locked == 1) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This user is locked and cannot be deleted or reassigned.'
-            ], 422);
-        }
+        // // 🔒 LOCK CHECK (0 = false, 1 = true)
+        // if ($user->is_locked == 1) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'This user is locked and cannot be deleted or reassigned.'
+        //     ], 422);
+        // }
 
         // ❌ Delete allowed only if NOT locked
         $user->delete();

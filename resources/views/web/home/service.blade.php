@@ -83,7 +83,7 @@
                         <p>Through this analysis, we create a clear roadmap for employee development.</p>
                     </div>
 
-                    <button class="read-btn">Less</button>
+                    
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-12 my-4">
@@ -112,7 +112,7 @@
                         </p>
                     </div>
 
-                    <button class="read-btn">Less</button>
+                    
                 </div>
             </div>
 
@@ -138,7 +138,7 @@
                         </p>
                     </div>
 
-                    <button class="read-btn">Less</button>
+                    
                 </div>
             </div>
 
@@ -166,7 +166,7 @@
                         <p>This ensures that training results are measurable and aligned with business goals.</p>
                     </div>
 
-                    <button class="read-btn">Less</button>
+                    
                 </div>
             </div>
 
@@ -194,7 +194,7 @@
                         <p>This creates a sustainable system where employees keep improving over time.</p>
                     </div>
 
-                    <button class="read-btn">Less</button>
+                    
                 </div>
             </div>
         </div>

@@ -72,38 +72,49 @@
         <script src="{{ asset('assets/web/assets/js/isotope.min.js') }}"></script>
         <script src="{{ asset('assets/web/assets/js/main.js') }}"></script>
         <script type="text/javascript">
-            //========= glightbox
-            GLightbox({
-                href: "https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM",
-                type: "video",
-                source: "youtube", //vimeo, youtube or local
-                width: 900,
-                autoplayVideos: true,
-            });
+            try {
+                //========= glightbox
+                GLightbox({
+                    href: "https://www.youtube.com/watch?v=r44RKWyfcFw&fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM",
+                    type: "video",
+                    source: "youtube", //vimeo, youtube or local
+                    width: 900,
+                    autoplayVideos: true,
+                });
+            } catch (error) {
+                console.error("GLightbox initialization failed:", error);
+            }
 
-            //======== Testimonial Slider
-            var slider = new tns({
-                container: ".testimonial-slider",
-                slideBy: "page",
-                autoplay: false,
-                mouseDrag: true,
-                gutter: 0,
-                items: 1,
-                nav: true,
-                controls: false,
-                controlsText: ['<i class="lni lni-arrow-left prev"></i>', '<i class="lni lni-arrow-right next"></i>'],
-                responsive: {
-                    1200: {
+            try {
+                //======== Testimonial Slider
+                if (document.querySelector(".testimonial-slider")) {
+                    var slider = tns({
+                        container: ".testimonial-slider",
+                        slideBy: "page",
+                        autoplay: true,
+                        autoplayButtonOutput: false,
+                        mouseDrag: true,
+                        gutter: 0,
                         items: 1,
-                    },
-                    992: {
-                        items: 1,
-                    },
-                    0: {
-                        items: 1,
-                    },
-                },
-            });
+                        nav: true,
+                        controls: false,
+                        controlsText: ['<i class="lni lni-arrow-left prev"></i>', '<i class="lni lni-arrow-right next"></i>'],
+                        responsive: {
+                            1200: {
+                                items: 1,
+                            },
+                            992: {
+                                items: 1,
+                            },
+                            0: {
+                                items: 1,
+                            },
+                        },
+                    });
+                }
+            } catch (error) {
+                console.error("Testimonial Slider initialization failed:", error);
+            }
         </script>
         @yield('script')
     </body>

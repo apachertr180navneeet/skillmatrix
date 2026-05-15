@@ -36,6 +36,7 @@
                     <h2 class="wow fadeInUp" data-wow-delay=".4s">
                         Choose Your Plan
                     </h2>
+                    <p class="mb-1" style="color: red; font-weight: bold;">After Login you can buy subscription</p>
                     <p class="wow fadeInUp" data-wow-delay=".6s">
                         Select the training solution that best fits your organization's needs and start building a
                         skilled, efficient workforce.
