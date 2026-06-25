@@ -35,7 +35,7 @@ class DepartmentController extends Controller
     }
 
     /**
-     * Store new subscription plan.
+     * Store new department.
      */
     public function store(Request $request)
     {
@@ -92,7 +92,7 @@ class DepartmentController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Subscription plan deleted successfully',
+                'message' => 'Department deleted successfully',
             ]);
         } catch (Exception $e) {
             return response()->json([

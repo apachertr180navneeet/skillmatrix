@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('admin_email')->nullable();
-            $table->string('payment_gatway_key')->nullable();
             $table->timestamps();
         });
     }

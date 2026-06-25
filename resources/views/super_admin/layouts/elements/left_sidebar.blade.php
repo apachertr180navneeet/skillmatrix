@@ -27,8 +27,6 @@
 			['route' => 'super.admin.sop.index', 'text' => 'SOP Management', 'icon' => 'bx-file'],
 			['route' => 'super.admin.checklist.index', 'text' => 'Checklist Management', 'icon' => 'bx-list-check'],
 			['route' => 'super.admin.video.index', 'text' => 'Video Management', 'icon' => 'bx-video'],
-			['route' => 'super.admin.payment.index', 'text' => 'Payment Management', 'icon' => 'bx-credit-card'],
-			['route' => 'super.admin.subscriptionPlan.index', 'text' => 'Subscription Management', 'icon' => 'bx-package'],
 			['route' => 'super.admin.cms.index', 'text' => 'CMS Management', 'icon' => 'bx-book-content'],
 			['route' => 'super.admin.setting.index', 'text' => 'Settings', 'icon' => 'bx-cog'],
 		] as $mastermenu)

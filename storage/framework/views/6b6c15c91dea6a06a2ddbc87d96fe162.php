@@ -454,16 +454,6 @@
                         Admin Command Center
                     </span>
                     <h1 class="hero-title">Welcome back, <?php echo e(Auth::user()->full_name); ?></h1>
-
-                    <?php if($remainingDays > 0): ?>
-                        <span class="badge bg-success ms-2">
-                            <?php echo e($remainingDays); ?> days left
-                        </span>
-                    <?php else: ?>
-                        <span class="badge bg-danger ms-2">
-                            Expired
-                        </span>
-                    <?php endif; ?>
                 </div>
 
                 <div class="hero-metrics">

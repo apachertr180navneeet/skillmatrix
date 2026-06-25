@@ -9,7 +9,7 @@
                 <!-- Logo -->
                 <div class="app-brand justify-content-center">
                     <a href="{{ route('home') }}" class="app-brand-link gap-2">
-                        <span class="app-brand-text demo text-body fw-bolder text-capitalize">precureskill</span>
+                        <span class="app-brand-text demo text-body fw-bolder text-capitalize">Training CRM</span>
                     </a>
                 </div>
                 <!-- /Logo -->

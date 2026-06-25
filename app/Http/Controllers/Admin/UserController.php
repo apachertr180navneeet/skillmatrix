@@ -3,11 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{
-    User,
-    SubscriptionPlan,
-    UserSubscription,
-};
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -17,25 +13,14 @@ class UserController extends Controller
 {
     public function index()
     {
-        $companyId = auth()->user()->company_id;
-
-        $userid = auth()->user()->id;
-
-        $userSubscriptions = UserSubscription::with('plan')
-            ->where('company_id', $companyId)
-            ->where('user_id', $userid)
-            ->where('status', 'active')
-            ->get();
-
-
-        return view('admin.user.index', compact('userSubscriptions'));
+        return view('admin.user.index');
     }
 
     public function getall()
     {
         $companyId = auth()->user()->company_id;
 
-        $users = User::with('department', 'usersubscription.plan')
+        $users = User::with('department')
         ->where('users.company_id', $companyId)
         ->where('users.role', 'user')
         ->latest('users.created_at')
@@ -48,27 +33,6 @@ class UserController extends Controller
     {
         $companyId = auth()->user()->company_id;
 
-        /* =====================================================
-        STEP 1: GET FIRST AVAILABLE SUBSCRIPTION (FIFO)
-        ===================================================== */
-        $userSubscription = UserSubscription::where('company_id', $companyId)
-            ->where('id', $request->user_plan_id)
-            ->where('status', 'active')
-            ->where('is_locked', '0') // 0 = unlocked
-            ->whereColumn('used_users', '<', 'user_count')
-            ->first();
-
-
-        if (!$userSubscription) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No available user seats. Please buy more users.'
-            ]);
-        }
-
-        /* =====================================================
-        STEP 2: VALIDATION
-        ===================================================== */
         $rules = [
             'name'          => 'required|string|max:255',
             'department_id' => 'required|exists:departments,id',
@@ -76,7 +40,6 @@ class UserController extends Controller
             'hod_email'     => 'required|email|max:255',
             'phone'         => 'required|numeric|digits_between:10,11|unique:users,phone',
             'password'      => 'required|min:6',
-            'user_plan_id'  => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -88,9 +51,6 @@ class UserController extends Controller
             ], 422);
         }
 
-        /* =====================================================
-        STEP 3: CREATE USER (LOCKED FOREVER)
-        ===================================================== */
         $user = User::create([
             'company_id'          => $companyId,
             'role'                => 'user',
@@ -101,22 +61,7 @@ class UserController extends Controller
             'phone'               => $request->phone,
             'password'            => Hash::make($request->password),
             'status'              => 'active',
-            'user_plan_id'        => $request->user_plan_id,
-
-            // 🔑 subscription binding
-            'user_subscription_id'=> $userSubscription->id,
-            'is_locked'           => 1, // 1 = locked
         ]);
-
-        /* =====================================================
-        STEP 4: CONSUME SEAT
-        ===================================================== */
-        $userSubscription->increment('used_users');
-
-        // lock subscription if full
-        if ($userSubscription->used_users >= $userSubscription->user_count) {
-            $userSubscription->update(['is_locked' => 1]);
-        }
 
         return response()->json([
             'success' => true,
@@ -124,7 +69,6 @@ class UserController extends Controller
         ]);
     }
 
-    /* ================= GET SINGLE ================= */
     public function get($id)
     {
         return User::where('id', $id)
@@ -132,31 +76,8 @@ class UserController extends Controller
             ->firstOrFail();
     }
 
-    /* ================= UPDATE ================= */
     public function update(Request $request)
     {
-        $companyId = auth()->user()->company_id;
-
-        /* =====================================================
-        STEP 1: GET FIRST AVAILABLE SUBSCRIPTION (FIFO)
-        ===================================================== */
-        $userSubscription = UserSubscription::where('company_id', $companyId)
-            ->where('status', 'active')
-            ->where('is_locked', '0') // 0 = unlocked
-            ->whereColumn('used_users', '<', 'user_count')
-            ->orderBy('id', 'asc') // FIFO
-            ->first();
-
-        if (!$userSubscription) {
-            return response()->json([
-                'success' => false,
-                'errors' => [
-                    'plan' => ['No available user seats. Please buy more users.']
-                ]
-            ], 422);
-        }
-
-
         $rules = [
             'id'            => 'required|exists:users,id',
             'name'          => 'required|string|max:255',
@@ -190,45 +111,19 @@ class UserController extends Controller
             ]);
         }
 
-        // /* =====================================================
-        // 🔒 LOCK CHECK (ENUM: 0 = false, 1 = true)
-        // ===================================================== */
-        // if ($user->is_locked == 1) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'This user is locked and cannot be updated.'
-        //     ]);
-        // }
-
-        /* =====================================================
-        UPDATE DATA (only if unlocked)
-        ===================================================== */
         $data = [
             'full_name'     => $request->name,
             'department_id' => $request->department_id,
             'hod_name'      => $request->hod_name,
             'hod_email'     => $request->hod_email,
             'phone'         => $request->phone,
-            'user_subscription_id'=> $userSubscription->id,
-            'user_plan_id'        => $request->user_plan_id,
-            'is_locked'    => 1, // 1 = locked
         ];
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
 
-        $oldSubscriptionId = $user->user_subscription_id;
-
         $user->update($data);
-
-        /* =====================================================
-        STEP 4: RELEASE OLD SEAT, CONSUME NEW SEAT
-        ===================================================== */
-        if ($oldSubscriptionId && $oldSubscriptionId != $userSubscription->id) {
-            UserSubscription::where('id', $oldSubscriptionId)->decrement('used_users');
-        }
-        $userSubscription->increment('used_users');
 
         return response()->json([
             'success' => true,
@@ -236,7 +131,6 @@ class UserController extends Controller
         ]);
     }
 
-    /* ================= STATUS ================= */
     public function status(Request $request)
     {
         User::where('id', $request->userId)
@@ -246,14 +140,12 @@ class UserController extends Controller
         return response()->json(['success' => true]);
     }
 
-    /* ================= DELETE ================= */
     public function destroy($id)
     {
         $user = User::where('id', $id)
             ->where('company_id', auth()->user()->company_id)
             ->first();
 
-        // User not found
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -261,15 +153,6 @@ class UserController extends Controller
             ], 404);
         }
 
-        // // 🔒 LOCK CHECK (0 = false, 1 = true)
-        // if ($user->is_locked == 1) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'This user is locked and cannot be deleted or reassigned.'
-        //     ], 422);
-        // }
-
-        // ❌ Delete allowed only if NOT locked
         $user->delete();
 
         return response()->json([

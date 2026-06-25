@@ -9,7 +9,7 @@
                 <!-- Logo -->
                 <div class="app-brand justify-content-center">
                     <a href="index.html" class="app-brand-link gap-2">
-                        <span class="app-brand-text demo text-body fw-bolder text-capitalize">Precureskill</span>
+                        <span class="app-brand-text demo text-body fw-bolder text-capitalize">Training CRM</span>
                     </a>
                 </div>
                 <!-- /Logo -->

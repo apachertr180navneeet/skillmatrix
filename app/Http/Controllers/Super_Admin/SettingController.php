@@ -27,7 +27,6 @@ class SettingController extends Controller
         // 1️⃣ Validate request
         $request->validate([
             'admin_email' => 'required|email',
-            'payment_gatway_key' => 'required|string|max:255',
         ]);
 
         // 2️⃣ Update or create single settings row
@@ -35,7 +34,6 @@ class SettingController extends Controller
             ['id' => 1], // Always keep one record
             [
                 'admin_email' => $request->admin_email,
-                'payment_gatway_key' => $request->payment_gatway_key,
             ]
         );
 

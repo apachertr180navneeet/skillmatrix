@@ -21,7 +21,7 @@
                                 <p class="wow fadeInUp" data-wow-delay=".7s"
                                     style="visibility: visible; animation-delay: 0.7s; animation-name: fadeInUp">
                                     We help companies build skilled, efficient, and performance-driven teams through
-                                    our scientifically designed Precureskill Training System.
+                                    our scientifically designed Training CRM Training System.
                                 </p>
 
                                 <div class="d-flex py-4">
@@ -85,12 +85,12 @@
                         <div class="icon">
                             <i class="lni lni-grid-alt"></i>
                         </div>
-                        <h3>ABOUT PRECURESKILL </h3>
+                        <h3>ABOUT TRAINING CRM </h3>
                         <h5 class="mb-5">(A Unit of SYSTEM POLYGON PRIVATE LIMITED)</h5>
 
                         <h5>Building Strong Industries Main Power Through Structured Training</h5>
                         <p>
-                            Precureskill is a professional industrial training platform designed to bridge the gap
+                            Training CRM is a professional industrial training platform designed to bridge the gap
                             between education and real industry requirements.
                         </p>
                         <h5 class="pb-3">Our mission is simple:</h5>
@@ -166,7 +166,7 @@
                     </h2>
                     <p class="wow fadeInUp" data-wow-delay=".6s"
                         style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInUp">
-                        Traditional Training vs Precureskill Structured Industry System
+                        Traditional Training vs Training CRM Structured Industry System
                     </p>
                 </div>
             </div>
@@ -202,9 +202,9 @@
                 </div>
             </div>
 
-            <!-- Precureskill Column -->
-            <div class="column skillmatrix">
-                <h3>PRECURESKILL</h3>
+            <!-- Training CRM Column -->
+            <div class="column training-crm">
+                <h3>TRAINING CRM</h3>
 
                 <div class="list-item">
                     <div class="iconl">✓</div>
@@ -249,7 +249,7 @@
                             best</span>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s"
                             style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp">
-                            Our Solution - Precureskill System
+                            Our Solution - Training CRM System
                         </h2>
                         <p class="wow fadeInUp" data-wow-delay=".6s"
                             style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInUp">
@@ -399,7 +399,7 @@
                             best</span>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s"
                             style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp">
-                            Why Choose Precureskill?
+                            Why Choose Training CRM?
                         </h2>
                         <p class="wow fadeInUp" data-wow-delay=".6s"
                             style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInUp">
@@ -581,61 +581,7 @@
     </section>
     <!-- /End Testimonials Section -->
 
-    <!-- Start Pricing Table Area -->
-    <section class="pricing-table style3 section">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="section-title style3">
-                        <span class="wow fadeInDown" data-wow-delay=".2s"
-                            style="visibility: hidden; animation-delay: 0.2s; animation-name: none">Pricing Plan</span>
-                        <h2 class="wow fadeInUp" data-wow-delay=".4s"
-                            style="visibility: hidden; animation-delay: 0.4s; animation-name: none">
-                            Choose Your Plan
-                        </h2>
-                        <p style="color: red; font-weight: bold;">After Login you can buy subscription</p>
-                        <p class="wow fadeInUp" data-wow-delay=".6s"
-                            style="visibility: hidden; animation-delay: 0.6s; animation-name: none">
-                            Select the training solution that best fits your organization's needs and start building
-                            a skilled, efficient workforce.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-4">
-                @foreach($plans as $plan)
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <!-- Single Table -->
-                        <div class="single-table wow fadeInUp" data-wow-delay=".2s"
-                            style="visibility: hidden; animation-delay: 0.2s; animation-name: none">
-                            <!-- Table Head -->
-                            <div class="table-head">
-                                <div class="price">
-                                    <p class="amount">₹{{ number_format($plan->amount, 2) }}</p>
-                                </div>
-                                <div class="title">
-                                    <h4>{{ $plan->plan_name }}</h4>
-                                </div>
-                            </div>
-                            <!-- End Table Head -->
-                            <!-- Table List -->
-                            <p class="text-center">
-                                {{ $plan->description ?? '-' }}
-                            </p>
-                            <!-- End Table List -->
-                            <!-- Table Bottom -->
-                            <div class="button">
-                                <a class="btn" href="{{ auth()->check() ? route('company.subscription') : route('company.login') }}">Choose Plan <i class="lni lni-arrow-right"></i></a>
-                            </div>
-                            <!-- End Table Bottom -->
-                        </div>
-                        <!-- End Single Table-->
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-    <!--/ End Pricing Table Area -->
+
 
     <!-- Start Faq Area -->
     <section class="faq style3 section">
@@ -662,7 +608,7 @@
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    <span>What is the Precure Skill Training System?</span><i
+                                    <span>What is the Training CRM Training System?</span><i
                                         class="lni lni-chevron-down"></i>
                                 </button>
                             </h2>
@@ -670,7 +616,7 @@
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     <p>
-                                        The Precure Skill Training System is a structured approach designed to
+                                        The Training CRM Training System is a structured approach designed to
                                         identify employee skill gaps and develop the exact competencies required by
                                         an industry. It helps organizations build a skilled workforce internally
                                         through systematic training and evaluation.

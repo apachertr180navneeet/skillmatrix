@@ -17,8 +17,6 @@ use App\Models\{
     SopUserResult,
     VideoUserResult,
     Company,
-    SubscriptionPlan,
-    UserSubscription
 };
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -174,22 +172,6 @@ class AdminAuthController extends Controller
                 'company_id' => $companyId ?? 0,
                 'status'     => 'active',
                 'password'   => Hash::make($request->password),
-            ]);
-
-            $planId = 7;
-
-            $plan = SubscriptionPlan::findOrFail($planId);
-
-            UserSubscription::create([
-                'user_id' => $user->id,
-                'company_id' => $user->company_id,
-                'subscription_plan_id' => $plan->id,
-                'start_date' => now(),
-                'end_date' => now()->addDays($plan->duration),
-                'user_count' => 1,
-                'used_users' => 0,
-                'status' => 'active',
-                'is_locked' => '0',
             ]);
 
             return redirect()->route('company.login')
@@ -426,33 +408,6 @@ class AdminAuthController extends Controller
         $videoResultTotal = (clone $videoResultQuery)->count();
         $videoResultPass = (clone $videoResultQuery)->where('result_status', 'pass')->count();
         $videoResultFail = (clone $videoResultQuery)->where('result_status', 'fail')->count();
-        $subscription = UserSubscription::where('status','active')
-            ->where('company_id',$companyId)
-            ->first();
-
-        $remainingDays = 0;
-
-        if ($subscription) {
-
-            $today = Carbon::today();
-            $endDate = Carbon::parse($subscription->end_date);
-
-            // ✅ Expire condition
-            if ($today->gte($endDate)) {
-
-                // Update status to expired
-                $subscription->update([
-                    'status' => 'expired'
-                ]);
-
-                $remainingDays = 0;
-
-            } else {
-                // Remaining days
-                $remainingDays = $today->diffInDays($endDate);
-            }
-        }
-
         return view('admin.dashboard.index', compact(
             'userCount',
             'departmentCount',
@@ -468,7 +423,6 @@ class AdminAuthController extends Controller
             'videoResultTotal',
             'videoResultPass',
             'videoResultFail',
-            'remainingDays'
         ));
     }
 

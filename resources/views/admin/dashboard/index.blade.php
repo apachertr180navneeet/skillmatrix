@@ -456,16 +456,6 @@
                         Admin Command Center
                     </span>
                     <h1 class="hero-title">Welcome back, {{ Auth::user()->full_name }}</h1>
-
-                    @if($remainingDays > 0)
-                        <span class="badge bg-success ms-2">
-                            {{ $remainingDays }} days left
-                        </span>
-                    @else
-                        <span class="badge bg-danger ms-2">
-                            Expired
-                        </span>
-                    @endif
                 </div>
 
                 <div class="hero-metrics">

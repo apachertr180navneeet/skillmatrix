@@ -10,7 +10,7 @@
     <div class="row mb-3">
         <div class="col-md-6">
             <h5>
-                <span class="text-primary fw-light">Payments</span> Settings
+                <span class="text-primary fw-light">App</span> Settings
             </h5>
         </div>
     </div>
@@ -36,22 +36,6 @@
                                value="{{ old('admin_email', $setting->admin_email ?? '') }}"
                                required>
                         @error('admin_email')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
-                    </div>
-
-                    <!-- Payment Gateway Key -->
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">
-                            Payment Gateway Key <span class="text-danger">*</span>
-                        </label>
-                        <input type="text"
-                               name="payment_gatway_key"
-                               class="form-control"
-                               placeholder="Enter payment gateway key"
-                               value="{{ old('payment_gatway_key', $setting->payment_gatway_key ?? '') }}"
-                               required>
-                        @error('payment_gatway_key')
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>

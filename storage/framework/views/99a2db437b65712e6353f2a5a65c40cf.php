@@ -63,20 +63,7 @@
                 <button class="btn btn-success" id="bulkActive">Set Active</button>
                 <button class="btn btn-secondary" id="bulkInactive">Set Inactive</button>
             </div>
-            <!-- User -->
-            <?php $__currentLoopData = $userSubscriptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subscription): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="bx bx-user"></i></div>
-                        <div class="stat-content">
-                            <h6><?php echo e($subscription->plan->plan_name); ?></h6>
-                            <p>Total :- <?php echo e($subscription->user_count); ?></p>
-                            <p>Used :- <?php echo e($subscription->used_users); ?></p>
-                            <p>Remaining :- <?php echo e($subscription->user_count - $subscription->used_users); ?></p>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
         </div>
 
         
@@ -123,20 +110,6 @@
                         <label>User Name</label>
                         <input type="text" id="name" class="form-control">
                         <small class="text-danger error-text name_error"></small>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Select Plan</label>
-                        <select id="user_plan_id" class="form-control">
-                            <option value="">Select Plan</option>
-                            <?php $__currentLoopData = $userSubscriptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subscription): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($subscription->id); ?>">
-                                    <?php echo e($subscription->plan->plan_name); ?>
-
-                                </option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </select>
-                        <small class="text-danger error-text user_plan_id_error"></small>
                     </div>
 
                     <div class="col-md-6">
@@ -197,20 +170,6 @@
                         <label>User Name</label>
                         <input type="text" id="edit_name" class="form-control">
                         <small class="text-danger error-text edit_name_error"></small>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Select Plan</label>
-                        <select id="edit_user_plan_id" class="form-control">
-                            <option value="">Select Plan</option>
-                            <?php $__currentLoopData = $userSubscriptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subscription): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($subscription->id); ?>">
-                                    <?php echo e($subscription->plan->plan_name); ?>
-
-                                </option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </select>
-                        <small class="text-danger error-text edit_user_plan_id_error"></small>
                     </div>
 
                     <div class="col-md-6">
@@ -276,7 +235,8 @@
                     //{ data:'hod_name' },
                     //{ data:'hod_email' },
                     {
-                        data: 'usersubscription.plan.plan_name'
+                        data: 'department.department_name',
+                        visible: false
                     },
                     {
                         data: 'phone'

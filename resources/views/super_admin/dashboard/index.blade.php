@@ -427,17 +427,6 @@
             'soft' => 'linear-gradient(135deg, #e0e7ff 0%, #eef2ff 100%)',
             'ink' => '#4338ca',
         ],
-        [
-            'title' => 'Subscription Plans',
-            'subtitle' => 'Watch the commercial layer that powers package and plan management.',
-            'value' => $subcriptionPlans,
-            'label' => 'Plans',
-            'icon' => 'bx-credit-card-front',
-            'tag' => 'Revenue',
-            'accent' => 'linear-gradient(90deg, #15803d 0%, #4ade80 100%)',
-            'soft' => 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
-            'ink' => '#166534',
-        ],
     ];
 @endphp
 
@@ -450,9 +439,9 @@
 
         <div class="row align-items-end g-4">
             <div class="col-lg-7">
-                <h1 class="hero-title">A sharper view of your Skill Matrix operations.</h1>
+                <h1 class="hero-title">A sharper view of your Training CRM operations.</h1>
                 <p class="hero-text">
-                    Monitor users, departments, content libraries, assessment activity, and subscription growth from a single high-visibility dashboard designed for faster executive scanning.
+                     Monitor users, departments, content libraries, and assessment activity from a single high-visibility dashboard designed for faster executive scanning.
                 </p>
             </div>
         </div>

@@ -13,6 +13,5 @@ class Setting extends Model
 
     protected $fillable = [
         'admin_email',
-        'payment_gatway_key',
     ];
 }

@@ -33,9 +33,7 @@ class User extends Authenticatable implements JWTSubject
         'city',
         'hod_name',
         'hod_email',
-        'user_subscription_id',
         'is_locked',
-        'user_plan_id',
     ];
     protected $appends = ['avatar_full_path'];
 
@@ -97,13 +95,5 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Company::class, 'company_id');
     }
 
-
-    /**
-     * User belongs to a company.
-     */
-    public function usersubscription()
-    {
-        return $this->belongsTo(UserSubscription::class, 'user_plan_id');
-    }
 
 }
