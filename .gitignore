@@ -17,9 +17,3 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-
-.early.coverage
-
-
-bootstrap.zip
-*.zip

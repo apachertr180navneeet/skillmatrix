@@ -16,13 +16,7 @@
 			<div class="nav-item d-flex align-items-center text-primary">
 				<i class="bx bx-calendar fs-4 lh-0"></i>&nbsp;
 				<span>
-					<?php echo e(date('D')); ?> <?php echo e(date('d M Y')); ?>
-
-					&nbsp;&nbsp;&nbsp;&nbsp;
 					User Name :- <?php echo e(Auth::user()->full_name); ?>
-
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					Department :- <?php echo e($user->department->department_name ?? ''); ?>
 
 				</span>
 			</div>

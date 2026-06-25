@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="button wow fadeInUp" data-wow-delay="1s"
                                     style="visibility: visible; animation-delay: 0.9s; animation-name: fadeInUp">
-                                    <a href="#" class="btn"> View Training Plans </a>
+                                    <a href="<?php echo e(route('plan')); ?>" class="btn"> View Training Plans </a>
                                 </div>
                             </div>
                         </div>
@@ -85,7 +85,9 @@
                         <div class="icon">
                             <i class="lni lni-grid-alt"></i>
                         </div>
-                        <h2>ABOUT PRECURESKILL <br>(A Unit of System Polygon)</h2>
+                        <h3>ABOUT PRECURESKILL </h3>
+                        <h5 class="mb-5">(A Unit of SYSTEM POLYGON PRIVATE LIMITED)</h5>
+
                         <h5>Building Strong Industries Main Power Through Structured Training</h5>
                         <p>
                             Precureskill is a professional industrial training platform designed to bridge the gap
@@ -100,7 +102,7 @@
                         </div>
                         <p>We don't just train employees — We build complete organizational training ecosystems.</p>
                         <div class="button style3">
-                            <a href="#" class="btn">Read More</a>
+                            <a href="<?php echo e(route('about.us')); ?>" class="btn">Read More</a>
                         </div>
                     </div>
                 </div>
@@ -397,7 +399,7 @@
                             best</span>
                         <h2 class="wow fadeInUp" data-wow-delay=".4s"
                             style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp">
-                            Why Choose Precureskills??
+                            Why Choose Precureskill?
                         </h2>
                         <p class="wow fadeInUp" data-wow-delay=".6s"
                             style="visibility: visible; animation-delay: 0.6s; animation-name: fadeInUp">
@@ -483,8 +485,9 @@
                                 <div class="col-lg-10 col-12">
                                     <div class="play-thumb wow zoomIn" data-wow-delay=".2s"
                                         style="visibility: hidden; animation-delay: 0.2s; animation-name: none">
-                                        <a href="https://www.youtube.com/watch?v=r44RKWyfcFw&amp;fbclid=IwAR21beSJORalzmzokxDRcGfkZA1AtRTE__l5N4r09HcGS5Y6vOluyouM9EM"
-                                            class="glightbox video"><i class="lni lni-play"></i></a>
+                                        <a href="https://www.youtube.com/@PrecureSkill" target="_blank">
+                                            <i class="lni lni-play"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -518,116 +521,58 @@
             <div class="row">
                 <div class="col-lg-8 offset-lg-2 col-12">
                     <div class="testimonial-slider-head">
-                        <div class="tns-outer" id="tns1-ow">
-                            <div class="tns-nav" aria-label="Carousel Pagination">
-                                <button type="button" data-nav="0" aria-controls="tns1" style=""
-                                    aria-label="Carousel Page 1 (Current Slide)" class="tns-nav-active"></button><button
-                                    type="button" data-nav="1" tabindex="-1" aria-controls="tns1" style=""
-                                    aria-label="Carousel Page 2"></button><button type="button" data-nav="2"
-                                    tabindex="-1" aria-controls="tns1" style=""
-                                    aria-label="Carousel Page 3"></button>
-                            </div>
-                            <div class="tns-liveregion tns-visually-hidden" aria-live="polite" aria-atomic="true">
-                                slide <span class="current">2</span> of 3
-                            </div>
-                            <div id="tns1-mw" class="tns-ovh">
-                                <div class="tns-inner" id="tns1-iw">
-                                    <div class="testimonial-slider tns-slider tns-carousel tns-subpixel tns-calc tns-horizontal"
-                                        id="tns1"
-                                        style="transition-duration: 0s; transform: translate3d(-20%, 0px, 0px)">
-                                        <div class="single-testimonial tns-item tns-slide-cloned" aria-hidden="true"
-                                            tabindex="-1">
-                                            <div class="top-section">
-                                                <img src="<?php echo e(asset('assets/web/assets/images/testi3.jpg')); ?>"
-                                                    alt="#" />
-                                                <h3>
-                                                    Phet Putrie
-                                                    <span>Freelancer</span>
-                                                </h3>
-                                            </div>
-                                            <p>
-                                                Time is the most precious thing you have when bootstrapping. You
-                                                can't take time to ponder on desig, Lorem ipsum dolor sit amet,
-                                                consectetur adipisicing elit sed do eiusmod tempor incididunt ut
-                                                labore et dolore magna aliqua.
-                                            </p>
-                                        </div>
-                                        <!-- Start Single Testimonial -->
-                                        <div class="single-testimonial tns-item tns-slide-active" id="tns1-item0">
-                                            <div class="top-section">
-                                                <img src="<?php echo e(asset('assets/web/assets/images/testi2.jpg')); ?>"
-                                                    alt="#" />
-                                                <h3>
-                                                    Aaron Almaraz
-                                                    <span>CEO &amp; Founder at Gearat</span>
-                                                </h3>
-                                            </div>
-                                            <p>
-                                                Time is the most precious thing you have when bootstrapping. You
-                                                can't take time to ponder on desig, Lorem ipsum dolor sit amet,
-                                                consectetur adipisicing elit sed do eiusmod tempor incididunt ut
-                                                labore et dolore magna aliqua.
-                                            </p>
-                                        </div>
-                                        <!-- End Single Testimonial -->
-                                        <!-- Start Single Testimonial -->
-                                        <div class="single-testimonial tns-item" id="tns1-item1" aria-hidden="true"
-                                            tabindex="-1">
-                                            <div class="top-section">
-                                                <img src="<?php echo e(asset('assets/web/assets/images/testi5.jpg')); ?>assets/images/testi5.jpg"
-                                                    alt="#" />
-                                                <h3>
-                                                    Marleah Eagleston
-                                                    <span>Founder at Spicenet</span>
-                                                </h3>
-                                            </div>
-                                            <p>
-                                                Time is the most precious thing you have when bootstrapping. You
-                                                can't take time to ponder on desig, Lorem ipsum dolor sit amet,
-                                                consectetur adipisicing elit sed do eiusmod tempor incididunt ut
-                                                labore et dolore magna aliqua.
-                                            </p>
-                                        </div>
-                                        <!-- End Single Testimonial -->
-                                        <!-- Start Single Testimonial -->
-                                        <div class="single-testimonial tns-item" id="tns1-item2" aria-hidden="true"
-                                            tabindex="-1">
-                                            <div class="top-section">
-                                                <img src="<?php echo e(asset('assets/web/assets/images/testi3.jpg')); ?>"
-                                                    alt="#" />
-                                                <h3>
-                                                    Phet Putrie
-                                                    <span>Freelancer</span>
-                                                </h3>
-                                            </div>
-                                            <p>
-                                                Time is the most precious thing you have when bootstrapping. You
-                                                can't take time to ponder on desig, Lorem ipsum dolor sit amet,
-                                                consectetur adipisicing elit sed do eiusmod tempor incididunt ut
-                                                labore et dolore magna aliqua.
-                                            </p>
-                                        </div>
-                                        <!-- End Single Testimonial -->
-                                        <div class="single-testimonial tns-item tns-slide-cloned" aria-hidden="true"
-                                            tabindex="-1">
-                                            <div class="top-section">
-                                                <img src="<?php echo e(asset('assets/web/assets/images/testi2.jpg')); ?>"
-                                                    alt="#" />
-                                                <h3>
-                                                    Aaron Almaraz
-                                                    <span>CEO &amp; Founder at Gearat</span>
-                                                </h3>
-                                            </div>
-                                            <p>
-                                                Time is the most precious thing you have when bootstrapping. You
-                                                can't take time to ponder on desig, Lorem ipsum dolor sit amet,
-                                                consectetur adipisicing elit sed do eiusmod tempor incididunt ut
-                                                labore et dolore magna aliqua.
-                                            </p>
-                                        </div>
-                                    </div>
+                        <div class="testimonial-slider">
+                            <!-- Start Single Testimonial -->
+                            <div class="single-testimonial">
+                                <div class="top-section">
+                                    <img src="<?php echo e(asset('assets/web/assets/images/testi2.jpg')); ?>" alt="#" />
+                                    <h3>
+                                        Aaron Almaraz
+                                        <span>CEO &amp; Founder at Gearat</span>
+                                    </h3>
                                 </div>
+                                <p>
+                                    Time is the most precious thing you have when bootstrapping. You
+                                    can't take time to ponder on desig, Lorem ipsum dolor sit amet,
+                                    consectetur adipisicing elit sed do eiusmod tempor incididunt ut
+                                    labore et dolore magna aliqua.
+                                </p>
                             </div>
+                            <!-- End Single Testimonial -->
+                            <!-- Start Single Testimonial -->
+                            <div class="single-testimonial">
+                                <div class="top-section">
+                                    <img src="<?php echo e(asset('assets/web/assets/images/testi5.jpg')); ?>" alt="#" />
+                                    <h3>
+                                        Marleah Eagleston
+                                        <span>Founder at Spicenet</span>
+                                    </h3>
+                                </div>
+                                <p>
+                                    Time is the most precious thing you have when bootstrapping. You
+                                    can't take time to ponder on desig, Lorem ipsum dolor sit amet,
+                                    consectetur adipisicing elit sed do eiusmod tempor incididunt ut
+                                    labore et dolore magna aliqua.
+                                </p>
+                            </div>
+                            <!-- End Single Testimonial -->
+                            <!-- Start Single Testimonial -->
+                            <div class="single-testimonial">
+                                <div class="top-section">
+                                    <img src="<?php echo e(asset('assets/web/assets/images/testi3.jpg')); ?>" alt="#" />
+                                    <h3>
+                                        Phet Putrie
+                                        <span>Freelancer</span>
+                                    </h3>
+                                </div>
+                                <p>
+                                    Time is the most precious thing you have when bootstrapping. You
+                                    can't take time to ponder on desig, Lorem ipsum dolor sit amet,
+                                    consectetur adipisicing elit sed do eiusmod tempor incididunt ut
+                                    labore et dolore magna aliqua.
+                                </p>
+                            </div>
+                            <!-- End Single Testimonial -->
                         </div>
                     </div>
                 </div>
@@ -648,6 +593,7 @@
                             style="visibility: hidden; animation-delay: 0.4s; animation-name: none">
                             Choose Your Plan
                         </h2>
+                        <p style="color: red; font-weight: bold;">After Login you can buy subscription</p>
                         <p class="wow fadeInUp" data-wow-delay=".6s"
                             style="visibility: hidden; animation-delay: 0.6s; animation-name: none">
                             Select the training solution that best fits your organization's needs and start building
@@ -680,7 +626,7 @@
                             <!-- End Table List -->
                             <!-- Table Bottom -->
                             <div class="button">
-                                <a class="btn" href="#">Choose Plan <i class="lni lni-arrow-right"></i></a>
+                                <a class="btn" href="<?php echo e(auth()->check() ? route('company.subscription') : route('company.login')); ?>">Choose Plan <i class="lni lni-arrow-right"></i></a>
                             </div>
                             <!-- End Table Bottom -->
                         </div>
@@ -805,8 +751,7 @@
             <div class="row">
                 <div class="col-lg-8 offset-lg-2 col-md-12 col-12">
                     <div class="inner-content">
-                        <h2 class="wow fadeInUp" data-wow-delay=".2s"
-                            style="visibility: hidden; animation-delay: 0.2s; animation-name: none">
+                        <h2 class="wow fadeInUp" data-wow-delay=".2s" style="visibility: hidden; animation-delay: 0.2s; animation-name: none">
                             Ready to Build a Skilled & <br />Efficient Workforce?
                         </h2>
                         <p class="wow fadeInUp" data-wow-delay=".4s"
@@ -815,7 +760,7 @@
                         </p>
                         <div class="button style3 wow fadeInUp" data-wow-delay=".6s"
                             style="visibility: hidden; animation-delay: 0.6s; animation-name: none">
-                            <a href="contact-us.html" class="btn">Get Started</a>
+                            <a href="<?php echo e(route('contact')); ?>" class="btn">Get Started</a>
                         </div>
                     </div>
                 </div>
@@ -915,7 +860,7 @@
                                         <i class="lni lni-envelope"></i>
                                         <ul>
                                             <li><span>Mail Us</span></li>
-                                            <li><a href="mailto:info@syspoly.com">info@syspoly.com</a></li>
+                                            <li><a href="mailto:precureskill@gmail.com">precureskill@gmail.com</a></li>
                                         </ul>
                                     </div>
                                 </div>

@@ -36,6 +36,7 @@
                     <h2 class="wow fadeInUp" data-wow-delay=".4s">
                         Choose Your Plan
                     </h2>
+                    <p class="mb-1" style="color: red; font-weight: bold;">After Login you can buy subscription</p>
                     <p class="wow fadeInUp" data-wow-delay=".6s">
                         Select the training solution that best fits your organization's needs and start building a
                         skilled, efficient workforce.
@@ -75,7 +76,7 @@
 
                         <!-- Button -->
                         <div class="button text-center mt-3">
-                            <a class="btn" href="#">
+                            <a class="btn" href="<?php echo e(auth()->check() ? route('company.subscription') : route('company.login')); ?>">
                                 Choose Plan <i class="lni lni-arrow-right"></i>
                             </a>
                         </div>

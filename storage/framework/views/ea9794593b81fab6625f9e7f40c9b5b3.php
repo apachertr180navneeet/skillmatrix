@@ -42,6 +42,8 @@
                     <tr>
                         <th>Used / Total</th>
                         <th>Remaining</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -50,6 +52,8 @@
                         <tr>
                             <td><?php echo e($sub->used_users); ?> / <?php echo e($sub->user_count); ?></td>
                             <td><?php echo e($sub->user_count - $sub->used_users); ?></td>
+                            <td><?php echo e($sub->start_date ? \Carbon\Carbon::parse($sub->start_date)->format('d/m/Y') : '-'); ?></td>
+                            <td><?php echo e($sub->end_date ? \Carbon\Carbon::parse($sub->end_date)->format('d/m/Y') : '-'); ?></td>
                             <td>
                                 <?php if($sub->is_locked): ?>
                                     <span class="badge bg-danger">Locked</span>

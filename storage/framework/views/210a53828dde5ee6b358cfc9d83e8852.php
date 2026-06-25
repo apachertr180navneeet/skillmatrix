@@ -44,7 +44,7 @@
 
                                         <input class="form-check-input checklist-item"
                                             type="checkbox"
-                                            value="<?php echo e($dept->id); ?>"
+                                            value="<?php echo e($dept->name); ?>"
                                             id="dept_<?php echo e($dept->id); ?>"
 
                                             <?php echo e(in_array($dept->name, $departmentcompany) ? 'checked disabled' : ''); ?>
@@ -63,7 +63,7 @@
                         <!-- ✅ Submit Button -->
                         <div class="mt-3 text-end">
                             <button class="btn btn-success" id="saveChecklist">
-                                Save Checklist
+                                Save Default Department
                             </button>
                         </div>
                     <?php else: ?>
@@ -153,6 +153,9 @@
 <?php $__env->startSection('script'); ?>
 <script>
     $(document).ready(function () {
+        const masterDepartmentNames = <?php echo json_encode(
+            collect($departments ?? [])->pluck('name')->map(fn ($name) => strtolower(trim($name)))->values()
+        , 15, 512) ?>;
 
         const table = $('#departmentTable').DataTable({
             processing: true,
@@ -182,9 +185,17 @@
                 },
                 {
                     data: 'id',
-                    render: function (id) {
+                    render: function (id, type, row) {
+                        const isMasterDepartment = masterDepartmentNames.includes(
+                            String(row.department_name || '').trim().toLowerCase()
+                        );
+
+                        const editButton = isMasterDepartment
+                            ? `<button class="btn btn-sm btn-secondary" disabled title="Master department cannot be edited">Edit</button>`
+                            : `<button class="btn btn-sm btn-warning" onclick="editDepartment(${id})">Edit</button>`;
+
                         return `
-                            <button class="btn btn-sm btn-warning" onclick="editDepartment(${id})">Edit</button>
+                            ${editButton}
                             <button class="btn btn-sm btn-danger" onclick="deleteDepartment(${id})">Delete</button>
                         `;
                     }

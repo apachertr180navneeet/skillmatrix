@@ -7,11 +7,11 @@
                             <!-- Single Widget -->
                             <div class="f-about single-footer">
                                 <div class="logo">
-                                    <a href="index.html"
+                                    <a href="<?php echo e(route('home')); ?>"
                                         ><img src="<?php echo e(asset('assets/web/assets/images/logo/precure-skill3-white.svg')); ?>" alt="Logo"
                                     /></a>
                                 </div>
-                                <p>Precureskill (a unit of system polygon) is a professional industrial training platform designed to bridge the gap between education and real industry requirements.</p>
+                                <p>Precureskill (A Unit of SYSTEM POLYGON PRIVATE LIMITED) is a professional industrial training platform designed to bridge the gap between education and real industry requirements.</p>
                                 <div class="footer-social">
                                     <ul>
                                         <li>
@@ -36,11 +36,14 @@
                                 <div class="col-lg-6 col-md-6 col-12">
                                     <!-- Single Widget -->
                                     <div class="single-footer sm-custom-border f-link">
-                                        <h3>About Us</h3>
+                                        <h3>Useful Links</h3>
                                         <ul>
                                             <li><a href="<?php echo e(route('home')); ?>">Home</a></li>
                                             <li><a href="<?php echo e(route('about.us')); ?>">About Us</a></li>
                                             <li><a href="<?php echo e(route('service')); ?>">Services</a></li>
+                                            <li><a href="<?php echo e(route('term.and.conditions')); ?>">Term And Conditions</a></li>
+                                            <li><a href="<?php echo e(route('privacy.policy')); ?>">Privacy Policy</a></li>
+                                            <li><a href="<?php echo e(route('refund.cancellation')); ?>">Refund & Cancellation</a></li>
                                             <li><a href="<?php echo e(route('contact')); ?>">Contact Us</a></li>
                                         </ul>
                                     </div>
@@ -68,7 +71,7 @@
                                                 Dhani, Opp. Victorian palace, Pal road, Jodhpur, Rajasthan,
                                                 342001,India.
                                             </li>
-                                            <li><i class="lni lni-envelope"></i> info@syspoly.com</li>
+                                            <li><i class="lni lni-envelope"></i> precureskill@gmail.com</li>
                                             <li><i class="lni lni-phone"></i> +91 85619 03387</li>
                                         </ul>
                                     </div>
