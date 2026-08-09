@@ -4,6 +4,28 @@
     </IfModule>
 
     RewriteEngine On
+
+    # Force HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Map subdomains to their subdirectories inside public/ (prevent infinite loop)
+    RewriteCond %{HTTP_HOST} ^(www\.)?crackexam\.precureskill\.com$ [NC]
+    RewriteCond %{REQUEST_URI} !^/crackexam/
+    RewriteCond %{REQUEST_URI} !^/public/crackexam/
+    RewriteRule ^(.*)$ crackexam/$1 [L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?yoga\.precureskill\.com$ [NC]
+    RewriteCond %{REQUEST_URI} !^/yoga/
+    RewriteCond %{REQUEST_URI} !^/public/yoga/
+    RewriteRule ^(.*)$ yoga/$1 [L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?wealth\.precureskill\.com$ [NC]
+    RewriteCond %{REQUEST_URI} !^/wealth/
+    RewriteCond %{REQUEST_URI} !^/public/wealth/
+    RewriteRule ^(.*)$ wealth/$1 [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

@@ -1,6 +1,29 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Redirect everything to public folder
+    # 1. Force HTTPS for all requests
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # 2. Redirect www.subdomain to subdomain for SSL compatibility
+    RewriteCond %{HTTP_HOST} ^www\.(crackexam|yoga|wealth)\.precureskill\.com$ [NC]
+    RewriteRule ^ https://%1.precureskill.com%{REQUEST_URI} [L,R=301]
+
+    # 3. Map subdomains to their respective public folders without changing URL
+    RewriteCond %{HTTP_HOST} ^(www\.)?crackexam\.precureskill\.com$ [NC]
+    RewriteCond %{REQUEST_URI} !^/public/crackexam/
+    RewriteRule ^(.*)$ public/crackexam/$1 [L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?yoga\.precureskill\.com$ [NC]
+    RewriteCond %{REQUEST_URI} !^/public/yoga/
+    RewriteRule ^(.*)$ public/yoga/$1 [L]
+
+    RewriteCond %{HTTP_HOST} ^(www\.)?wealth\.precureskill\.com$ [NC]
+    RewriteCond %{REQUEST_URI} !^/public/wealth/
+    RewriteRule ^(.*)$ public/wealth/$1 [L]
+
+    # Default: Redirect everything to public folder
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
+
