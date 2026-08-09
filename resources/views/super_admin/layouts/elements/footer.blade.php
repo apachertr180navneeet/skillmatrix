@@ -7,7 +7,7 @@
             </script>
             , made with ❤️ by
             <a href="" target="_blank"
-                class="footer-link fw-medium">Training CRM</a>    
+                class="footer-link fw-medium">Precureskill</a>    
         </div>
         <div class="d-none d-lg-inline-block">
             <a href="#" class="footer-link me-4"

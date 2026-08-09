@@ -1,3 +1,7 @@
+<!-- fixed whatsApp button right side bottom entire website -->
+<a href="https://wa.me/918561903387" class="whatsapp-float" target="_blank" rel="noopener noreferrer">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+</a>
 <!-- Preloader -->
 <div class="preloader style3" style="opacity: 0; display: none">
     <div class="preloader-inner">

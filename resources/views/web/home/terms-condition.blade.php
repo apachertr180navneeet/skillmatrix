@@ -39,14 +39,14 @@
 
                         <div class="terms-block">
                             <h2>1. Introduction</h2>
-                            <p>Welcome to Training CRM. By accessing or using our platform, you agree to comply with and
+                            <p>Welcome to PrecureSkill. By accessing or using our platform, you agree to comply with and
                                 be bound by these Terms & Conditions. If you do not agree, please do not use our
                                 services.</p>
                         </div>
 
                         <div class="terms-block">
                             <h2>2. Services</h2>
-                            <p>Training CRM provides a structured employee training system including:</p>
+                            <p>PrecureSkill provides a structured employee training system including:</p>
                             <ul>
                                 <li>Training content (videos, SOPs, checklists)</li>
                                 <li>Skill development modules</li>
@@ -77,22 +77,23 @@
 
                         <div class="terms-block">
                             <h2>5. Intellectual Property</h2>
-                            <p>All content on Training CRM (training material, design, software) is the property of
-                                Training CRM and is protected by applicable laws.</p>
+                            <p>All content on PrecureSkill (training material, design, software) is the property of
+                                PrecureSkill and is protected by applicable laws.</p>
                             <p>You may not copy, reproduce, or distribute without written permission.</p>
                         </div>
 
                         <div class="terms-block">
-                            <h2>6. Payments</h2>
+                            <h2>6. Payments & Subscriptions</h2>
                             <ul>
                                 <li>All payments made for services are non-refundable unless stated otherwise</li>
+                                <li>Subscription plans must be renewed as per selected terms</li>
                                 <li>Prices may change with prior notice</li>
                             </ul>
                         </div>
 
                         <div class="terms-block">
                             <h2>7. Limitation of Liability</h2>
-                            <p>Training CRM is not liable for:</p>
+                            <p>PrecureSkill is not liable for:</p>
                             <ul>
                                 <li>Any direct or indirect business loss</li>
                                 <li>Performance outcomes solely dependent on user implementation</li>
@@ -123,7 +124,7 @@
 
                         <div class="terms-block">
                             <h2>11. Changes to Terms</h2>
-                            <p>Training CRM may update these Terms & Conditions at any time.</p>
+                            <p>PrecureSkill may update these Terms & Conditions at any time.</p>
                             <p>Continued use of the platform means you accept the updated terms.</p>
                         </div>
 

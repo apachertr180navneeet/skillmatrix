@@ -42,7 +42,7 @@
 
                         <div class="terms-block">
                             <h2>1. Introduction</h2>
-                            <p>At Training CRM, we value your privacy and are committed to protecting your personal and
+                            <p>At PrecureSkill, we value your privacy and are committed to protecting your personal and
                                 business information. This Privacy Policy explains how we collect, use, and safeguard your
                                 data when you use our platform.</p>
                         </div>

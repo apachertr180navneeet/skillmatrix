@@ -48,7 +48,7 @@
                     <div>
                         <h4>Location</h4>
                         <p>
-                            <strong style="color: #000000">Training CRM</strong><br />
+                            <strong style="color: #000000">PrecureSkill</strong><br />
                             <small style="color: #000000">(A unit of System Polygon Pvt Ltd.)</small><br />
                             32, Gajendra Nagar, Shobhawato ki Dhani,<br />
                             Pal road, Jodhpur, Rajasthan, 342001, India

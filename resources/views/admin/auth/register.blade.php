@@ -15,7 +15,7 @@
 
                 <div class="app-brand justify-content-center mb-3">
                     <a href="{{ route('home') }}" class="app-brand-link gap-2">
-                        <span class="fw-bolder">Training CRM</span>
+                        <span class="fw-bolder">precureskill</span>
                     </a>
                 </div>
 

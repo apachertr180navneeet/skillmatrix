@@ -20,7 +20,8 @@ use App\Http\Controllers\Super_Admin\{
     SopController,
     ChecklistController,
     VideoController,
-
+    PaymentController,
+    SubscriptionPlanController,
     CmsController,
     SettingController,
     DepartmentController as SuperAdminDepartmentController,
@@ -29,7 +30,7 @@ use App\Http\Controllers\Super_Admin\{
 // Admin Controller
 use App\Http\Controllers\Admin\{
     AdminAuthController,
-
+    SubscriptionController,
     DepartmentController,
     UserController as AdminUserController,
     SopController as AdminSopController,
@@ -102,7 +103,7 @@ Route::prefix('master')->name('super.admin.')->group(function () {
 
         // Master Route
         // Resource Management Routes (Variation, Tax, Item, Vendor, Customer)
-        foreach (['company','user','sop','checklist','video','cms','setting'] as $resource) {
+        foreach (['company','user','sop','checklist','video','payment','subscriptionPlan','cms','setting'] as $resource) {
             Route::prefix($resource)->name("$resource.")->group(function () use ($resource) {
                 $controller = "App\Http\Controllers\Super_Admin\\" . ucfirst($resource) . "Controller";
                 Route::get('/', [$controller, 'index'])->name('index');
@@ -163,8 +164,12 @@ Route::prefix('company')
     | ADMIN AUTH PROTECTED
     |--------------------------------------------------------------------------
     */
+    Route::post('subscription/success', [SubscriptionController::class, 'paymentSuccess'])->name('subscription.success');
+    Route::post('subscription/failure', [SubscriptionController::class, 'paymentFailure'])->name('subscription.failure');
+
     Route::middleware('admin')->group(function () {
 
+        /* ===== ALLOWED WITHOUT SUBSCRIPTION ===== */
         Route::get('dashboard', 'adminDashboard')->name('dashboard');
         Route::get('change-password', 'changePassword')->name('change.password');
         Route::post('update-password', 'updatePassword')->name('update.password');
@@ -172,7 +177,20 @@ Route::prefix('company')
         Route::get('profile', 'adminProfile')->name('profile');
         Route::post('profile', 'updateAdminProfile')->name('update.profile');
 
-        /* ================= DEPARTMENTS ================= */
+        /* ===== SUBSCRIPTION (NO CHECK) ===== */
+        Route::get('subscription', [SubscriptionController::class, 'adminSubscription'])->name('subscription');
+        Route::post('subscription/buy/{plan}', [SubscriptionController::class, 'buy'])->name('subscription.buy');
+        Route::post('subscription/add-users/{subscription}', [SubscriptionController::class, 'addUsers'])->name('subscription.add.users');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUBSCRIPTION REQUIRED (IMPORTANT)
+        |--------------------------------------------------------------------------
+        */
+        Route::middleware('subscription')->group(function () {
+
+            /* ================= DEPARTMENTS ================= */
             Route::prefix('departments')->name('departments.')
                 ->controller(DepartmentController::class)
                 ->group(function () {
@@ -286,6 +304,8 @@ Route::prefix('company')
                     Route::get('/', 'index')->name('index');
                     Route::get('{id}/view', 'view')->name('view');
                 });
+
+        }); // subscription middleware
 
     }); // admin middleware
 });

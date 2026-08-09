@@ -30,11 +30,11 @@
                 <div class="col-lg-6 col-12">
                     <div class="content wow fadeInLeft" data-wow-delay=".4s"
                         style="visibility: hidden; animation-delay: 0.4s; animation-name: none">
-                        <h3>ABOUT TRAINING CRM </h3>
+                        <h3>ABOUT PRECURESKILL </h3>
                         <h5 class="mb-5">(A Unit of SYSTEM POLYGON PRIVATE LIMITED)</h5>
                         <h5>Building Skilled Workforces for Stronger Industries</h5>
                         <p>
-                            Industries grow when their workforce grows. At Training CRM, our mission is to help organizations
+                            Industries grow when their workforce grows. At Precureskill, our mission is to help organizations
                             build strong, capable, and efficient teams through structured training systems.
                         </p>
                         <p>

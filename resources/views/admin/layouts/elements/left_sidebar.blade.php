@@ -30,8 +30,19 @@
 			</a>
 		</li>
 
-		@foreach([
-			['route' => 'company.departments.index', 'text' => 'Departments', 'icon' => 'bx-sitemap'],
+		{{-- SUBSCRIPTION (Always visible) --}}
+		<li class="menu-item {{ request()->routeIs('company.subscription') ? 'active' : '' }}">
+			<a href="{{ route('company.subscription') }}" class="menu-link">
+				<i class="menu-icon tf-icons bx bx-credit-card"></i>
+				<div>Subscription</div>
+			</a>
+		</li>
+
+		{{-- SHOW ONLY AFTER SUBSCRIPTION --}}
+		@if($hasActiveSubscription)
+
+			@foreach([
+				['route' => 'company.departments.index', 'text' => 'Departments', 'icon' => 'bx-sitemap'],
 				['route' => 'company.user.index', 'text' => 'User Management', 'icon' => 'bx-user'],
 				['route' => 'company.sop.index', 'text' => 'SOP Management', 'icon' => 'bx-file'],
 				['route' => 'company.checklist.index', 'text' => 'Checklist Management', 'icon' => 'bx-list-check'],
@@ -49,6 +60,8 @@
 				</li>
 
 			@endforeach
+
+		@endif
 
 	</ul>
 </aside>

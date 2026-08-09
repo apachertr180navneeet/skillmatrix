@@ -42,21 +42,28 @@
 
                         <div class="terms-block">
                             <h2>1. Introduction</h2>
-                            <p>At Training CRM, we strive to deliver high-quality training solutions and services. This
+                            <p>At PrecureSkill, we strive to deliver high-quality training solutions and services. This
                                 Refund & Cancellation Policy outlines the terms under which cancellations and refunds
                                 are processed.</p>
                         </div>
 
                         <div class="terms-block">
-                            <h2>2. Service Fees</h2>
-                            <p>All payments made for training modules or services are final and
+                            <h2>2. Subscription & Service Fees</h2>
+                            <p>All payments made for subscriptions, training modules, or services are final and
                                 non-refundable, unless otherwise stated.</p>
                             <p>Once access to the platform or services is granted, refunds will generally not be issued.
                             </p>
                         </div>
 
                         <div class="terms-block">
-                            <h2>3. Refund Eligibility</h2>
+                            <h2>3. Cancellation Policy</h2>
+                            <p>Users may cancel their subscription at any time.</p>
+                            <p>Cancellation will be effective at the end of the current billing cycle.</p>
+                            <p>No partial refunds will be provided for unused time.</p>
+                        </div>
+
+                        <div class="terms-block">
+                            <h2>4. Refund Eligibility</h2>
                             <p>Refunds may be considered only under the following conditions:</p>
                             <ul>
                                 <li>Duplicate payment made by mistake</li>

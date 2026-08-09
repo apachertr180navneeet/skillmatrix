@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\SubscriptionPlan;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('web.home.index');
+        $plans = SubscriptionPlan::where('status', 'active')
+            ->orderBy('amount', 'asc')
+            ->get();
+        return view('web.home.index', compact('plans'));
     }
 
     public function aboutUs()
@@ -24,7 +28,12 @@ class HomeController extends Controller
 
     public function plan()
     {
-        return view('web.home.plan');
+        // Get all active subscription plans
+        $plans = SubscriptionPlan::where('status', 'active')
+                    ->orderBy('amount', 'asc')
+                    ->get();
+
+        return view('web.home.plan', compact('plans'));
     }
 
     public function contact()

@@ -11,7 +11,7 @@
                                         ><img src="{{ asset('assets/web/assets/images/logo/precure-skill3-white.svg') }}" alt="Logo"
                                     /></a>
                                 </div>
-                                <p>Training CRM (A Unit of SYSTEM POLYGON PRIVATE LIMITED) is a professional industrial training platform designed to bridge the gap between education and real industry requirements.</p>
+                                <p>Precureskill (A Unit of SYSTEM POLYGON PRIVATE LIMITED) is a professional industrial training platform designed to bridge the gap between education and real industry requirements.</p>
                                 <div class="footer-social">
                                     <ul>
                                         <li>
